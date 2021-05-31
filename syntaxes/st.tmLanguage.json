@@ -1,0 +1,242 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Simple Text",
+	"patterns": [
+		{"include": "#history"},
+		{"include": "#line"},
+		{"include":"#string"},
+		{"include":"#heading"},
+		{"include":"#unit"},
+		{"include":"#space"},
+		{"include": "#invalid"}
+	],
+	"repository": {
+		"invalid":{
+			"begin":"(?=.)",
+			"end":"$",
+			"name":"invalid.illegal"
+		},
+		"space":{
+			"match":"\\s"
+		},
+		"comma":{
+			"match":","
+		},
+		"colon":{
+			"match":":"
+		},
+		"number":{
+			"name":"constant.numeric",
+			"match": "\\d+(?=\\s*[,\\}\\]])"
+		},
+		"boolean":{
+			"name":"constant.language",
+			"match": "(?:true|false)(?=\\s*[,\\}\\]])"
+		},
+		"string":{
+			"name": "string",
+			"begin": "'",
+			"end": "'",
+			"patterns": [
+				{
+					"name": "constant.character.escape",
+					"match": "\\\\['\\\\]"
+				},{
+					"name":"invalid.illegal",
+					"match":"'"
+				}
+			]
+		},
+		"kstring":{
+			"name": "string",
+			"begin": "'",
+			"end": "'",
+			"patterns": [
+				{
+					"name": "keyword.control",
+					"match": "\\\\{4}"
+				},{
+					"name": "constant.character.escape",
+					"match": "\\\\['\\\\]"
+				},{
+					"name":"invalid.illegal",
+					"match":"'"
+				},{
+					"name":"support.function.katex",
+					"match":"\\\\[a-zA-Z]+"
+				},{
+					"name":"constant.numeric",
+					"match":"\\d+"
+				}
+			]
+		},
+		"unit":{
+			"begin": "\\{",
+			"end": "\\}",
+			"patterns": [
+				{"include": "#val"},
+				{"include": "#key"},
+				{"include":"#colon"},
+				{"include":"#comma"},
+				{"include":"#space"},
+				{"include":"#invalid"}
+			]
+		},
+		"heading":{
+			"begin": "\\{(?=[^\\[]*heading)",
+			"end": "\\}",
+			"name":"markup.heading",
+			"patterns": [
+				{"include": "#val"},
+				{"include": "#key"},
+				{"include":"#colon"},
+				{"include":"#comma"},
+				{"include":"#space"},
+				{"include":"#invalid"}
+			]
+		},
+		"line":{
+			"begin": "\\[",
+			"end": "\\]",
+			"patterns": [
+				{"include":"#string"},
+				{"include":"#heading"},
+				{"include":"#unit"},
+				{"include":"#comma"},
+				{"include":"#space"},
+				{"include":"#invalid"}
+			]
+		},
+		"kline":{
+			"begin": "\\[",
+			"end": "\\]",
+			"patterns": [
+				{"include":"#kstring"},
+				{"include":"#heading"},
+				{"include":"#unit"},
+				{"include":"#comma"},
+				{"include":"#space"},
+				{"include":"#invalid"}
+			]
+		},
+		"transfer":{
+			"begin": "\\[",
+			"end": "\\]",
+			"patterns": [
+				{"include": "#line"},
+				{"include":"#string"},
+				{"include":"#heading"},
+				{"include":"#unit"},
+				{"include":"#comma"},
+				{"include":"#space"},
+				{"include":"#invalid"}
+			]
+		},
+		"ktransfer":{
+			"begin": "\\[",
+			"end": "\\]",
+			"patterns": [
+				{"include": "#kline"},
+				{"include":"#kstring"},
+				{"include":"#heading"},
+				{"include":"#unit"},
+				{"include":"#comma"},
+				{"include":"#space"},
+				{"include":"#invalid"}
+			]
+		},
+		"history": {
+			"begin":"^(?=history$)",
+			"end":""
+		},
+		"val":{
+			"patterns":[
+				{
+					"begin": "(?<=label\\s*:?\\s*)'",
+					"end": "'",
+					"name":"string",
+					"contentName":"markup.underline.link",
+					"patterns": [{
+						"name": "constant.character.escape",
+						"match": "\\\\['\\\\]"
+					},{
+						"name":"invalid.illegal",
+						"match":"'"
+					}]
+				},
+				{
+					"begin":"(?<=\\w[\\w-]*\\s*:?\\s*)'",
+					"end":"'",
+					"name":"string",
+					"patterns": [
+						{
+							"name": "constant.character.escape",
+							"match": "\\\\['\\\\]"
+						},{
+							"name":"invalid.illegal",
+							"match":"'"
+						}
+					]
+				},
+				{
+					"begin":"(?<=\\w[\\w-]*\\s*:?\\s*)(?=\\{)",
+					"end":"(?<=\\})",
+					"patterns":[
+						{
+							"begin": "\\{",
+							"end": "\\}",
+							"patterns": [
+								{"include":"#string"},
+								{"include":"#transfer"},
+								{"include":"#space"},
+								{"include":"#invalid"}
+							]
+						}
+					]
+				},
+				{
+					"name":"constant.numeric",
+					"match": "(?<=\\w[\\w-]*(?:\\s+|\\s*:\\s*))\\d+(?=\\s*[,\\}])"
+				},
+				{
+					"name":"constant.language",
+					"match": "(?<=\\w[\\w-]*(?:\\s+|\\s*:\\s*))(?:true|false)(?=\\s*[,\\}])"
+				},
+				{
+					"begin":"(?<=(?:katex|aligned|alignedat|array|arraystretch|Bmatrix|bmatrix|cases|matrix|pmatrix|rcases|smallmatrix|Vmatrix|vmatrix)\\s*:?\\s*)(?=\\[)",
+					"end":"(?<=\\])",
+					"patterns":[
+						{"include":"#ktransfer"}
+					]
+				},
+				{
+					"begin":"(?<=\\w[\\w-]*\\s*:?\\s*)(?=\\[)",
+					"end":"(?<=\\])",
+					"patterns":[
+						{"include":"#transfer"}
+					]
+				},
+				{
+					"name": "string",
+					"match": "(?<=\\w[\\w-]*(?:\\s+|\\s*:\\s*))[^'\\{\\[\\}\\],]*?[^\\d\\s][^'\\{\\[\\}\\],]*?(?=\\s*[,\\}])"
+				},
+				{"include":"#kstring"},
+				{"include":"#ktransfer"}
+			]
+		},
+		"key":{
+			"patterns":[
+				{
+					"match": "(?<=[,\\{'\\}]\\s*)\\w[\\w-]*(?=\\s*:?\\s*\\[)",
+					"name":"entity.name.type"
+				},
+				{
+					"match": "(?<=[,\\{'\\]\\}]\\s*)\\w[\\w-]*(?=\\s*[:\\s'\\{\\[\\},])",
+					"name":"entity.other.attribute-name"
+				}
+			]
+			
+		}
+	},
+	"scopeName": "source.st"
+}

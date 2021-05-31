@@ -1,0 +1,55 @@
+{
+    "name": "st-lang",
+    "displayName": "ST Lang",
+    "description": "Syntax highlighting for st lang",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.46.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "activationEvents": [
+        "onLanguage:st"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "languages": [
+            {
+                "id": "st",
+                "aliases": [
+                    "Simple Text",
+                    "st"
+                ],
+                "extensions": [
+                    ".st",
+                    ".st.txt"
+                ],
+                "configuration": "./st.language-configuration.json"
+            },
+            {
+                "id": "urls",
+                "aliases": [
+                    "URLs",
+                    "urls"
+                ],
+                "extensions": [
+                    ".urls",
+                    ".urls.txt"
+                ],
+                "configuration": "./urls.language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "st",
+                "scopeName": "source.st",
+                "path": "./syntaxes/st.tmLanguage.json"
+            }
+        ]
+    },
+    "devDependencies": {
+        "@types/node": "^13.13.52",
+        "@types/vscode": "^1.56.0"
+    }
+}
