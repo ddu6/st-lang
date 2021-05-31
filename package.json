@@ -1,7 +1,7 @@
 {
     "name": "st-lang",
     "displayName": "ST Lang",
-    "description": "Syntax highlighting for st lang",
+    "description": "Syntax highlighting for st lang.",
     "version": "0.0.1",
     "engines": {
         "vscode": "^1.46.0"
