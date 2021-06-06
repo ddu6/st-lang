@@ -49,8 +49,8 @@
         ]
     },
     "scripts": {
-		"compile": "tsc -p ./"
-	},
+        "compile": "tsc -p ./"
+    },
     "devDependencies": {
         "@types/node": "^13.13.52",
         "@types/vscode": "^1.56.0"
