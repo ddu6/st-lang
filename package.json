@@ -1,8 +1,10 @@
 {
     "name": "st-lang",
+    "version": "0.0.2",
     "displayName": "ST Lang",
     "description": "Syntax highlighting for st lang.",
-    "version": "0.0.2",
+    "main": "./out/extension.js",
+    "icon": "https://ddu6.github.io/imgs/st.png",
     "engines": {
         "vscode": "^1.46.0"
     },
@@ -12,7 +14,6 @@
     "activationEvents": [
         "onLanguage:st"
     ],
-    "main": "./out/extension.js",
     "contributes": {
         "languages": [
             {
@@ -52,7 +53,8 @@
         "compile": "tsc -p ./"
     },
     "devDependencies": {
-        "@types/node": "^13.13.52",
-        "@types/vscode": "^1.56.0"
+        "@types/node": "^15.12.2",
+        "@types/vscode": "^1.57.0",
+        "typescript": "^4.3.2"
     }
 }
