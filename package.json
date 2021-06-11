@@ -4,7 +4,7 @@
     "displayName": "ST Lang",
     "description": "Syntax highlighting for st lang.",
     "main": "./out/extension.js",
-    "icon": "https://ddu6.github.io/imgs/st.png",
+    "icon": "./imgs/st.png",
     "engines": {
         "vscode": "^1.46.0"
     },
