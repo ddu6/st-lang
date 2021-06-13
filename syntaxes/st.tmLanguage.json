@@ -3,6 +3,12 @@
 	"name": "Simple Text",
 	"patterns": [
 		{
+			"include": "#blockComment"
+		},
+		{
+			"include": "#lineComment"
+		},
+		{
 			"include": "#history"
 		},
 		{
@@ -32,6 +38,16 @@
 		}
 	],
 	"repository": {
+		"blockComment": {
+			"begin": "/\\*",
+			"end": "\\*/",
+			"name": "comment.block"
+		},
+		"lineComment": {
+			"begin": "//",
+			"end": "$",
+			"name": "comment.line"
+		},
 		"invalid": {
 			"begin": "(?=.)",
 			"end": "$",
@@ -101,6 +117,12 @@
 			"end": "\\}",
 			"patterns": [
 				{
+					"include": "#blockComment"
+				},
+				{
+					"include": "#lineComment"
+				},
+				{
 					"include": "#val"
 				},
 				{
@@ -126,6 +148,12 @@
 			"name": "markup.heading",
 			"patterns": [
 				{
+					"include": "#blockComment"
+				},
+				{
+					"include": "#lineComment"
+				},
+				{
 					"include": "#val"
 				},
 				{
@@ -149,6 +177,12 @@
 			"begin": "\\[",
 			"end": "\\]",
 			"patterns": [
+				{
+					"include": "#blockComment"
+				},
+				{
+					"include": "#lineComment"
+				},
 				{
 					"include": "#string"
 				},
@@ -178,6 +212,12 @@
 			"end": "\\]",
 			"patterns": [
 				{
+					"include": "#blockComment"
+				},
+				{
+					"include": "#lineComment"
+				},
+				{
 					"include": "#kstring"
 				},
 				{
@@ -201,6 +241,12 @@
 			"begin": "\\[",
 			"end": "\\]",
 			"patterns": [
+				{
+					"include": "#blockComment"
+				},
+				{
+					"include": "#lineComment"
+				},
 				{
 					"include": "#line"
 				},
@@ -232,6 +278,12 @@
 			"begin": "\\[",
 			"end": "\\]",
 			"patterns": [
+				{
+					"include": "#blockComment"
+				},
+				{
+					"include": "#lineComment"
+				},
 				{
 					"include": "#kline"
 				},

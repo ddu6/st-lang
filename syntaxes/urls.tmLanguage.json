@@ -1,0 +1,67 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "URLs",
+	"patterns": [
+		{
+			"include": "#blockComment"
+		},
+		{
+			"include": "#lineComment"
+		},
+		{
+			"include": "#string"
+		},
+		{
+			"include": "#comma"
+		},
+		{
+			"name": "string",
+			"match": "(?<=(?:^|[\\['\\},])\\s*)[^'\\{\\[\\}\\],]*?[^\\d\\s'\\{\\[\\}\\],][^'\\{\\[\\}\\],]*?(?=\\s*(?:$|['\\{\\[\\}\\],]))"
+		},
+		{
+			"include": "#space"
+		},
+		{
+			"include": "#invalid"
+		}
+	],
+	"repository": {
+		"blockComment": {
+			"begin": "/\\*",
+			"end": "\\*/",
+			"name": "comment.block"
+		},
+		"lineComment": {
+			"begin": "//",
+			"end": "$",
+			"name": "comment.line"
+		},
+		"invalid": {
+			"begin": "(?=.)",
+			"end": "$",
+			"name": "invalid.illegal"
+		},
+		"space": {
+			"match": "\\s"
+		},
+		"comma": {
+			"match": ","
+		},
+		"string": {
+			"name": "string",
+			"begin": "'",
+			"end": "'",
+			"patterns": [
+				{
+					"name": "constant.character.escape",
+					"match": "\\\\['\\\\]"
+				},
+				{
+					"name": "invalid.illegal",
+					"match": "'"
+				}
+			]
+		}
+	},
+	"scopeName": "source.urls"
+}
