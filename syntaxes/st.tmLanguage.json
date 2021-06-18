@@ -27,8 +27,13 @@
 			"include": "#comma"
 		},
 		{
-			"name": "string",
-			"match": "(?<=(?:^|[\\['\\},])\\s*)[^'\\{\\[\\}\\],]*?[^\\d\\s'\\{\\[\\}\\],][^'\\{\\[\\}\\],]*?(?=\\s*(?:$|['\\{\\[\\}\\],]))"
+			"include": "#numberHolder"
+		},
+		{
+			"include": "#booleanHolder"
+		},
+		{
+			"include": "#unquotedString"
 		},
 		{
 			"include": "#space"
@@ -62,13 +67,17 @@
 		"colon": {
 			"match": ":"
 		},
-		"number": {
-			"name": "constant.numeric",
-			"match": "\\d+(?=\\s*['\\{\\[\\}\\],])"
+		"numberHolder": {
+			"name": "invalid.illegal",
+			"match": "(?<=(?:^|[\\['\\},])\\s*)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['\\{\\[\\}\\],]))"
 		},
-		"boolean": {
-			"name": "constant.language",
-			"match": "(?:true|false)(?=\\s*['\\{\\[\\}\\],])"
+		"booleanHolder": {
+			"name": "invalid.illegal",
+			"match": "(?<=(?:^|[\\['\\},])\\s*)(?:true|false)(?=\\s*(?:$|['\\{\\[\\}\\],]))"
+		},
+		"unquotedString": {
+			"name": "string",
+			"match": "(?<=(?:^|[\\['\\},])\\s*)[^'\\{\\[\\}\\],]*?[^\\s'\\{\\[\\}\\],][^'\\{\\[\\}\\],]*?(?=\\s*(?:$|['\\{\\[\\}\\],]))"
 		},
 		"string": {
 			"name": "string",
@@ -196,8 +205,13 @@
 					"include": "#comma"
 				},
 				{
-					"name": "string",
-					"match": "(?<=(?:^|[\\['\\},])\\s*)[^'\\{\\[\\}\\],]*?[^\\d\\s'\\{\\[\\}\\],][^'\\{\\[\\}\\],]*?(?=\\s*(?:$|['\\{\\[\\}\\],]))"
+					"include": "#numberHolder"
+				},
+				{
+					"include": "#booleanHolder"
+				},
+				{
+					"include": "#unquotedString"
 				},
 				{
 					"include": "#space"
@@ -263,8 +277,13 @@
 					"include": "#comma"
 				},
 				{
-					"name": "string",
-					"match": "(?<=(?:^|[\\['\\},])\\s*)[^'\\{\\[\\}\\],]*?[^\\d\\s'\\{\\[\\}\\],][^'\\{\\[\\}\\],]*?(?=\\s*(?:$|['\\{\\[\\}\\],]))"
+					"include": "#numberHolder"
+				},
+				{
+					"include": "#booleanHolder"
+				},
+				{
+					"include": "#unquotedString"
 				},
 				{
 					"include": "#space"
@@ -370,7 +389,7 @@
 				},
 				{
 					"name": "constant.numeric",
-					"match": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*(?:\\s+|\\s*:\\s*))\\d+(?=\\s*(?:$|['\\{\\[\\}\\],]))"
+					"match": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*(?:\\s+|\\s*:\\s*))(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['\\{\\[\\}\\],]))"
 				},
 				{
 					"name": "constant.language",
@@ -396,7 +415,7 @@
 				},
 				{
 					"name": "string",
-					"match": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*(?:\\s+|\\s*:\\s*))[^'\\{\\[\\}\\],]*?[^\\d\\s'\\{\\[\\}\\],][^'\\{\\[\\}\\],]*?(?=\\s*(?:$|['\\{\\[\\}\\],]))"
+					"match": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*(?:\\s+|\\s*:\\s*))[^'\\{\\[\\}\\],]*?[^\\s'\\{\\[\\}\\],][^'\\{\\[\\}\\],]*?(?=\\s*(?:$|['\\{\\[\\}\\],]))"
 				},
 				{
 					"include": "#kstring"
