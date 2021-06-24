@@ -2,7 +2,7 @@
     "name": "st-lang",
     "version": "0.0.2",
     "displayName": "ST Lang",
-    "description": "Syntax highlighting for st lang.",
+    "description": "Syntax highlighting for st lang",
     "main": "./out/extension.js",
     "icon": "./imgs/st.png",
     "engines": {
