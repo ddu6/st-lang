@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 import {cmds} from './katex'
-import {stringify,parse} from './json'
+import {stringify,parse} from 'ston'
 export function activate(context: vscode.ExtensionContext) {
 	const backslash = vscode.languages.registerCompletionItemProvider('st', {
         provideCompletionItems(document,position) {
@@ -61,9 +61,9 @@ export function activate(context: vscode.ExtensionContext) {
     const format=vscode.languages.registerDocumentFormattingEditProvider('st',{
         provideDocumentFormattingEdits(document){
             const string=document.getText()
-            const json=parse('['+string.replace(/\r/g,'').split('\nhistory\n',2)[0]+']')
-            if(!Array.isArray(json))return []
-            return [vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),json.map(val=>stringify(val,'arrayInObject')).join('\n'))]
+            const ston=parse('['+string.replace(/\r/g,'').split('\nhistory\n',2)[0]+']')
+            if(!Array.isArray(ston))return []
+            return [vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),ston.map(val=>stringify(val,'arrayInObject')).join('\n'))]
         }
     })
 	context.subscriptions.push(backslash,labelCompletion,labelReference,labelRename,format)

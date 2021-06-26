@@ -1,6 +1,5 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-	"name": "Simple Text",
 	"patterns": [
 		{
 			"include": "#blockComment"
@@ -364,26 +363,20 @@
 					]
 				},
 				{
-					"begin": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*\\s*:?\\s*)(?=\\{)",
-					"end": "(?<=\\})",
+					"begin": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*\\s*:?\\s*)\\{",
+					"end": "\\}",
 					"patterns": [
 						{
-							"begin": "\\{",
-							"end": "\\}",
-							"patterns": [
-								{
-									"include": "#string"
-								},
-								{
-									"include": "#transfer"
-								},
-								{
-									"include": "#space"
-								},
-								{
-									"include": "#invalid"
-								}
-							]
+							"include": "#string"
+						},
+						{
+							"include": "#transfer"
+						},
+						{
+							"include": "#space"
+						},
+						{
+							"include": "#invalid"
 						}
 					]
 				},

@@ -1,0 +1,187 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"patterns": [
+		{
+			"include": "#blockComment"
+		},
+		{
+			"include": "#lineComment"
+		},
+		{
+			"include": "#string"
+		},
+		{
+			"include": "#object"
+		},
+		{
+			"include": "#array"
+		},
+		{
+			"include": "#comma"
+		},
+		{
+			"include": "#number"
+		},
+		{
+			"include": "#boolean"
+		},
+		{
+			"include": "#unquotedString"
+		},
+		{
+			"include": "#space"
+		},
+		{
+			"include": "#invalid"
+		}
+	],
+	"repository": {
+		"blockComment": {
+			"begin": "/\\*",
+			"end": "\\*/",
+			"name": "comment.block"
+		},
+		"lineComment": {
+			"begin": "//",
+			"end": "$",
+			"name": "comment.line"
+		},
+		"invalid": {
+			"begin": "(?=.)",
+			"end": "$",
+			"name": "invalid.illegal"
+		},
+		"space": {
+			"match": "\\s"
+		},
+		"comma": {
+			"match": ","
+		},
+		"number": {
+			"name": "constant.numeric",
+			"match": "(?<=(?:^|[\\['},])\\s*)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))"
+		},
+		"boolean": {
+			"name": "constant.language",
+			"match": "(?<=(?:^|[\\['},])\\s*)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
+		},
+		"unquotedString": {
+			"name": "string",
+			"match": "(?<=(?:^|[\\['},])\\s*)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))"
+		},
+		"string": {
+			"name": "string",
+			"begin": "'",
+			"end": "'",
+			"patterns": [
+				{
+					"name": "constant.character.escape",
+					"match": "\\\\['\\\\]"
+				},
+				{
+					"name": "invalid.illegal",
+					"match": "'"
+				}
+			]
+		},
+		"val": {
+			"patterns": [
+				{
+					"include": "#string"
+				},
+				{
+					"include": "#object"
+				},
+				{
+					"include": "#array"
+				},
+				{
+					"name": "constant.numeric",
+					"match": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*(?:\\s+|\\s*:\\s*))(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))"
+				},
+				{
+					"name": "constant.language",
+					"match": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*(?:\\s+|\\s*:\\s*))(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
+				},
+				{
+					"name": "string",
+					"match": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*(?:\\s+|\\s*:\\s*))[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))"
+				}
+			]
+		},
+		"key": {
+			"match": "(?<=(?:^|['{}\\],])\\s*)[a-zA-Z0-9_][a-zA-Z0-9_-]*(?=\\s*[:\\s'{}\\[,])",
+			"name": "entity.other.attribute-name"
+		},
+		"object": {
+			"begin": "\\{",
+			"end": "\\}",
+			"patterns": [
+				{
+					"include": "#blockComment"
+				},
+				{
+					"include": "#lineComment"
+				},
+				{
+					"include": "#val"
+				},
+				{
+					"include": "#key"
+				},
+				{
+					"include": "#colon"
+				},
+				{
+					"include": "#comma"
+				},
+				{
+					"include": "#space"
+				},
+				{
+					"include": "#invalid"
+				}
+			]
+		},
+		"array": {
+			"begin": "\\[",
+			"end": "\\]",
+			"patterns": [
+				{
+					"include": "#blockComment"
+				},
+				{
+					"include": "#lineComment"
+				},
+				{
+					"include": "#string"
+				},
+				{
+					"include": "#object"
+				},
+				{
+					"include": "#array"
+				},
+				{
+					"include": "#comma"
+				},
+				{
+					"include": "#number"
+				},
+				{
+					"include": "#boolean"
+				},
+				{
+					"include": "#unquotedString"
+				},
+				{
+					"include": "#space"
+				},
+				{
+					"include": "#invalid"
+				}
+			]
+		}
+	},
+	"scopeName": "source.ston"
+}
