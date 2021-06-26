@@ -1,0 +1,11 @@
+{
+    "heading": {
+        "prefix": [
+            "level",
+            "heading"
+        ],
+        "body": [
+            "level ${1:1},label'${3:$2}'heading['$2']$0"
+        ]
+    }
+}

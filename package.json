@@ -52,6 +52,12 @@
                 "scopeName": "source.urls",
                 "path": "./syntaxes/urls.tmLanguage.json"
             }
+        ],
+        "snippets": [
+            {
+                "language": "st",
+                "path": "./snippets.json"
+            }
         ]
     },
     "scripts": {

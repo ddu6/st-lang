@@ -12,10 +12,18 @@ export function activate(context: vscode.ExtensionContext) {
         provideCompletionItems(document,position) {
             if(document.getWordRangeAtPosition(position,/label:?[ ]*'/)===undefined)return []
             const labels:Record<string,boolean>={}
+            let max=0
             return Array.from(document.getText().matchAll(/label:?[ ]*'([^'\\\n]+)'/g)).filter(val=>{
-                if(labels[val[1]])return false
-                return labels[val[1]]=true
-            }).map(val=>new vscode.CompletionItem(val[1],17))
+                const label=val[1]
+                if(labels[label]){
+                    return false
+                }
+                const tmp=Number(label)
+                if(isFinite(tmp)&&tmp>max){
+                    max=tmp
+                }
+                return labels[label]=true
+            }).map(val=>new vscode.CompletionItem(val[1],17)).concat(new vscode.CompletionItem((max+1).toString(),17))
         }
     },"'")
     const labelReference=vscode.languages.registerReferenceProvider('st',{
