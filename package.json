@@ -5,6 +5,7 @@
     "description": "Syntax highlighting for st lang",
     "main": "./out/extension.js",
     "icon": "./imgs/st.png",
+    "publisher": "ddu",
     "engines": {
         "vscode": "^1.46.0"
     },
