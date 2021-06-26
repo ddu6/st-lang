@@ -1,6 +1,6 @@
 {
     "name": "st-lang",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "displayName": "ST Lang",
     "description": "Syntax highlighting for st lang",
     "main": "out/extension.js",
