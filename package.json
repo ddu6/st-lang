@@ -79,6 +79,6 @@
         "typescript": "^4.3.4"
     },
     "dependencies": {
-        "ston": "^0.0.3"
+        "ston": "^0.0.4"
     }
 }
