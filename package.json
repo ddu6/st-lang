@@ -3,7 +3,7 @@
     "version": "0.0.2",
     "displayName": "ST Lang",
     "description": "Syntax highlighting for st lang",
-    "main": "./out/extension.js",
+    "main": "out/extension.js",
     "icon": "imgs/st.png",
     "publisher": "ddu",
     "engines": {
@@ -23,7 +23,7 @@
                     ".st",
                     ".st.txt"
                 ],
-                "configuration": "./ston.language-configuration.json"
+                "configuration": "ston.language-configuration.json"
             },
             {
                 "id": "urls",
@@ -31,7 +31,7 @@
                     ".urls",
                     ".urls.txt"
                 ],
-                "configuration": "./ston.language-configuration.json"
+                "configuration": "ston.language-configuration.json"
             },
             {
                 "id": "ston",
@@ -39,30 +39,30 @@
                     ".ston",
                     ".ston.txt"
                 ],
-                "configuration": "./ston.language-configuration.json"
+                "configuration": "ston.language-configuration.json"
             }
         ],
         "grammars": [
             {
                 "language": "st",
                 "scopeName": "source.st",
-                "path": "./syntaxes/st.tmLanguage.json"
+                "path": "syntaxes/st.tmLanguage.json"
             },
             {
                 "language": "urls",
                 "scopeName": "source.urls",
-                "path": "./syntaxes/urls.tmLanguage.json"
+                "path": "syntaxes/urls.tmLanguage.json"
             },
             {
                 "language": "ston",
                 "scopeName": "source.ston",
-                "path": "./syntaxes/ston.tmLanguage.json"
+                "path": "syntaxes/ston.tmLanguage.json"
             }
         ],
         "snippets": [
             {
                 "language": "st",
-                "path": "./snippets.json"
+                "path": "snippets.json"
             }
         ]
     },

@@ -8,9 +8,6 @@
 			"include": "#lineComment"
 		},
 		{
-			"include": "#history"
-		},
-		{
 			"include": "#line"
 		},
 		{
@@ -324,10 +321,6 @@
 					"include": "#invalid"
 				}
 			]
-		},
-		"history": {
-			"begin": "^(?=history$)",
-			"end": ""
 		},
 		"val": {
 			"patterns": [

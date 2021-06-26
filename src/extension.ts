@@ -4,13 +4,17 @@ import {stringify,parse} from 'ston'
 export function activate(context: vscode.ExtensionContext) {
 	const backslash = vscode.languages.registerCompletionItemProvider('st', {
         provideCompletionItems(document,position) {
-            if(document.getWordRangeAtPosition(position,/\\[a-zA-Z]*/)===undefined)return []
+            if(document.getWordRangeAtPosition(position,/\\[a-zA-Z]*/)===undefined){
+                return []
+            }
             return cmds.map(val=>new vscode.CompletionItem(val))
         }
     },'\\')
     const labelCompletion = vscode.languages.registerCompletionItemProvider('st', {
         provideCompletionItems(document,position) {
-            if(document.getWordRangeAtPosition(position,/label:?[ ]*'/)===undefined)return []
+            if(document.getWordRangeAtPosition(position,/label:?[ ]*'/)===undefined){
+                return []
+            }
             const labels:Record<string,boolean>={}
             let max=0
             return Array.from(document.getText().matchAll(/label:?[ ]*'([^'\\\n]+)'/g)).filter(val=>{
@@ -29,7 +33,9 @@ export function activate(context: vscode.ExtensionContext) {
     const labelReference=vscode.languages.registerReferenceProvider('st',{
         provideReferences(document,position){
             const range=document.getWordRangeAtPosition(position,/label:?[ ]*'[^'\\\n]+'/)
-            if(range===undefined)return []
+            if(range===undefined){
+                return []
+            }
             const label=document.getText(range).replace(/^label:?[ ]*'/,'').slice(0,-1)
             return Array.from(document.getText().matchAll(/label:?[ ]*'([^'\\\n]+)'/g)).filter(val=>val[1]===label).map(val=>{
                 const end=(val.index??0)+val[0].length-1
@@ -41,14 +47,18 @@ export function activate(context: vscode.ExtensionContext) {
     const labelRename=vscode.languages.registerRenameProvider('st',{
         prepareRename(document,position){
             const range=document.getWordRangeAtPosition(position,/label:?[ ]*'[^'\\\n]+'/)
-            if(range===undefined)return undefined
+            if(range===undefined){
+                return undefined
+            }
             const label=document.getText(range).replace(/^label:?[ ]*'/,'').slice(0,-1)
             return new vscode.Range(new vscode.Position(range.end.line,range.end.character-label.length-1),new vscode.Position(range.end.line,range.end.character-1))
         },
         provideRenameEdits(document,position,newName){
             const edit=new vscode.WorkspaceEdit()
             const range=document.getWordRangeAtPosition(position,/label:?[ ]*'[^'\\\n]+'/)
-            if(range===undefined)return edit
+            if(range===undefined){
+                return edit
+            }
             const label=document.getText(range).replace(/^label:?[ ]*'/,'').slice(0,-1)
             Array.from(document.getText().matchAll(/label:?[ ]*'([^'\\\n]+)'/g)).filter(val=>val[1]===label).forEach(val=>{
                 const end=(val.index??0)+val[0].length-1
@@ -61,8 +71,10 @@ export function activate(context: vscode.ExtensionContext) {
     const format=vscode.languages.registerDocumentFormattingEditProvider('st',{
         provideDocumentFormattingEdits(document){
             const string=document.getText()
-            const ston=parse('['+string.replace(/\r/g,'').split('\nhistory\n',2)[0]+']')
-            if(!Array.isArray(ston))return []
+            const ston=parse('['+string+']')
+            if(!Array.isArray(ston)){
+                return []
+            }
             return [vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),ston.map(val=>stringify(val,'arrayInObject')).join('\n'))]
         }
     })
