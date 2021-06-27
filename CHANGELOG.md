@@ -6,7 +6,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-## [0.0.3] - 2021-06-26
+## [0.0.3] - 2021-06-27
+### Added
+- Add preview.
 ### Removed
 - Remove history support.
 

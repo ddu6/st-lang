@@ -78,6 +78,44 @@ export function activate(context: vscode.ExtensionContext) {
             return [vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),ston.map(val=>stringify(val,'arrayInObject')).join('\n'))]
         }
     })
-	context.subscriptions.push(backslash,labelCompletion,labelReference,labelRename,format)
+    const preview=vscode.commands.registerTextEditorCommand('stLang.preview',async(editor,edit)=>{
+        if(
+            editor.document.languageId!=='st'
+            &&editor.document.languageId!=='urls'
+            &&editor.document.languageId!=='markdown'
+        ){
+            return
+        }
+        let line=0
+        if(editor.document.languageId==='st'){
+            const ston=parse('['+editor.document.getText(new vscode.Range(new vscode.Position(0,0),editor.visibleRanges[0].start))+']')
+            if(Array.isArray(ston)){
+                for(let i=0;i<ston.length;i++){
+                    const item=ston[i]
+                    if(typeof item==='string'){
+                        line+=item.split('\n').length
+                    }else{
+                        line++
+                    }
+                }
+            }
+        }
+        const panel = vscode.window.createWebviewPanel(
+            'stLang.preview',
+            editor.document.uri.path.replace(/^.*\//,''),
+            vscode.ViewColumn.Beside,
+            {
+                enableScripts:true
+            }
+        )
+        const src=JSON.stringify(panel.webview.asWebviewUri(editor.document.uri).toString()+'?line='+line)
+        panel.webview.html=`<!DOCTYPE html>
+        <body style="background:black" data-color-scheme="dark"></body>
+        <style>
+            code{color:var(--color-text)}
+        </style>
+        <script src="https://ddu6.github.io/st/reader/main.js" data-src=${src}></script>`
+    })
+	context.subscriptions.push(backslash,labelCompletion,labelReference,labelRename,format,preview)
 }
 export function deactivate() {}

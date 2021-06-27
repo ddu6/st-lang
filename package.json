@@ -13,9 +13,54 @@
         "Programming Languages"
     ],
     "activationEvents": [
-        "onLanguage:st"
+        "onLanguage:st",
+        "onCommand:stLang.preview"
     ],
     "contributes": {
+        "configuration": {
+            "title": "ST Lang",
+            "properties": {
+                "stLang.preview.port.min": {
+                    "type": "integer",
+                    "default": 8081,
+                    "description": "Must be greater than 8080"
+                },
+                "stLang.preview.port.max": {
+                    "type": "integer",
+                    "default": 8089
+                }
+            }
+        },
+        "commands": [
+            {
+                "command": "stLang.preview",
+                "title": "Preview",
+                "icon": "$(open-preview)"
+            }
+        ],
+        "menus": {
+            "commandPalette": [
+                {
+                    "command": "stLang.preview",
+                    "when": "editorLangId == st || editorLangId == urls || editorLangId == markdown",
+                    "group": "navigation"
+                }
+            ],
+            "editor/context": [
+                {
+                    "command": "stLang.preview",
+                    "when": "editorLangId == st || editorLangId == urls || editorLangId == markdown",
+                    "group": "navigation"
+                }
+            ],
+            "editor/title": [
+                {
+                    "command": "stLang.preview",
+                    "when": "editorLangId == st || editorLangId == urls || editorLangId == markdown",
+                    "group": "navigation"
+                }
+            ]
+        },
         "languages": [
             {
                 "id": "st",
