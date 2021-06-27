@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.0.5] - 2021-06-27
+### Added
+- Add preview auto reload.
+
 ## [0.0.4] - 2021-06-27
 ### Added
 - Add preview.
@@ -18,6 +22,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Add label rename support.
 
 
-[Unreleased]: https://github.com/ddu6/st-lang/compare/v0.0.4...HEAD
+[Unreleased]: https://github.com/ddu6/st-lang/compare/v0.0.5...HEAD
+[0.0.5]: https://github.com/ddu6/st-lang/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/ddu6/st-lang/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/ddu6/st-lang/releases/tag/v0.0.2

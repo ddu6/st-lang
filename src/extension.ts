@@ -1,6 +1,31 @@
 import * as vscode from 'vscode'
 import {cmds} from './katex'
 import {stringify,parse} from 'ston'
+function producePreviewHTML(src:string,line:number){
+    return `<!DOCTYPE html>
+    <body style="background:black" data-color-scheme="dark"></body>
+    <style>
+        code{color:var(--color-text)}
+    </style>
+    <script src="https://ddu6.github.io/st/reader/main.js" data-src=${
+        JSON.stringify(src+'?line='+line+'&r='+Math.random())
+    }></script>`
+}
+function getCurrentLine(editor:vscode.TextEditor){
+    let line=0
+    const ston=parse('['+editor.document.getText(new vscode.Range(new vscode.Position(0,0),editor.visibleRanges[0].start))+']')
+    if(Array.isArray(ston)){
+        for(let i=0;i<ston.length;i++){
+            const item=ston[i]
+            if(typeof item==='string'){
+                line+=item.split('\n').length
+            }else{
+                line++
+            }
+        }
+    }
+    return line
+}
 export function activate(context: vscode.ExtensionContext) {
 	const backslash = vscode.languages.registerCompletionItemProvider('st', {
         provideCompletionItems(document,position) {
@@ -78,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
             return [vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),ston.map(val=>stringify(val,'arrayInObject')).join('\n'))]
         }
     })
-    const preview=vscode.commands.registerTextEditorCommand('stLang.preview',async(editor,edit)=>{
+    const preview=vscode.commands.registerTextEditorCommand('stLang.preview',(editor,edit)=>{
         if(
             editor.document.languageId!=='st'
             &&editor.document.languageId!=='urls'
@@ -88,17 +113,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         let line=0
         if(editor.document.languageId==='st'){
-            const ston=parse('['+editor.document.getText(new vscode.Range(new vscode.Position(0,0),editor.visibleRanges[0].start))+']')
-            if(Array.isArray(ston)){
-                for(let i=0;i<ston.length;i++){
-                    const item=ston[i]
-                    if(typeof item==='string'){
-                        line+=item.split('\n').length
-                    }else{
-                        line++
-                    }
-                }
-            }
+            line=getCurrentLine(editor)
         }
         const panel = vscode.window.createWebviewPanel(
             'stLang.preview',
@@ -108,13 +123,18 @@ export function activate(context: vscode.ExtensionContext) {
                 enableScripts:true
             }
         )
-        const src=JSON.stringify(panel.webview.asWebviewUri(editor.document.uri).toString()+'?line='+line)
-        panel.webview.html=`<!DOCTYPE html>
-        <body style="background:black" data-color-scheme="dark"></body>
-        <style>
-            code{color:var(--color-text)}
-        </style>
-        <script src="https://ddu6.github.io/st/reader/main.js" data-src=${src}></script>`
+        const uriStr=editor.document.uri.toString()
+        const src=panel.webview.asWebviewUri(editor.document.uri).toString()
+        panel.webview.html=producePreviewHTML(src,line)
+        const t=vscode.workspace.onDidSaveTextDocument(document=>{
+            if(document.uri.toString()===uriStr&&document.languageId==='st'){
+                line=getCurrentLine(editor)
+            }
+            panel.webview.html=producePreviewHTML(src,line)
+        })
+        panel.onDidDispose(()=>{
+            t.dispose()
+        })
     })
 	context.subscriptions.push(backslash,labelCompletion,labelReference,labelRename,format,preview)
 }
