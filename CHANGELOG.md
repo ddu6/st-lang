@@ -9,9 +9,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ## [0.0.4] - 2021-06-27
 ### Added
 - Add preview.
+
 ### Removed
 - Remove history support.
 
+## [0.0.4] - 2021-06-26
+### Added
+- Add label rename support.
+
+
 [Unreleased]: https://github.com/ddu6/st-lang/compare/v0.0.4...HEAD
-[0.0.3]: https://github.com/ddu6/st-lang/compare/v0.0.2...v0.0.4
+[0.0.4]: https://github.com/ddu6/st-lang/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/ddu6/st-lang/releases/tag/v0.0.2
