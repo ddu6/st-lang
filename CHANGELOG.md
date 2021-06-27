@@ -6,12 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-## [0.0.3] - 2021-06-27
+## [0.0.4] - 2021-06-27
 ### Added
 - Add preview.
 ### Removed
 - Remove history support.
 
-[Unreleased]: https://github.com/ddu6/st-lang/compare/v0.0.3...HEAD
-[0.0.3]: https://github.com/ddu6/st-lang/compare/v0.0.2...v0.0.3
+[Unreleased]: https://github.com/ddu6/st-lang/compare/v0.0.4...HEAD
+[0.0.3]: https://github.com/ddu6/st-lang/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/ddu6/st-lang/releases/tag/v0.0.2
