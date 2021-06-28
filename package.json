@@ -131,11 +131,11 @@
         "url": "git+https://github.com/ddu6/st-lang.git"
     },
     "devDependencies": {
-        "@types/node": "^15.12.4",
+        "@types/node": "^15.12.5",
         "@types/vscode": "^1.57.0",
         "typescript": "^4.3.4"
     },
     "dependencies": {
-        "ston": "^0.0.4"
+        "ston": "^0.0.5"
     }
 }

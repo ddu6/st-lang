@@ -100,7 +100,7 @@ export function activate(context: vscode.ExtensionContext) {
             if(!Array.isArray(ston)){
                 return []
             }
-            return [vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),ston.map(val=>stringify(val,'arrayInObject')).join('\n'))]
+            return [vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),ston.map(val=>stringify(val,'arrayInObject','inObject')).join('\n'))]
         }
     })
     const preview=vscode.commands.registerTextEditorCommand('stLang.preview',(editor,edit)=>{
