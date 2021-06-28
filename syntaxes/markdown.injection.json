@@ -1,0 +1,117 @@
+{
+    "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+    "scopeName": "text.html.markdown.injection.st",
+    "injectionSelector": "L:text.html.markdown",
+    "patterns": [
+        {
+            "include": "#fenced_code_block_st"
+        },
+        {
+            "include": "#fenced_code_block_urls"
+        },
+        {
+            "include": "#fenced_code_block_ston"
+        }
+    ],
+    "repository": {
+        "fenced_code_block_st": {
+            "begin": "(^|\\G)(\\s*)(`{3,}|~{3,})\\s*(?i:(st)((\\s+|:|\\{)[^`~]*)?$)",
+            "name": "markup.fenced_code.block.markdown",
+            "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
+            "beginCaptures": {
+                "3": {
+                    "name": "punctuation.definition.markdown"
+                },
+                "4": {
+                    "name": "fenced_code.block.language.markdown"
+                },
+                "5": {
+                    "name": "fenced_code.block.language.attributes.markdown"
+                }
+            },
+            "endCaptures": {
+                "3": {
+                    "name": "punctuation.definition.markdown"
+                }
+            },
+            "patterns": [
+                {
+                    "begin": "(^|\\G)(\\s*)(.*)",
+                    "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+                    "contentName": "meta.embedded.block.st",
+                    "patterns": [
+                        {
+                            "include": "source.st"
+                        }
+                    ]
+                }
+            ]
+        },
+        "fenced_code_block_urls": {
+            "begin": "(^|\\G)(\\s*)(`{3,}|~{3,})\\s*(?i:(urls)((\\s+|:|\\{)[^`~]*)?$)",
+            "name": "markup.fenced_code.block.markdown",
+            "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
+            "beginCaptures": {
+                "3": {
+                    "name": "punctuation.definition.markdown"
+                },
+                "4": {
+                    "name": "fenced_code.block.language.markdown"
+                },
+                "5": {
+                    "name": "fenced_code.block.language.attributes.markdown"
+                }
+            },
+            "endCaptures": {
+                "3": {
+                    "name": "punctuation.definition.markdown"
+                }
+            },
+            "patterns": [
+                {
+                    "begin": "(^|\\G)(\\s*)(.*)",
+                    "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+                    "contentName": "meta.embedded.block.urls",
+                    "patterns": [
+                        {
+                            "include": "source.urls"
+                        }
+                    ]
+                }
+            ]
+        },
+        "fenced_code_block_ston": {
+            "begin": "(^|\\G)(\\s*)(`{3,}|~{3,})\\s*(?i:(ston)((\\s+|:|\\{)[^`~]*)?$)",
+            "name": "markup.fenced_code.block.markdown",
+            "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
+            "beginCaptures": {
+                "3": {
+                    "name": "punctuation.definition.markdown"
+                },
+                "4": {
+                    "name": "fenced_code.block.language.markdown"
+                },
+                "5": {
+                    "name": "fenced_code.block.language.attributes.markdown"
+                }
+            },
+            "endCaptures": {
+                "3": {
+                    "name": "punctuation.definition.markdown"
+                }
+            },
+            "patterns": [
+                {
+                    "begin": "(^|\\G)(\\s*)(.*)",
+                    "while": "(^|\\G)(?!\\s*([`~]{3,})\\s*$)",
+                    "contentName": "meta.embedded.block.ston",
+                    "patterns": [
+                        {
+                            "include": "source.ston"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

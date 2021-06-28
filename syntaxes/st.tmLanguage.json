@@ -1,5 +1,6 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"scopeName": "source.st",
 	"patterns": [
 		{
 			"include": "#blockComment"
@@ -72,26 +73,22 @@
 			"match": "(?<=(?:^|[\\['},])\\s*)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
 		},
 		"unquotedString": {
-			"name": "string",
+			"name": "string.unquoted",
 			"match": "(?<=(?:^|[\\['},])\\s*)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))"
 		},
 		"string": {
-			"name": "string",
+			"name": "string.quoted.single",
 			"begin": "'",
 			"end": "'",
 			"patterns": [
 				{
 					"name": "constant.character.escape",
 					"match": "\\\\['\\\\]"
-				},
-				{
-					"name": "invalid.illegal",
-					"match": "'"
 				}
 			]
 		},
 		"kstring": {
-			"name": "string",
+			"name": "string.quoted.single",
 			"begin": "'",
 			"end": "'",
 			"patterns": [
@@ -102,10 +99,6 @@
 				{
 					"name": "constant.character.escape",
 					"match": "\\\\['\\\\]"
-				},
-				{
-					"name": "invalid.illegal",
-					"match": "'"
 				},
 				{
 					"name": "support.function.katex",
@@ -327,31 +320,42 @@
 				{
 					"begin": "(?<=label\\s*:?\\s*)'",
 					"end": "'",
-					"name": "string",
+					"name": "string.quoted.single",
 					"contentName": "markup.underline.link",
 					"patterns": [
 						{
 							"name": "constant.character.escape",
 							"match": "\\\\['\\\\]"
-						},
-						{
-							"name": "invalid.illegal",
-							"match": "'"
 						}
 					]
 				},
 				{
+					"name": "invalid.illegal",
+					"match": "(?<=label(?:\\s+|\\s*:\\s*))(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))"
+				},
+				{
+					"name": "invalid.illegal",
+					"match": "(?<=label(?:\\s+|\\s*:\\s*))(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
+				},
+				{
+					"match": "(?<=label(?:\\s+|\\s*:\\s*))([^\\s'{}\\[\\],][^'{}\\[\\],]*?)(?=\\s*(?:$|['{}\\[\\],]))",
+					"captures": {
+						"0": {
+							"name": "string.unquoted"
+						},
+						"1": {
+							"name": "markup.underline.link"
+						}
+					}
+				},
+				{
 					"begin": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*\\s*:?\\s*)'",
 					"end": "'",
-					"name": "string",
+					"name": "string.quoted.single",
 					"patterns": [
 						{
 							"name": "constant.character.escape",
 							"match": "\\\\['\\\\]"
-						},
-						{
-							"name": "invalid.illegal",
-							"match": "'"
 						}
 					]
 				},
@@ -360,7 +364,7 @@
 					"end": "\\}",
 					"patterns": [
 						{
-							"include": "#string"
+							"include": "#kstring"
 						},
 						{
 							"include": "#transfer"
@@ -382,25 +386,82 @@
 					"match": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*(?:\\s+|\\s*:\\s*))(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
 				},
 				{
-					"begin": "(?<=(?:katex|aligned|alignedat|array|arraystretch|Bmatrix|bmatrix|cases|matrix|pmatrix|rcases|smallmatrix|Vmatrix|vmatrix)\\s*:?\\s*)(?=\\[)",
-					"end": "(?<=\\])",
+					"begin": "(?<=(?:katex|aligned|alignedat|array|arraystretch|Bmatrix|bmatrix|cases|matrix|pmatrix|rcases|smallmatrix|Vmatrix|vmatrix)\\s*:?\\s*)\\[",
+					"end": "\\]",
 					"patterns": [
 						{
-							"include": "#ktransfer"
+							"include": "#blockComment"
+						},
+						{
+							"include": "#lineComment"
+						},
+						{
+							"include": "#kline"
+						},
+						{
+							"include": "#kstring"
+						},
+						{
+							"include": "#heading"
+						},
+						{
+							"include": "#unit"
+						},
+						{
+							"include": "#comma"
+						},
+						{
+							"include": "#space"
+						},
+						{
+							"include": "#invalid"
 						}
 					]
 				},
 				{
-					"begin": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*\\s*:?\\s*)(?=\\[)",
-					"end": "(?<=\\])",
+					"begin": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*\\s*:?\\s*)\\[",
+					"end": "\\]",
 					"patterns": [
 						{
-							"include": "#transfer"
+							"include": "#blockComment"
+						},
+						{
+							"include": "#lineComment"
+						},
+						{
+							"include": "#line"
+						},
+						{
+							"include": "#string"
+						},
+						{
+							"include": "#heading"
+						},
+						{
+							"include": "#unit"
+						},
+						{
+							"include": "#comma"
+						},
+						{
+							"include": "#numberHolder"
+						},
+						{
+							"include": "#booleanHolder"
+						},
+						{
+							"include": "#unquotedString"
+						},
+						{
+							"include": "#space"
+						},
+						{
+							"include": "#invalid"
 						}
 					]
 				},
 				{
-					"name": "string",
+					"name": "string.unquoted",
 					"match": "(?<=[a-zA-Z0-9_][a-zA-Z0-9_-]*(?:\\s+|\\s*:\\s*))[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))"
 				},
 				{
@@ -423,6 +484,5 @@
 				}
 			]
 		}
-	},
-	"scopeName": "source.st"
+	}
 }

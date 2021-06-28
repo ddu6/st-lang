@@ -1,5 +1,6 @@
 {
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"scopeName": "source.urls",
 	"patterns": [
 		{
 			"include": "#blockComment"
@@ -60,24 +61,19 @@
 			"match": "(?<=(?:^|[\\['},])\\s*)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
 		},
 		"unquotedString": {
-			"name": "string",
+			"name": "string.unquoted",
 			"match": "(?<=(?:^|[\\['},])\\s*)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))"
 		},
 		"string": {
-			"name": "string",
+			"name": "string.quoted.single",
 			"begin": "'",
 			"end": "'",
 			"patterns": [
 				{
 					"name": "constant.character.escape",
 					"match": "\\\\['\\\\]"
-				},
-				{
-					"name": "invalid.illegal",
-					"match": "'"
 				}
 			]
 		}
-	},
-	"scopeName": "source.urls"
+	}
 }

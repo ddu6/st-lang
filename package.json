@@ -102,6 +102,18 @@
                 "language": "ston",
                 "scopeName": "source.ston",
                 "path": "syntaxes/ston.tmLanguage.json"
+            },
+            {
+                "scopeName": "text.html.markdown.injection.st",
+                "path": "syntaxes/markdown.injection.json",
+                "injectTo": [
+                    "text.html.markdown"
+                ],
+                "embeddedLanguages": {
+                    "meta.embedded.block.st": "st",
+                    "meta.embedded.block.urls": "urls",
+                    "meta.embedded.block.ston": "ston"
+                }
             }
         ],
         "snippets": [
