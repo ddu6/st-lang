@@ -17,6 +17,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
     ```
     from plain to katex.
 
+- Forbid colon.
+
+- Allow key -.
+
 ## [0.0.5] - 2021-06-27
 ### Added
 - Add preview auto reload.
