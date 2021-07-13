@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.8] - 2021-07-14
+### Fixed
+- Fix stc.
+
 ## [0.0.7] - 2021-07-14
 ### Added
 - Much better support of completion, reference and rename of label.

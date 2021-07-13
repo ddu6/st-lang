@@ -13,7 +13,7 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
     <style>
         code{color:var(--color-text)}
     </style>
-    <script type="module" src="https://cdn.jsdelivr.net/gh/ddu6/st-view@0.0.2/dist/main.js"></script>`
+    <script type="module" src="https://cdn.jsdelivr.net/gh/ddu6/st-view@0.0.3/dist/main.js"></script>`
 }
 function getCurrentLine(editor:vscode.TextEditor){
     return Math.max(0,(stdn.parse(editor.document.getText(new vscode.Range(
