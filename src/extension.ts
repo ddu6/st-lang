@@ -1,33 +1,74 @@
 import * as vscode from 'vscode'
 import {cmds} from './katex'
-import {stringify,parse} from 'ston'
-function producePreviewHTML(src:string,line:number){
+import * as ston from 'ston'
+import * as stdn from 'stdn'
+import { extractLabels, extractLabelsWithIndex } from './label'
+function producePreviewHTML(src:string,focusURL:string,focusLine:number){
     return `<!DOCTYPE html>
-    <body style="background:black" data-color-scheme="dark"></body>
+    <body style="background:black" data-color-scheme="dark" data-src=${
+        JSON.stringify(src+'?r='+Math.random())
+    } data-focus-url=${
+        JSON.stringify(focusURL)
+    } data-focus-line=${focusLine}></body>
     <style>
         code{color:var(--color-text)}
     </style>
-    <script src="https://ddu6.github.io/st/reader/main.js" data-src=${
-        JSON.stringify(src+'?line='+line+'&r='+Math.random())
-    }></script>`
+    <script type="module" src="https://cdn.jsdelivr.net/gh/ddu6/st-view@0.0.2/dist/main.js"></script>`
 }
 function getCurrentLine(editor:vscode.TextEditor){
-    let line=0
-    const ston=parse('['+editor.document.getText(new vscode.Range(new vscode.Position(0,0),editor.visibleRanges[0].start))+']')
-    if(Array.isArray(ston)){
-        for(let i=0;i<ston.length;i++){
-            const item=ston[i]
-            if(typeof item==='string'){
-                line+=item.split('\n').length
-            }else{
-                line++
-            }
+    return Math.max(0,(stdn.parse(editor.document.getText(new vscode.Range(
+        new vscode.Position(0,0),
+        editor.visibleRanges[0].start
+    )))??[]).length-1)
+}
+function getLabelRange(document:vscode.TextDocument,index:number,label:string){
+    const start=document.positionAt(index)
+    let range=new vscode.Range(start,document.positionAt(index+1))
+    if(document.getText(range)!=="'"){
+        return new vscode.Range(start,document.positionAt(index+label.length))
+    }
+    const max=2*label.length+2+index
+    for(let i=index+1;i<max;i++){
+        const char=document.getText(new vscode.Range(document.positionAt(i),document.positionAt(i+1)))
+        if(char!=="'"){
+            continue
+        }
+        range=new vscode.Range(start,document.positionAt(i+1))
+        const string=document.getText(range)
+        if(ston.parse(string)===label){
+            break
         }
     }
-    return line
+    return range
+}
+function getLabelAtPosition(document:vscode.TextDocument,position:vscode.Position){
+    const text=document.getText()
+    const result=extractLabelsWithIndex(text)
+    let label=''
+    let index0=0
+    for(let i=0;i<result.length;i++){
+        const {value,index}=result[i]
+        const labelPosition=document.positionAt(index)
+        if(labelPosition.line<position.line){
+            continue
+        }
+        if(
+            labelPosition.line>position.line
+            ||labelPosition.character>position.character+10
+        ){
+            break
+        }
+        label=value
+        index0=index
+    }
+    return {
+        label,
+        index:index0,
+        labelsWithIndex:result
+    }
 }
 export function activate(context: vscode.ExtensionContext) {
-	const backslash = vscode.languages.registerCompletionItemProvider('st', {
+	const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
         provideCompletionItems(document,position) {
             if(document.getWordRangeAtPosition(position,/\\[a-zA-Z]*/)===undefined){
                 return []
@@ -35,85 +76,88 @@ export function activate(context: vscode.ExtensionContext) {
             return cmds.map(val=>new vscode.CompletionItem(val))
         }
     },'\\')
-    const labelCompletion = vscode.languages.registerCompletionItemProvider('st', {
+    const labelCompletion = vscode.languages.registerCompletionItemProvider('stdn', {
         provideCompletionItems(document,position) {
-            if(document.getWordRangeAtPosition(position,/label:?[ ]*'/)===undefined){
+            if(document.getWordRangeAtPosition(position,/label[ ]/)===undefined){
                 return []
             }
-            const labels:Record<string,boolean>={}
-            let max=0
-            return Array.from(document.getText().matchAll(/label:?[ ]*'([^'\\\n]+)'/g)).filter(val=>{
-                const label=val[1]
-                if(labels[label]){
-                    return false
-                }
-                const tmp=Number(label)
-                if(isFinite(tmp)&&tmp>max){
-                    max=tmp
-                }
-                return labels[label]=true
-            }).map(val=>new vscode.CompletionItem(val[1],17)).concat(new vscode.CompletionItem((max+1).toString(),17))
+            return extractLabels(document.getText())
+            .map(val=>new vscode.CompletionItem(ston.stringify(val),17))
         }
-    },"'")
-    const labelReference=vscode.languages.registerReferenceProvider('st',{
+    }," ")
+    const labelReference=vscode.languages.registerReferenceProvider('stdn',{
         provideReferences(document,position){
-            const range=document.getWordRangeAtPosition(position,/label:?[ ]*'[^'\\\n]+'/)
+            const range=document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)
             if(range===undefined){
                 return []
             }
-            const label=document.getText(range).replace(/^label:?[ ]*'/,'').slice(0,-1)
-            return Array.from(document.getText().matchAll(/label:?[ ]*'([^'\\\n]+)'/g)).filter(val=>val[1]===label).map(val=>{
-                const end=(val.index??0)+val[0].length-1
-                const start=end-val[1].length
-                return new vscode.Location(document.uri,new vscode.Range(document.positionAt(start),document.positionAt(end)))
-            })
+            const {label,labelsWithIndex}=getLabelAtPosition(document,position)
+            if(label===''){
+                return []
+            }
+            return labelsWithIndex
+            .filter(val=>val.value===label)
+            .map(val=>new vscode.Location(document.uri,getLabelRange(document,val.index,val.value)))
         }
     })
-    const labelRename=vscode.languages.registerRenameProvider('st',{
+    const labelRename=vscode.languages.registerRenameProvider('stdn',{
         prepareRename(document,position){
-            const range=document.getWordRangeAtPosition(position,/label:?[ ]*'[^'\\\n]+'/)
+            const range=document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)
             if(range===undefined){
                 return undefined
             }
-            const label=document.getText(range).replace(/^label:?[ ]*'/,'').slice(0,-1)
-            return new vscode.Range(new vscode.Position(range.end.line,range.end.character-label.length-1),new vscode.Position(range.end.line,range.end.character-1))
+            const {label,index}=getLabelAtPosition(document,position)
+            if(label===''){
+                return undefined
+            }
+            return {
+                range:getLabelRange(document,index,label),
+                placeholder:label
+            }
         },
         provideRenameEdits(document,position,newName){
             const edit=new vscode.WorkspaceEdit()
-            const range=document.getWordRangeAtPosition(position,/label:?[ ]*'[^'\\\n]+'/)
+            const range=document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)
             if(range===undefined){
                 return edit
             }
-            const label=document.getText(range).replace(/^label:?[ ]*'/,'').slice(0,-1)
-            Array.from(document.getText().matchAll(/label:?[ ]*'([^'\\\n]+)'/g)).filter(val=>val[1]===label).forEach(val=>{
-                const end=(val.index??0)+val[0].length-1
-                const start=end-val[1].length
-                edit.replace(document.uri,new vscode.Range(document.positionAt(start),document.positionAt(end)),newName)
+            const {label,labelsWithIndex}=getLabelAtPosition(document,position)
+            if(label===''){
+                return edit
+            }
+            labelsWithIndex
+            .filter(val=>val.value===label)
+            .forEach(val=>{
+                edit.replace(document.uri,getLabelRange(document,val.index,val.value),ston.stringify(newName))
             })
             return edit
         }
     })
-    const format=vscode.languages.registerDocumentFormattingEditProvider('st',{
+    const format=vscode.languages.registerDocumentFormattingEditProvider('stdn',{
         provideDocumentFormattingEdits(document){
             const string=document.getText()
-            const ston=parse('['+string+']')
-            if(!Array.isArray(ston)){
+            const result=stdn.parse(string)
+            if(result===undefined){
                 return []
             }
-            return [vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),ston.map(val=>stringify(val,{indentTarget:'arrayInObject',addDecorativeComma:'inObject'})).join('\n'))]
+            return [
+                vscode.TextEdit.replace(
+                    new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),
+                    stdn.stringify(result)
+                )
+            ]
         }
     })
     const preview=vscode.commands.registerTextEditorCommand('stLang.preview',(editor,edit)=>{
         if(
-            editor.document.languageId!=='st'
+            editor.document.languageId!=='stdn'
             &&editor.document.languageId!=='urls'
-            &&editor.document.languageId!=='markdown'
         ){
             return
         }
-        let line=0
-        if(editor.document.languageId==='st'){
-            line=getCurrentLine(editor)
+        let focusLine=0
+        if(editor.document.languageId==='stdn'){
+            focusLine=getCurrentLine(editor)
         }
         const panel = vscode.window.createWebviewPanel(
             'stLang.preview',
@@ -123,14 +167,20 @@ export function activate(context: vscode.ExtensionContext) {
                 enableScripts:true
             }
         )
-        const uriStr=editor.document.uri.toString()
         const src=panel.webview.asWebviewUri(editor.document.uri).toString()
-        panel.webview.html=producePreviewHTML(src,line)
+        panel.webview.html=producePreviewHTML(src,'',focusLine)
         const t=vscode.workspace.onDidSaveTextDocument(document=>{
-            if(document.uri.toString()===uriStr&&document.languageId==='st'){
-                line=getCurrentLine(editor)
+            let focusURL=''
+            let focusLine=0
+            const editor=vscode.window.activeTextEditor
+            if(editor===undefined||editor.document!==document){
+                return
             }
-            panel.webview.html=producePreviewHTML(src,line)
+            if(document.languageId==='stdn'){
+                focusURL=panel.webview.asWebviewUri(document.uri).toString()
+                focusLine=getCurrentLine(editor)
+            }
+            panel.webview.html=producePreviewHTML(src,focusURL,focusLine)
         })
         panel.onDidDispose(()=>{
             t.dispose()

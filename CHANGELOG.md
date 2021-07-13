@@ -6,6 +6,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 ### Added
+- Add line corresponding in preview when saving.
+
 - Add injection to markdown.
 
 - Add underline to unquoted label.

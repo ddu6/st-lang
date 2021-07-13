@@ -2,7 +2,7 @@
     "name": "st-lang",
     "version": "0.0.5",
     "displayName": "ST Lang",
-    "description": "Syntax highlighting for st lang",
+    "description": "Highlight, preview and more for st lang",
     "main": "out/extension.js",
     "icon": "imgs/st.png",
     "publisher": "ddu",
@@ -13,24 +13,12 @@
         "Programming Languages"
     ],
     "activationEvents": [
-        "onLanguage:st",
+        "onLanguage:stdn",
+        "onLanguage:urls",
+        "onLanguage:ston",
         "onCommand:stLang.preview"
     ],
     "contributes": {
-        "configuration": {
-            "title": "ST Lang",
-            "properties": {
-                "stLang.preview.port.min": {
-                    "type": "integer",
-                    "default": 8081,
-                    "description": "Must be greater than 8080"
-                },
-                "stLang.preview.port.max": {
-                    "type": "integer",
-                    "default": 8089
-                }
-            }
-        },
         "commands": [
             {
                 "command": "stLang.preview",
@@ -42,31 +30,31 @@
             "commandPalette": [
                 {
                     "command": "stLang.preview",
-                    "when": "editorLangId == st || editorLangId == urls || editorLangId == markdown",
+                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == markdown",
                     "group": "navigation"
                 }
             ],
             "editor/context": [
                 {
                     "command": "stLang.preview",
-                    "when": "editorLangId == st || editorLangId == urls || editorLangId == markdown",
+                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == markdown",
                     "group": "navigation"
                 }
             ],
             "editor/title": [
                 {
                     "command": "stLang.preview",
-                    "when": "editorLangId == st || editorLangId == urls || editorLangId == markdown",
+                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == markdown",
                     "group": "navigation"
                 }
             ]
         },
         "languages": [
             {
-                "id": "st",
+                "id": "stdn",
                 "extensions": [
-                    ".st",
-                    ".st.txt"
+                    ".stdn",
+                    ".stdn.txt"
                 ],
                 "configuration": "ston.language-configuration.json"
             },
@@ -89,9 +77,9 @@
         ],
         "grammars": [
             {
-                "language": "st",
-                "scopeName": "source.st",
-                "path": "syntaxes/st.tmLanguage.json"
+                "language": "stdn",
+                "scopeName": "source.stdn",
+                "path": "syntaxes/stdn.tmLanguage.json"
             },
             {
                 "language": "urls",
@@ -104,13 +92,13 @@
                 "path": "syntaxes/ston.tmLanguage.json"
             },
             {
-                "scopeName": "text.html.markdown.injection.st",
+                "scopeName": "text.html.markdown.injection.stdn",
                 "path": "syntaxes/markdown.injection.json",
                 "injectTo": [
                     "text.html.markdown"
                 ],
                 "embeddedLanguages": {
-                    "meta.embedded.block.st": "st",
+                    "meta.embedded.block.stdn": "stdn",
                     "meta.embedded.block.urls": "urls",
                     "meta.embedded.block.ston": "ston"
                 }
@@ -118,7 +106,7 @@
         ],
         "snippets": [
             {
-                "language": "st",
+                "language": "stdn",
                 "path": "snippets.json"
             }
         ]
@@ -131,11 +119,11 @@
         "url": "git+https://github.com/ddu6/st-lang.git"
     },
     "devDependencies": {
-        "@types/node": "^15.12.5",
-        "@types/vscode": "^1.57.0",
-        "typescript": "^4.3.4"
+        "@types/node": "^16.3.1",
+        "@types/vscode": "^1.58.0",
+        "typescript": "^4.3.5"
     },
     "dependencies": {
-        "ston": "^0.0.6"
+        "stdn": "^0.0.4"
     }
 }
