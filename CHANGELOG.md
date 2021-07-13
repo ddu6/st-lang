@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.0.6] - 2021-07-14
+## [0.0.7] - 2021-07-14
 ### Added
 - Much better support of completion, reference and rename of label.
 
@@ -37,8 +37,8 @@
 - Add label rename support.
 
 
-[Unreleased]: https://github.com/ddu6/st-lang/compare/v0.0.6...HEAD
-[0.0.6]: https://github.com/ddu6/st-lang/compare/v0.0.5...v0.0.6
+[Unreleased]: https://github.com/ddu6/st-lang/compare/v0.0.7...HEAD
+[0.0.7]: https://github.com/ddu6/st-lang/compare/v0.0.5...v0.0.7
 [0.0.5]: https://github.com/ddu6/st-lang/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/ddu6/st-lang/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/ddu6/st-lang/releases/tag/v0.0.2
