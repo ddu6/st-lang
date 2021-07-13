@@ -1,11 +1,9 @@
 # Change Log
 
-All notable changes to the "st-lang" extension will be documented in this file.
-
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-## [Unreleased]
+## [0.0.6] - 2021-07-14
 ### Added
+- Much better support of completion, reference and rename of label.
+
 - Add line corresponding in preview when saving.
 
 - Add injection to markdown.
@@ -39,7 +37,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Add label rename support.
 
 
-[Unreleased]: https://github.com/ddu6/st-lang/compare/v0.0.5...HEAD
+[Unreleased]: https://github.com/ddu6/st-lang/compare/v0.0.6...HEAD
+[0.0.6]: https://github.com/ddu6/st-lang/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/ddu6/st-lang/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/ddu6/st-lang/compare/v0.0.2...v0.0.4
 [0.0.2]: https://github.com/ddu6/st-lang/releases/tag/v0.0.2
