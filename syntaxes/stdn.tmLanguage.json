@@ -61,9 +61,6 @@
 		"comma": {
 			"match": ","
 		},
-		"colon": {
-			"match": ":"
-		},
 		"numberHolder": {
 			"name": "invalid.illegal",
 			"match": "(?<=(?:^|[\\['},])\\s*)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))"
@@ -127,9 +124,6 @@
 					"include": "#key"
 				},
 				{
-					"include": "#colon"
-				},
-				{
 					"include": "#comma"
 				},
 				{
@@ -156,9 +150,6 @@
 				},
 				{
 					"include": "#key"
-				},
-				{
-					"include": "#colon"
 				},
 				{
 					"include": "#comma"

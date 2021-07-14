@@ -3,37 +3,28 @@
 	"scopeName": "source.ston",
 	"patterns": [
 		{
-			"include": "#blockComment"
+			"include": "#topObject"
 		},
 		{
-			"include": "#lineComment"
+			"include": "#topArray"
 		},
 		{
-			"include": "#string"
+			"include": "#topString"
 		},
 		{
-			"include": "#object"
+			"include": "#topNumber"
 		},
 		{
-			"include": "#array"
+			"include": "#topBoolean"
 		},
 		{
-			"include": "#comma"
-		},
-		{
-			"include": "#number"
-		},
-		{
-			"include": "#boolean"
-		},
-		{
-			"include": "#unquotedString"
+			"include": "#topUnquotedString"
 		},
 		{
 			"include": "#space"
 		},
 		{
-			"include": "#invalid"
+			"include": "#topInvalid"
 		}
 	],
 	"repository": {
@@ -127,9 +118,6 @@
 					"include": "#key"
 				},
 				{
-					"include": "#colon"
-				},
-				{
 					"include": "#comma"
 				},
 				{
@@ -176,6 +164,175 @@
 				},
 				{
 					"include": "#invalid"
+				}
+			]
+		},
+		"topInvalid": {
+			"begin": "(?=.)",
+			"while": "",
+			"name": "invalid.illegal"
+		},
+		"topObject": {
+			"begin": "\\{",
+			"while": "",
+			"patterns": [
+				{
+					"include": "#blockComment"
+				},
+				{
+					"include": "#lineComment"
+				},
+				{
+					"include": "#val"
+				},
+				{
+					"include": "#key"
+				},
+				{
+					"include": "#comma"
+				},
+				{
+					"include": "#space"
+				},
+				{
+					"begin": "\\}",
+					"while": "",
+					"patterns": [
+						{
+							"include": "#space"
+						},
+						{
+							"include": "#topInvalid"
+						}
+					]
+				},
+				{
+					"include": "#topInvalid"
+				}
+			]
+		},
+		"topArray": {
+			"begin": "\\[",
+			"while": "",
+			"patterns": [
+				{
+					"include": "#blockComment"
+				},
+				{
+					"include": "#lineComment"
+				},
+				{
+					"include": "#string"
+				},
+				{
+					"include": "#object"
+				},
+				{
+					"include": "#array"
+				},
+				{
+					"include": "#comma"
+				},
+				{
+					"include": "#number"
+				},
+				{
+					"include": "#boolean"
+				},
+				{
+					"include": "#unquotedString"
+				},
+				{
+					"include": "#space"
+				},
+				{
+					"begin": "\\]",
+					"while": "",
+					"patterns": [
+						{
+							"include": "#space"
+						},
+						{
+							"include": "#topInvalid"
+						}
+					]
+				},
+				{
+					"include": "#topInvalid"
+				}
+			]
+		},
+		"topString": {
+			"name": "string.quoted.single",
+			"begin": "'",
+			"while": "",
+			"patterns": [
+				{
+					"name": "constant.character.escape",
+					"match": "\\\\['\\\\]"
+				},
+				{
+					"begin": "'",
+					"while": "",
+					"patterns": [
+						{
+							"include": "#space"
+						},
+						{
+							"include": "#topInvalid"
+						}
+					]
+				}
+			]
+		},
+		"topNumber": {
+			"begin": "(?<=(?:^|[\\['},])\\s*)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))",
+			"while": "",
+			"beginCaptures": {
+				"0": {
+					"name": "constant.numeric"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#space"
+				},
+				{
+					"include": "#topInvalid"
+				}
+			]
+		},
+		"topBoolean": {
+			"begin": "(?<=(?:^|[\\['},])\\s*)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))",
+			"while": "",
+			"beginCaptures": {
+				"0": {
+					"name": "constant.language"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#space"
+				},
+				{
+					"include": "#topInvalid"
+				}
+			]
+		},
+		"topUnquotedString": {
+			"begin": "(?<=(?:^|[\\['},])\\s*)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))",
+			"while": "",
+			"beginCaptures": {
+				"0": {
+					"name": "string.unquoted"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#space"
+				},
+				{
+					"include": "#topInvalid"
 				}
 			]
 		}
