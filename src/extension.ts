@@ -142,7 +142,7 @@ export function activate(context: vscode.ExtensionContext) {
             return edit
         }
     })
-    const format=vscode.languages.registerDocumentFormattingEditProvider('stdn',{
+    const formatSTDN=vscode.languages.registerDocumentFormattingEditProvider('stdn',{
         provideDocumentFormattingEdits(document){
             const string=document.getText()
             const result=stdn.parse(string)
@@ -153,6 +153,36 @@ export function activate(context: vscode.ExtensionContext) {
                 vscode.TextEdit.replace(
                     new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),
                     stdn.stringify(result)
+                )
+            ]
+        }
+    })
+    const formatURLs=vscode.languages.registerDocumentFormattingEditProvider('urls',{
+        provideDocumentFormattingEdits(document){
+            const string=document.getText()
+            const result=ston.parse('['+string+']')
+            if(!Array.isArray(result)){
+                return []
+            }
+            return [
+                vscode.TextEdit.replace(
+                    new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),
+                    result.map(val=>ston.stringify(val)).join('\n')
+                )
+            ]
+        }
+    })
+    const formatSTON=vscode.languages.registerDocumentFormattingEditProvider('ston',{
+        provideDocumentFormattingEdits(document){
+            const string=document.getText()
+            const result=ston.parse(string)
+            if(result===undefined){
+                return []
+            }
+            return [
+                vscode.TextEdit.replace(
+                    new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),
+                    ston.stringify(result,{indentTarget:'all'})
                 )
             ]
         }
@@ -221,6 +251,6 @@ export function activate(context: vscode.ExtensionContext) {
             }
         },undefined,context.subscriptions)
     })
-	context.subscriptions.push(backslash,labelCompletion,labelReference,labelRename,format,preview)
+	context.subscriptions.push(backslash,labelCompletion,labelReference,labelRename,formatSTDN,formatURLs,formatSTON,preview)
 }
 export function deactivate() {}

@@ -10,7 +10,7 @@
 
 ## [0.0.7] - 2021-07-14
 ### Added
-- Much better support of completion, reference and rename of label.
+- Much better support of completion, reference and rename of labels.
 
 - Add line corresponding in preview when saving.
 
