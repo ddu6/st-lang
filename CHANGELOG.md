@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.10] - 2021-07-14
+### Added
+- Add reverse line corresponding in preview when double clicking.
+
 ## [0.0.9] - 2021-07-14
 ### Fixed
 - Fix stc.
@@ -15,6 +19,8 @@
 - Add underline to unquoted label.
 
 ### Changed
+- Change the language id from st to stdn.
+
 -   Change the type of string in
     ```st
     {mark{'a_n'}}
@@ -41,7 +47,7 @@
 - Add label rename support.
 
 
-[Unreleased]: https://github.com/ddu6/st-lang/compare/v0.0.9...HEAD
+[0.0.10]: https://github.com/ddu6/st-lang/compare/v0.0.9...v0.0.10
 [0.0.9]: https://github.com/ddu6/st-lang/compare/v0.0.7...v0.0.9
 [0.0.7]: https://github.com/ddu6/st-lang/compare/v0.0.5...v0.0.7
 [0.0.5]: https://github.com/ddu6/st-lang/compare/v0.0.4...v0.0.5
