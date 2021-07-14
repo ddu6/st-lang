@@ -2,6 +2,8 @@
 
 ## [0.0.10] - 2021-07-14
 ### Added
+- Format for urls and ston.
+
 - Add reverse line corresponding in preview when double clicking.
 
 ## [0.0.9] - 2021-07-14
