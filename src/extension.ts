@@ -246,7 +246,7 @@ export function activate(context: vscode.ExtensionContext) {
                     return
                 }
                 const position=editor.document.positionAt(line.index)
-                editor.revealRange(new vscode.Range(position,position))
+                editor.revealRange(new vscode.Range(position,position),3)
                 return
             }
         },undefined,context.subscriptions)

@@ -1,13 +1,13 @@
 # Change Log
 
-## [0.0.11] - 2021-07-14
+## [0.0.12] - 2021-07-14
 ### Added
 - Format for urls and ston.
 
-- Add reverse line corresponding in preview when double clicking.
+- Reverse line corresponding in preview when double clicking.
 
 ### Removed
-- Remove preview for markdown.
+- Preview for markdown.
 
 ## [0.0.9] - 2021-07-14
 ### Fixed
@@ -17,11 +17,11 @@
 ### Added
 - Much better support of completion, reference and rename of labels.
 
-- Add line corresponding in preview when saving.
+- Line corresponding in preview when saving.
 
-- Add injection to markdown.
+- Injection to markdown.
 
-- Add underline to unquoted label.
+- Underline to unquoted label.
 
 ### Changed
 - Change the language id from st to stdn.
@@ -38,21 +38,21 @@
 
 ## [0.0.5] - 2021-06-27
 ### Added
-- Add preview auto reload.
+- Auto reload preview.
 
 ## [0.0.4] - 2021-06-27
 ### Added
-- Add preview.
+- Preview for stdn.
 
 ### Removed
-- Remove history support.
+- History support.
 
 ## [0.0.2] - 2021-06-26
 ### Added
-- Add label rename support.
+- Completion, reference and rename of labels.
 
 
-[0.0.11]: https://github.com/ddu6/st-lang/compare/v0.0.9...v0.0.11
+[0.0.12]: https://github.com/ddu6/st-lang/compare/v0.0.9...v0.0.12
 [0.0.9]: https://github.com/ddu6/st-lang/compare/v0.0.7...v0.0.9
 [0.0.7]: https://github.com/ddu6/st-lang/compare/v0.0.5...v0.0.7
 [0.0.5]: https://github.com/ddu6/st-lang/compare/v0.0.4...v0.0.5
