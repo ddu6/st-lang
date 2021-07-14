@@ -30,21 +30,21 @@
             "commandPalette": [
                 {
                     "command": "stLang.preview",
-                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == markdown",
+                    "when": "editorLangId == stdn || editorLangId == urls",
                     "group": "navigation"
                 }
             ],
             "editor/context": [
                 {
                     "command": "stLang.preview",
-                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == markdown",
+                    "when": "editorLangId == stdn || editorLangId == urls",
                     "group": "navigation"
                 }
             ],
             "editor/title": [
                 {
                     "command": "stLang.preview",
-                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == markdown",
+                    "when": "editorLangId == stdn || editorLangId == urls",
                     "group": "navigation"
                 }
             ]
