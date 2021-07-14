@@ -3,6 +3,7 @@ import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
 import { extractLabels, extractLabelsWithIndex } from './label'
+import { URL } from 'url'
 function producePreviewHTML(src:string,focusURL:string,focusLine:number){
     return `<!DOCTYPE html>
     <body style="background:black" data-color-scheme="dark" data-src=${
@@ -13,7 +14,15 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
     <style>
         code{color:var(--color-text)}
     </style>
-    <script type="module" src="https://cdn.jsdelivr.net/gh/ddu6/st-view@0.0.4/dist/main.js"></script>`
+    <script type="module" src="https://cdn.jsdelivr.net/gh/ddu6/st-view@0.0.6/dist/main.js"></script>
+    <script type="module">
+        const vscode = acquireVsCodeApi()
+        window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
+            vscode.postMessage({
+                line,url,partialLine
+            })
+        })
+    </script>`
 }
 function getCurrentLine(editor:vscode.TextEditor){
     return Math.max(0,(stdn.parse(editor.document.getText(new vscode.Range(
@@ -181,10 +190,36 @@ export function activate(context: vscode.ExtensionContext) {
                 focusLine=getCurrentLine(editor)
             }
             panel.webview.html=producePreviewHTML(src,focusURL,focusLine)
-        })
+        },undefined,context.subscriptions)
         panel.onDidDispose(()=>{
             t.dispose()
-        })
+        },undefined,context.subscriptions)
+        panel.webview.onDidReceiveMessage(message=>{
+            const tmp0=new URL(message.url)
+            for(const editor of vscode.window.visibleTextEditors){
+                if(editor.document.languageId!=='stdn'){
+                    continue
+                }
+                const tmp1=new URL(panel.webview.asWebviewUri(editor.document.uri).toString())
+                if(tmp1.origin!==tmp0.origin||tmp1.pathname!==tmp0.pathname){
+                    continue
+                }
+                const result=ston.parseWithIndex('['+editor.document.getText()+']',-1)
+                if(
+                    result===undefined
+                    ||!Array.isArray(result.value)
+                ){
+                    return
+                }
+                const line=result.value[message.partialLine]
+                if(line===undefined){
+                    return
+                }
+                const position=editor.document.positionAt(line.index)
+                editor.revealRange(new vscode.Range(position,position))
+                return
+            }
+        },undefined,context.subscriptions)
     })
 	context.subscriptions.push(backslash,labelCompletion,labelReference,labelRename,format,preview)
 }
