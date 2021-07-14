@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.13] - 2021-07-14
+### Fixed
+- Fix reverse corresponding in the case of multi line string.
+
 ## [0.0.12] - 2021-07-14
 ### Added
 - Format for urls and ston.
@@ -52,6 +56,7 @@
 - Completion, reference and rename of labels.
 
 
+[0.0.13]: https://github.com/ddu6/st-lang/compare/v0.0.12...v0.0.13
 [0.0.12]: https://github.com/ddu6/st-lang/compare/v0.0.9...v0.0.12
 [0.0.9]: https://github.com/ddu6/st-lang/compare/v0.0.7...v0.0.9
 [0.0.7]: https://github.com/ddu6/st-lang/compare/v0.0.5...v0.0.7

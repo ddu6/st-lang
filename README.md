@@ -2,7 +2,7 @@
 
 This is an extension for vscode, aiming to provide code features for stdn, urls and ston. (These there languages are collectively called "Simple Text Languages" or "st lang" for short.)
 
-Here are the main features.
+Here are main features.
 
 - Highlight for all st langs.
 

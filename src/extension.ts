@@ -241,13 +241,23 @@ export function activate(context: vscode.ExtensionContext) {
                 ){
                     return
                 }
-                const line=result.value[message.partialLine]
-                if(line===undefined){
+                let lineCount=0
+                for(let i=0;i<result.value.length;i++){
+                    const {value,index}=result.value[i]
+                    if(typeof value==='object'){
+                        lineCount++
+                    }else if(typeof value!=='string'){
+                        continue
+                    }else{
+                        lineCount+=value.split('\n').length
+                    }
+                    if(lineCount<=message.partialLine){
+                        continue
+                    }
+                    const position=editor.document.positionAt(index)
+                    editor.revealRange(new vscode.Range(position,position),3)
                     return
                 }
-                const position=editor.document.positionAt(line.index)
-                editor.revealRange(new vscode.Range(position,position),3)
-                return
             }
         },undefined,context.subscriptions)
     })
