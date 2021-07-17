@@ -14,7 +14,7 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
     <style>
         code{color:var(--color-text)}
     </style>
-    <script type="module" src="https://cdn.jsdelivr.net/gh/ddu6/st-view@0.0.6/dist/main.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.0.7/dist/main.js"></script>
     <script type="module">
         const vscode = acquireVsCodeApi()
         window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{

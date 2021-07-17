@@ -60,11 +60,11 @@
 - Completion, reference and rename of labels.
 
 
-[0.0.14]: https://github.com/ddu6/st-lang/compare/v0.0.13...v0.0.14
-[0.0.13]: https://github.com/ddu6/st-lang/compare/v0.0.12...v0.0.13
-[0.0.12]: https://github.com/ddu6/st-lang/compare/v0.0.9...v0.0.12
-[0.0.9]: https://github.com/ddu6/st-lang/compare/v0.0.7...v0.0.9
-[0.0.7]: https://github.com/ddu6/st-lang/compare/v0.0.5...v0.0.7
-[0.0.5]: https://github.com/ddu6/st-lang/compare/v0.0.4...v0.0.5
-[0.0.4]: https://github.com/ddu6/st-lang/compare/v0.0.2...v0.0.4
-[0.0.2]: https://github.com/ddu6/st-lang/releases/tag/v0.0.2
+[0.0.14]: https://github.com/st-org/st-lang/compare/v0.0.13...v0.0.14
+[0.0.13]: https://github.com/st-org/st-lang/compare/v0.0.12...v0.0.13
+[0.0.12]: https://github.com/st-org/st-lang/compare/v0.0.9...v0.0.12
+[0.0.9]: https://github.com/st-org/st-lang/compare/v0.0.7...v0.0.9
+[0.0.7]: https://github.com/st-org/st-lang/compare/v0.0.5...v0.0.7
+[0.0.5]: https://github.com/st-org/st-lang/compare/v0.0.4...v0.0.5
+[0.0.4]: https://github.com/st-org/st-lang/compare/v0.0.2...v0.0.4
+[0.0.2]: https://github.com/st-org/st-lang/releases/tag/v0.0.2
