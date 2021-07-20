@@ -18,8 +18,16 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
                     font:inherit;
                     padding:0;
                 }
+                blockquote{
+                    background:inherit;
+                }
                 code{
                     color:inherit;
+                }
+                kbd{
+                    background:inherit;
+                    color:inherit;
+                    vertical-align:baseline;
                 }
             </style>
             <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.0.10/dist/main.js"></script>
