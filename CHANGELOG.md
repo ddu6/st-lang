@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.18] - 2021-07-20
+### Fixed
+- Root element of stui.
+
 ## [0.0.14] - 2021-07-14
 ### Fixed
 - Highlight for ston.
