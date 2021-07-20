@@ -6,16 +6,23 @@ import { extractLabels, extractLabelsWithIndex } from './label'
 import { URL } from 'url'
 function producePreviewHTML(src:string,focusURL:string,focusLine:number){
     return `<!DOCTYPE html>
-    <html style="background:black" data-color-scheme="dark" data-src=${
+    <html style="background:black" data-src=${
         JSON.stringify(src+'?r='+Math.random())
     } data-focus-url=${
         JSON.stringify(focusURL)
     } data-focus-line=${focusLine}>
         <body>
             <style>
-                code{color:var(--color-text)}
+                body{
+                    color:inherit;
+                    font:inherit;
+                    padding:0;
+                }
+                code{
+                    color:inherit;
+                }
             </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.0.9/dist/main.js"></script>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.0.10/dist/main.js"></script>
             <script type="module">
                 const vscode = acquireVsCodeApi()
                 window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
