@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.0.24] - 2021-07-20
+## [0.0.25] - 2021-07-20
 ### Fixed
 - CSS for st line and anchor.
 
@@ -68,7 +68,7 @@
 - Completion, reference and rename of labels.
 
 
-[0.0.24]: https://github.com/st-org/st-lang/compare/v0.0.14...v0.0.24
+[0.0.25]: https://github.com/st-org/st-lang/compare/v0.0.14...v0.0.25
 [0.0.14]: https://github.com/st-org/st-lang/compare/v0.0.13...v0.0.14
 [0.0.13]: https://github.com/st-org/st-lang/compare/v0.0.12...v0.0.13
 [0.0.12]: https://github.com/st-org/st-lang/compare/v0.0.9...v0.0.12
