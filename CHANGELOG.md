@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.0.28] - 2021-07-20
+## [0.0.29] - 2021-07-20
 ### Fixed
 - CSS for `.st-line`, `a` and `.article`.
 
@@ -68,7 +68,7 @@
 - Completion, reference and rename of labels.
 
 
-[0.0.28]: https://github.com/st-org/st-lang/compare/v0.0.14...v0.0.28
+[0.0.29]: https://github.com/st-org/st-lang/compare/v0.0.14...v0.0.29
 [0.0.14]: https://github.com/st-org/st-lang/compare/v0.0.13...v0.0.14
 [0.0.13]: https://github.com/st-org/st-lang/compare/v0.0.12...v0.0.13
 [0.0.12]: https://github.com/st-org/st-lang/compare/v0.0.9...v0.0.12
