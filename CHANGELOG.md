@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.0.31] - 2021-07-24
+## [0.0.32] - 2021-07-24
 ### Changed
 - Change the scope name of injection.
 
@@ -74,7 +74,7 @@
 - Completion, reference and rename of labels.
 
 
-[0.0.31]: https://github.com/st-org/st-lang/compare/v0.0.29...v0.0.31
+[0.0.32]: https://github.com/st-org/st-lang/compare/v0.0.29...v0.0.32
 [0.0.29]: https://github.com/st-org/st-lang/compare/v0.0.14...v0.0.29
 [0.0.14]: https://github.com/st-org/st-lang/compare/v0.0.13...v0.0.14
 [0.0.13]: https://github.com/st-org/st-lang/compare/v0.0.12...v0.0.13
