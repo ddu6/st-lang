@@ -92,7 +92,7 @@
                 "path": "syntaxes/ston.tmLanguage.json"
             },
             {
-                "scopeName": "text.html.markdown.injection.stdn",
+                "scopeName": "text.html.markdown.injection.st",
                 "path": "syntaxes/markdown.injection.json",
                 "injectTo": [
                     "text.html.markdown"

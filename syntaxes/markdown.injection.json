@@ -1,6 +1,6 @@
 {
     "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-    "scopeName": "text.html.markdown.injection.stdn",
+    "scopeName": "text.html.markdown.injection.st",
     "injectionSelector": "L:text.html.markdown",
     "patterns": [
         {
