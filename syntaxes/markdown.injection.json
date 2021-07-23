@@ -4,7 +4,7 @@
     "injectionSelector": "L:text.html.markdown",
     "patterns": [
         {
-            "include": "#fenced_code_block_st"
+            "include": "#fenced_code_block_stdn"
         },
         {
             "include": "#fenced_code_block_urls"
@@ -14,7 +14,7 @@
         }
     ],
     "repository": {
-        "fenced_code_block_st": {
+        "fenced_code_block_stdn": {
             "begin": "(^|\\G)(\\s*)(`{3,}|~{3,})\\s*(?i:(stdn)((\\s+|:|\\{)[^`~]*)?$)",
             "name": "markup.fenced_code.block.markdown",
             "end": "(^|\\G)(\\2|\\s{0,3})(\\3)\\s*$",
