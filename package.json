@@ -16,12 +16,12 @@
         "onLanguage:stdn",
         "onLanguage:urls",
         "onLanguage:ston",
-        "onCommand:stLang.preview"
+        "onCommand:st-lang.preview"
     ],
     "contributes": {
         "commands": [
             {
-                "command": "stLang.preview",
+                "command": "st-lang.preview",
                 "title": "Preview",
                 "icon": "$(open-preview)"
             }
@@ -29,21 +29,21 @@
         "menus": {
             "commandPalette": [
                 {
-                    "command": "stLang.preview",
+                    "command": "st-lang.preview",
                     "when": "editorLangId == stdn || editorLangId == urls",
                     "group": "navigation"
                 }
             ],
             "editor/context": [
                 {
-                    "command": "stLang.preview",
+                    "command": "st-lang.preview",
                     "when": "editorLangId == stdn || editorLangId == urls",
                     "group": "navigation"
                 }
             ],
             "editor/title": [
                 {
-                    "command": "stLang.preview",
+                    "command": "st-lang.preview",
                     "when": "editorLangId == stdn || editorLangId == urls",
                     "group": "navigation"
                 }
@@ -92,7 +92,7 @@
                 "path": "syntaxes/ston.tmLanguage.json"
             },
             {
-                "scopeName": "text.html.markdown.injection.st",
+                "scopeName": "text.html.markdown.injection.st-lang",
                 "path": "syntaxes/markdown.injection.json",
                 "injectTo": [
                     "text.html.markdown"

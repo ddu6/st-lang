@@ -205,7 +205,7 @@ export function activate(context: vscode.ExtensionContext) {
             ]
         }
     })
-    const preview=vscode.commands.registerTextEditorCommand('stLang.preview',(editor,edit)=>{
+    const preview=vscode.commands.registerTextEditorCommand('st-lang.preview',(editor,edit)=>{
         if(
             editor.document.languageId!=='stdn'
             &&editor.document.languageId!=='urls'
@@ -217,7 +217,7 @@ export function activate(context: vscode.ExtensionContext) {
             focusLine=getCurrentLine(editor)
         }
         const panel = vscode.window.createWebviewPanel(
-            'stLang.preview',
+            'st-lang.preview',
             editor.document.uri.path.replace(/^.*\//,''),
             vscode.ViewColumn.Beside,
             {

@@ -8,7 +8,7 @@ Here are main features.
 
 - Format for all st langs.
 
-- Preview for stdn.
+- Preview for stdn and urls.
 
 - Auto reload preview when saving.
 
