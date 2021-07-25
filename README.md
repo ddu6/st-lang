@@ -1,6 +1,6 @@
 # ST Lang
 
-This is an extension for vscode, aiming to provide code features for stdn, urls and ston. (These there languages are collectively called "Simple Text Languages" or "st langs" for short.)
+This is an extension for vscode, aiming to provide code features for stdn, urls and ston. (These there languages are designed for typesetting and are collectively called "Simple Text Languages" or "st langs" for short. Note that they are totally different from the programming language "Structured Text" which is also abbreviated as st.)
 
 Here are main features.
 
