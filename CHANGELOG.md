@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.41] - 2021-07-29
+### Changed
+- Change icon.
+
 ## [0.0.40] - 2021-07-27
 ### Changed
 - Change the scope name of injection.
