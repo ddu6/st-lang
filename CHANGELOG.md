@@ -1,7 +1,9 @@
 # Change Log
 
-## [0.0.41] - 2021-07-29
+## [0.0.42] - 2021-07-29
 ### Changed
+- Dynamically import katex.
+
 - Change icon.
 
 ## [0.0.40] - 2021-07-27
