@@ -119,11 +119,12 @@
         "url": "git+https://github.com/st-org/st-lang.git"
     },
     "devDependencies": {
-        "@types/node": "^16.4.6",
+        "@types/node": "^16.4.7",
         "@types/vscode": "^1.58.1",
         "typescript": "^4.3.5"
     },
     "dependencies": {
-        "stdn": "^0.0.6"
+        "stdn": "^0.0.6",
+        "ston": "^0.0.10"
     }
 }
