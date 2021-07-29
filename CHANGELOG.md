@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.0.42] - 2021-07-29
+## [0.0.43] - 2021-07-29
 ### Changed
 - Dynamically import katex.
 
@@ -80,6 +80,7 @@
 - Completion, reference and rename of labels.
 
 
+[0.0.43]: https://github.com/st-org/st-lang/compare/v0.0.40...v0.0.43
 [0.0.40]: https://github.com/st-org/st-lang/compare/v0.0.29...v0.0.40
 [0.0.29]: https://github.com/st-org/st-lang/compare/v0.0.14...v0.0.29
 [0.0.14]: https://github.com/st-org/st-lang/compare/v0.0.13...v0.0.14
