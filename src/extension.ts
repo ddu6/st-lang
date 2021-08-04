@@ -30,7 +30,7 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
                     vertical-align:baseline;
                 }
             </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.0.33/dist/main.js"></script>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.1.0/dist/main.js"></script>
             <script type="module">
                 const vscode = acquireVsCodeApi()
                 window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
@@ -104,16 +104,30 @@ export function activate(context: vscode.ExtensionContext) {
         }
     },'\\')
     const labelCompletion = vscode.languages.registerCompletionItemProvider('stdn', {
-        provideCompletionItems(document,position) {
+        async provideCompletionItems(document,position) {
             if(document.getWordRangeAtPosition(position,/label[ ]/)===undefined){
                 return []
             }
-            return extractLabels(document.getText())
+            const out=extractLabels(document.getText())
             .map(val=>new vscode.CompletionItem(ston.stringify(val),17))
+            for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
+                const otherDocument =await vscode.workspace.openTextDocument(uri)
+                if(otherDocument.languageId!=='stdn'||otherDocument.uri===document.uri){
+                    continue
+                }
+                out.push(
+                    ...extractLabels(otherDocument.getText())
+                    .map(val=>new vscode.CompletionItem({
+                        label:ston.stringify(val),
+                        description:uri.path
+                    },17))
+                )
+            }
+            return out
         }
     }," ")
     const labelReference=vscode.languages.registerReferenceProvider('stdn',{
-        provideReferences(document,position){
+        async provideReferences(document,position){
             const range=document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)
             if(range===undefined){
                 return []
@@ -122,9 +136,21 @@ export function activate(context: vscode.ExtensionContext) {
             if(label===''){
                 return []
             }
-            return labelsWithIndex
+            const out=labelsWithIndex
             .filter(val=>val.value===label)
             .map(val=>new vscode.Location(document.uri,getLabelRange(document,val.index,val.value)))
+            for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
+                const otherDocument =await vscode.workspace.openTextDocument(uri)
+                if(otherDocument.languageId!=='stdn'||otherDocument.uri===document.uri){
+                    continue
+                }
+                out.push(
+                    ...extractLabelsWithIndex(otherDocument.getText())
+                    .filter(val=>val.value===label)
+                    .map(val=>new vscode.Location(otherDocument.uri,getLabelRange(otherDocument,val.index,val.value)))
+                )
+            }
+            return out
         }
     })
     const labelRename=vscode.languages.registerRenameProvider('stdn',{
@@ -142,7 +168,7 @@ export function activate(context: vscode.ExtensionContext) {
                 placeholder:label
             }
         },
-        provideRenameEdits(document,position,newName){
+        async provideRenameEdits(document,position,newName){
             const edit=new vscode.WorkspaceEdit()
             const range=document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)
             if(range===undefined){
@@ -152,25 +178,33 @@ export function activate(context: vscode.ExtensionContext) {
             if(label===''){
                 return edit
             }
+            newName=ston.stringify(newName)
             labelsWithIndex
             .filter(val=>val.value===label)
             .forEach(val=>{
-                edit.replace(document.uri,getLabelRange(document,val.index,val.value),ston.stringify(newName))
+                edit.replace(document.uri,getLabelRange(document,val.index,val.value),newName)
             })
+            for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
+                const otherDocument =await vscode.workspace.openTextDocument(uri)
+                if(otherDocument.languageId!=='stdn'||otherDocument.uri===document.uri){
+                    continue
+                }
+                extractLabelsWithIndex(otherDocument.getText())
+                .filter(val=>val.value===label)
+                .forEach(val=>{
+                    edit.replace(otherDocument.uri,getLabelRange(otherDocument,val.index,val.value),newName)
+                })
+            }
             return edit
         }
     })
     const formatSTDN=vscode.languages.registerDocumentFormattingEditProvider('stdn',{
         provideDocumentFormattingEdits(document){
             const string=document.getText()
-            const result=stdn.parse(string)
-            if(result===undefined){
-                return []
-            }
             return [
                 vscode.TextEdit.replace(
                     new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),
-                    stdn.stringify(result)
+                    stdn.format(string)
                 )
             ]
         }
@@ -178,14 +212,17 @@ export function activate(context: vscode.ExtensionContext) {
     const formatURLs=vscode.languages.registerDocumentFormattingEditProvider('urls',{
         provideDocumentFormattingEdits(document){
             const string=document.getText()
-            const result=ston.parse('['+string+']')
-            if(!Array.isArray(result)){
+            const result=ston.parseWithIndex('['+string+']')
+            if(result===undefined){
                 return []
             }
             return [
                 vscode.TextEdit.replace(
                     new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),
-                    result.map(val=>ston.stringify(val)).join('\n')
+                    ston.stringifyWithComment(result.value,{
+                        indentLevel:-1,
+                        indentTarget:'all'
+                    }).slice(2,-2)
                 )
             ]
         }
@@ -193,14 +230,17 @@ export function activate(context: vscode.ExtensionContext) {
     const formatSTON=vscode.languages.registerDocumentFormattingEditProvider('ston',{
         provideDocumentFormattingEdits(document){
             const string=document.getText()
-            const result=ston.parse(string)
+            const result=ston.parseWithIndex(string)
             if(result===undefined){
                 return []
             }
             return [
                 vscode.TextEdit.replace(
                     new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),
-                    ston.stringify(result,{indentTarget:'all'})
+                    ston.stringifyWithComment(result.value,{
+                        indentTarget:'all',
+                        addDecorativeSpace:'always'
+                    })
                 )
             ]
         }
