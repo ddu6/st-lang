@@ -1,10 +1,12 @@
 # Change Log
 
-## [0.0.45] - 2021-08-04
+## [0.0.46] - 2021-08-04
 ### Added
 - Keep comments when formatting.
 
 - Cross file completion, reference and rename of labels.
+
+- Hover of labels.
 
 ### Changed
 - The snippet of heading.
@@ -89,7 +91,7 @@
 - Completion, reference and rename of labels.
 
 
-[0.0.45]: https://github.com/st-org/st-lang/compare/v0.0.43...v0.0.45
+[0.0.46]: https://github.com/st-org/st-lang/compare/v0.0.43...v0.0.46
 [0.0.43]: https://github.com/st-org/st-lang/compare/v0.0.40...v0.0.43
 [0.0.40]: https://github.com/st-org/st-lang/compare/v0.0.29...v0.0.40
 [0.0.29]: https://github.com/st-org/st-lang/compare/v0.0.14...v0.0.29
