@@ -1,14 +1,14 @@
 import * as ston from 'ston'
 import * as stdn from 'stdn'
-export function extractLabels(string:string){
+export function extractLabelsWithTag(string:string){
     const result=stdn.parse(string)
     if(result===undefined){
         return []
     }
-    const out:string[]=[]
-    const labelSet:{
-        [key:string]:true|undefined
-    }={}
+    const out:{
+        value:string
+        tag:string
+    }[]=[]
     for(let i=0;i<result.length;i++){
         const line=result[i]
         for(let i=0;i<line.length;i++){
@@ -20,12 +20,13 @@ export function extractLabels(string:string){
             if(
                 typeof label!=='string'
                 ||label===''
-                ||labelSet[label]===true
             ){
                 continue
             }
-            labelSet[label]=true
-            out.push(label)
+            out.push({
+                value:label,
+                tag:unit.tag
+            })
         }
     }
     return out

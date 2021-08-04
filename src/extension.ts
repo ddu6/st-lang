@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
-import { extractLabels, extractLabelsWithIndex } from './label'
+import { extractLabelsWithTag, extractLabelsWithIndex } from './label'
 import { URL } from 'url'
 function producePreviewHTML(src:string,focusURL:string,focusLine:number){
     return `<!DOCTYPE html>
@@ -30,7 +30,7 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
                     vertical-align:baseline;
                 }
             </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.1.0/dist/main.js"></script>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.1.1/dist/main.js"></script>
             <script type="module">
                 const vscode = acquireVsCodeApi()
                 window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
@@ -103,22 +103,54 @@ export function activate(context: vscode.ExtensionContext) {
             return cmds.map(val=>new vscode.CompletionItem(val))
         }
     },'\\')
-    const labelCompletion = vscode.languages.registerCompletionItemProvider('stdn', {
+    const labelHover=vscode.languages.registerHoverProvider('stdn',{
+        async provideHover(document,position){
+            if(document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)===undefined){
+                return undefined
+            }
+            const {label,index}=getLabelAtPosition(document,position)
+            if(label===''){
+                return undefined
+            }
+            const contents=extractLabelsWithTag(document.getText())
+            .filter(val=>val.value===label)
+            .map(val=>val.tag)
+            for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
+                const otherDocument =await vscode.workspace.openTextDocument(uri)
+                if(otherDocument.languageId!=='stdn'||otherDocument.uri===document.uri){
+                    continue
+                }
+                contents.push(
+                    ...extractLabelsWithTag(otherDocument.getText())
+                    .filter(val=>val.value===label)
+                    .map(val=>`${val.tag} ${uri.path}`)
+                )
+            }
+            return new vscode.Hover(contents,getLabelRange(document,index,label))
+        }
+    })
+    const labelCompletion = vscode.languages.registerCompletionItemProvider('stdn',{
         async provideCompletionItems(document,position) {
             if(document.getWordRangeAtPosition(position,/label[ ]/)===undefined){
                 return []
             }
-            const out=extractLabels(document.getText())
-            .map(val=>new vscode.CompletionItem(ston.stringify(val),17))
+            const out=extractLabelsWithTag(document.getText())
+            .filter(val=>val.tag!=='ref')
+            .map(val=>new vscode.CompletionItem({
+                label:ston.stringify(val.value),
+                detail:val.tag
+            },17))
             for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
                 const otherDocument =await vscode.workspace.openTextDocument(uri)
                 if(otherDocument.languageId!=='stdn'||otherDocument.uri===document.uri){
                     continue
                 }
                 out.push(
-                    ...extractLabels(otherDocument.getText())
+                    ...extractLabelsWithTag(otherDocument.getText())
+                    .filter(val=>val.tag!=='ref')
                     .map(val=>new vscode.CompletionItem({
-                        label:ston.stringify(val),
+                        label:ston.stringify(val.value),
+                        detail:val.tag,
                         description:uri.path
                     },17))
                 )
@@ -128,8 +160,7 @@ export function activate(context: vscode.ExtensionContext) {
     }," ")
     const labelReference=vscode.languages.registerReferenceProvider('stdn',{
         async provideReferences(document,position){
-            const range=document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)
-            if(range===undefined){
+            if(document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)===undefined){
                 return []
             }
             const {label,labelsWithIndex}=getLabelAtPosition(document,position)
@@ -155,8 +186,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
     const labelRename=vscode.languages.registerRenameProvider('stdn',{
         prepareRename(document,position){
-            const range=document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)
-            if(range===undefined){
+            if(document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)===undefined){
                 return undefined
             }
             const {label,index}=getLabelAtPosition(document,position)
@@ -170,8 +200,7 @@ export function activate(context: vscode.ExtensionContext) {
         },
         async provideRenameEdits(document,position,newName){
             const edit=new vscode.WorkspaceEdit()
-            const range=document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)
-            if(range===undefined){
+            if(document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)===undefined){
                 return edit
             }
             const {label,labelsWithIndex}=getLabelAtPosition(document,position)
@@ -319,6 +348,6 @@ export function activate(context: vscode.ExtensionContext) {
             }
         },undefined,context.subscriptions)
     })
-	context.subscriptions.push(backslash,labelCompletion,labelReference,labelRename,formatSTDN,formatURLs,formatSTON,preview)
+	context.subscriptions.push(backslash,labelHover,labelCompletion,labelReference,labelRename,formatSTDN,formatURLs,formatSTON,preview)
 }
 export function deactivate() {}
