@@ -1,5 +1,11 @@
 # Change Log
 
+## [0.0.44] - 2021-08-04
+### Added
+- Keep comments when formatting.
+
+- Cross file completion, reference and rename of labels.
+
 ## [0.0.43] - 2021-07-29
 ### Changed
 - Dynamically import katex.
@@ -80,6 +86,7 @@
 - Completion, reference and rename of labels.
 
 
+[0.0.44]: https://github.com/st-org/st-lang/compare/v0.0.43...v0.0.44
 [0.0.43]: https://github.com/st-org/st-lang/compare/v0.0.40...v0.0.43
 [0.0.40]: https://github.com/st-org/st-lang/compare/v0.0.29...v0.0.40
 [0.0.29]: https://github.com/st-org/st-lang/compare/v0.0.14...v0.0.29
