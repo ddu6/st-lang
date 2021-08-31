@@ -30,7 +30,7 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
                     vertical-align:baseline;
                 }
             </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.1.2/dist/main.js"></script>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.1.3/dist/main.js"></script>
             <script type="module">
                 const vscode = acquireVsCodeApi()
                 window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
