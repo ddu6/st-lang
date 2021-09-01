@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.48] - 2021-09-02
+### Added
+- Stringify command.
+
 ## [0.0.47] - 2021-09-01
 ### Added
 - Partial svg support.
@@ -95,6 +99,7 @@
 - Completion, reference and rename of labels.
 
 
+[0.0.48]: https://github.com/st-org/st-lang/compare/v0.0.47...v0.0.48
 [0.0.47]: https://github.com/st-org/st-lang/compare/v0.0.46...v0.0.47
 [0.0.46]: https://github.com/st-org/st-lang/compare/v0.0.43...v0.0.46
 [0.0.43]: https://github.com/st-org/st-lang/compare/v0.0.40...v0.0.43

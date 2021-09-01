@@ -30,7 +30,7 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
                     vertical-align:baseline;
                 }
             </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view/dist/main.js"></script>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.1.3/dist/main.js"></script>
             <script type="module">
                 const vscode = acquireVsCodeApi()
                 window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
@@ -274,7 +274,7 @@ export function activate(context: vscode.ExtensionContext) {
             ]
         }
     })
-    const preview=vscode.commands.registerTextEditorCommand('st-lang.preview',(editor,edit)=>{
+    const preview=vscode.commands.registerTextEditorCommand('st-lang.preview',(editor)=>{
         if(
             editor.document.languageId!=='stdn'
             &&editor.document.languageId!=='urls'
@@ -348,6 +348,21 @@ export function activate(context: vscode.ExtensionContext) {
             }
         },undefined,context.subscriptions)
     })
-	context.subscriptions.push(backslash,labelHover,labelCompletion,labelReference,labelRename,formatSTDN,formatURLs,formatSTON,preview)
+    const stringify=vscode.commands.registerTextEditorCommand('st-lang.stringify',(editor,edit)=>{
+        if(
+            editor.document.languageId!=='stdn'
+            &&editor.document.languageId!=='urls'
+            &&editor.document.languageId!=='ston'
+            ||editor.selection.isEmpty
+        ){
+            return
+        }
+        edit.replace(
+            editor.selection,
+            editor.document.getText(editor.selection)
+            .split('\n').map(val=>`'${val.replace(/'/g,"\\'")}'`).join('\n')
+        )
+    })
+	context.subscriptions.push(backslash,labelHover,labelCompletion,labelReference,labelRename,formatSTDN,formatURLs,formatSTON,preview,stringify)
 }
 export function deactivate() {}

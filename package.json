@@ -24,6 +24,10 @@
                 "command": "st-lang.preview",
                 "title": "Preview",
                 "icon": "$(open-preview)"
+            },
+            {
+                "command": "st-lang.stringify",
+                "title": "Stringify"
             }
         ],
         "menus": {
@@ -32,12 +36,22 @@
                     "command": "st-lang.preview",
                     "when": "editorLangId == stdn || editorLangId == urls",
                     "group": "navigation"
+                },
+                {
+                    "command": "st-lang.stringify",
+                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "group": "navigation"
                 }
             ],
             "editor/context": [
                 {
                     "command": "st-lang.preview",
                     "when": "editorLangId == stdn || editorLangId == urls",
+                    "group": "navigation"
+                },
+                {
+                    "command": "st-lang.stringify",
+                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
                     "group": "navigation"
                 }
             ],
