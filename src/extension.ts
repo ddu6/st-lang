@@ -360,7 +360,7 @@ export function activate(context: vscode.ExtensionContext) {
         edit.replace(
             editor.selection,
             editor.document.getText(editor.selection)
-            .split('\n').map(val=>`'${val.replace(/'/g,"\\'")}'`).join('\n')
+            .split('\n').map(val=>ston.stringify(val)).join('\n')
         )
     })
 	context.subscriptions.push(backslash,labelHover,labelCompletion,labelReference,labelRename,formatSTDN,formatURLs,formatSTON,preview,stringify)
