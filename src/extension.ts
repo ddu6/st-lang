@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
-import { extractLabelsWithTag, extractLabelsWithIndex } from './label'
+import { IdType, extractIdsWithTag, extractIdsWithIndex } from './id'
 import { URL } from 'url'
 function producePreviewHTML(src:string,focusURL:string,focusLine:number){
     return `<!DOCTYPE html>
@@ -30,7 +30,7 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
                     vertical-align:baseline;
                 }
             </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.1.5/dist/main.js"></script>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.1.7/dist/main.js"></script>
             <script type="module">
                 const vscode = acquireVsCodeApi()
                 window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
@@ -48,13 +48,13 @@ function getCurrentLine(editor:vscode.TextEditor){
         editor.visibleRanges[0].start
     )))??[]).length-1)
 }
-function getLabelRange(document:vscode.TextDocument,index:number,label:string){
+function getStringRange(document:vscode.TextDocument,index:number,string:string){
     const start=document.positionAt(index)
     let range=new vscode.Range(start,document.positionAt(index+1))
     if(document.getText(range)!=="'"){
-        return new vscode.Range(start,document.positionAt(index+label.length))
+        return new vscode.Range(start,document.positionAt(index+string.length))
     }
-    const max=2*label.length+2+index
+    const max=2*string.length+2+index
     for(let i=index+1;i<max;i++){
         const char=document.getText(new vscode.Range(document.positionAt(i),document.positionAt(i+1)))
         if(char!=="'"){
@@ -62,36 +62,42 @@ function getLabelRange(document:vscode.TextDocument,index:number,label:string){
         }
         range=new vscode.Range(start,document.positionAt(i+1))
         const string=document.getText(range)
-        if(ston.parse(string)===label){
+        if(ston.parse(string)===string){
             break
         }
     }
     return range
 }
-function getLabelAtPosition(document:vscode.TextDocument,position:vscode.Position){
+function getIdAtPosition(document:vscode.TextDocument,position:vscode.Position){
     const text=document.getText()
-    const result=extractLabelsWithIndex(text)
-    let label=''
-    let index0=0
+    const result=extractIdsWithIndex(text)
+    let id=''
+    let index=0
+    let type:IdType='id'
+    let originalString=''
     for(let i=0;i<result.length;i++){
-        const {value,index}=result[i]
-        const labelPosition=document.positionAt(index)
-        if(labelPosition.line<position.line){
+        const item=result[i]
+        const idPosition=document.positionAt(item.index)
+        if(idPosition.line<position.line){
             continue
         }
         if(
-            labelPosition.line>position.line
-            ||labelPosition.character>position.character+10
+            idPosition.line>position.line
+            ||idPosition.character>position.character+10
         ){
             break
         }
-        label=value
-        index0=index
+        id=item.value
+        index=item.index
+        type=item.type
+        originalString=item.originalString
     }
     return {
-        label,
-        index:index0,
-        labelsWithIndex:result
+        id,
+        index,
+        type,
+        originalString,
+        idsWithIndex:result
     }
 }
 export function activate(context: vscode.ExtensionContext) {
@@ -103,17 +109,17 @@ export function activate(context: vscode.ExtensionContext) {
             return cmds.map(val=>new vscode.CompletionItem(val))
         }
     },'\\')
-    const labelHover=vscode.languages.registerHoverProvider('stdn',{
+    const idHover=vscode.languages.registerHoverProvider('stdn',{
         async provideHover(document,position){
-            if(document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)===undefined){
+            if(document.getWordRangeAtPosition(position,/(?:id|ref-id|href)[ ]*'.+'|(?:id|ref-id|href)[ ][^'{}\[\],]+/)===undefined){
                 return undefined
             }
-            const {label,index}=getLabelAtPosition(document,position)
-            if(label===''){
+            const {id,index,originalString}=getIdAtPosition(document,position)
+            if(id===''){
                 return undefined
             }
-            const contents=extractLabelsWithTag(document.getText())
-            .filter(val=>val.value===label)
+            const contents=extractIdsWithTag(document.getText())
+            .filter(val=>val.value===id)
             .map(val=>val.tag)
             for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
                 const otherDocument =await vscode.workspace.openTextDocument(uri)
@@ -121,21 +127,21 @@ export function activate(context: vscode.ExtensionContext) {
                     continue
                 }
                 contents.push(
-                    ...extractLabelsWithTag(otherDocument.getText())
-                    .filter(val=>val.value===label)
+                    ...extractIdsWithTag(otherDocument.getText())
+                    .filter(val=>val.value===id)
                     .map(val=>`${val.tag} ${uri.path}`)
                 )
             }
-            return new vscode.Hover(contents,getLabelRange(document,index,label))
+            return new vscode.Hover(contents,getStringRange(document,index,originalString))
         }
     })
-    const labelCompletion = vscode.languages.registerCompletionItemProvider('stdn',{
+    const ridCompletion = vscode.languages.registerCompletionItemProvider('stdn',{
         async provideCompletionItems(document,position) {
-            if(document.getWordRangeAtPosition(position,/label[ ]/)===undefined){
+            if(document.getWordRangeAtPosition(position,/ref-id[ ]/)===undefined){
                 return []
             }
-            const out=extractLabelsWithTag(document.getText())
-            .filter(val=>val.tag!=='ref')
+            const out=extractIdsWithTag(document.getText())
+            .filter(val=>val.type==='id')
             .map(val=>new vscode.CompletionItem({
                 label:ston.stringify(val.value),
                 detail:val.tag
@@ -146,8 +152,8 @@ export function activate(context: vscode.ExtensionContext) {
                     continue
                 }
                 out.push(
-                    ...extractLabelsWithTag(otherDocument.getText())
-                    .filter(val=>val.tag!=='ref')
+                    ...extractIdsWithTag(otherDocument.getText())
+                    .filter(val=>val.type==='id')
                     .map(val=>new vscode.CompletionItem({
                         label:ston.stringify(val.value),
                         detail:val.tag,
@@ -158,70 +164,100 @@ export function activate(context: vscode.ExtensionContext) {
             return out
         }
     }," ")
-    const labelReference=vscode.languages.registerReferenceProvider('stdn',{
-        async provideReferences(document,position){
-            if(document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)===undefined){
+    const hrefCompletion = vscode.languages.registerCompletionItemProvider('stdn',{
+        async provideCompletionItems(document,position) {
+            if(document.getWordRangeAtPosition(position,/href[ ]/)===undefined){
                 return []
             }
-            const {label,labelsWithIndex}=getLabelAtPosition(document,position)
-            if(label===''){
-                return []
-            }
-            const out=labelsWithIndex
-            .filter(val=>val.value===label)
-            .map(val=>new vscode.Location(document.uri,getLabelRange(document,val.index,val.value)))
+            const out=extractIdsWithTag(document.getText())
+            .filter(val=>val.type==='id')
+            .map(val=>new vscode.CompletionItem({
+                label:ston.stringify('#'+encodeURIComponent(val.value)),
+                detail:val.tag
+            },17))
             for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
                 const otherDocument =await vscode.workspace.openTextDocument(uri)
                 if(otherDocument.languageId!=='stdn'||otherDocument.uri===document.uri){
                     continue
                 }
                 out.push(
-                    ...extractLabelsWithIndex(otherDocument.getText())
-                    .filter(val=>val.value===label)
-                    .map(val=>new vscode.Location(otherDocument.uri,getLabelRange(otherDocument,val.index,val.value)))
+                    ...extractIdsWithTag(otherDocument.getText())
+                    .filter(val=>val.type==='id')
+                    .map(val=>new vscode.CompletionItem({
+                        label:ston.stringify('#'+encodeURIComponent(val.value)),
+                        detail:val.tag,
+                        description:uri.path
+                    },17))
+                )
+            }
+            return out
+        }
+    }," ")
+    const idReference=vscode.languages.registerReferenceProvider('stdn',{
+        async provideReferences(document,position){
+            if(document.getWordRangeAtPosition(position,/(?:id|ref-id|href)[ ]*'.+'|(?:id|ref-id|href)[ ][^'{}\[\],]+/)===undefined){
+                return []
+            }
+            const {id,idsWithIndex}=getIdAtPosition(document,position)
+            if(id===''){
+                return []
+            }
+            const out=idsWithIndex
+            .filter(val=>val.value===id)
+            .map(val=>new vscode.Location(document.uri,getStringRange(document,val.index,val.originalString)))
+            for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
+                const otherDocument =await vscode.workspace.openTextDocument(uri)
+                if(otherDocument.languageId!=='stdn'||otherDocument.uri===document.uri){
+                    continue
+                }
+                out.push(
+                    ...extractIdsWithIndex(otherDocument.getText())
+                    .filter(val=>val.value===id)
+                    .map(val=>new vscode.Location(otherDocument.uri,getStringRange(otherDocument,val.index,val.originalString)))
                 )
             }
             return out
         }
     })
-    const labelRename=vscode.languages.registerRenameProvider('stdn',{
+    const idRename=vscode.languages.registerRenameProvider('stdn',{
         prepareRename(document,position){
-            if(document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)===undefined){
+            if(document.getWordRangeAtPosition(position,/lab(?:id|ref-id|href)el[ ]*'.+'|(?:id|ref-id|href)[ ][^'{}\[\],]+/)===undefined){
                 return undefined
             }
-            const {label,index}=getLabelAtPosition(document,position)
-            if(label===''){
+            const {id,index,originalString}=getIdAtPosition(document,position)
+            if(id===''){
                 return undefined
             }
             return {
-                range:getLabelRange(document,index,label),
-                placeholder:label
+                range:getStringRange(document,index,originalString),
+                placeholder:id
             }
         },
         async provideRenameEdits(document,position,newName){
             const edit=new vscode.WorkspaceEdit()
-            if(document.getWordRangeAtPosition(position,/label[ ]*'.+'|label[ ][^'{}\[\],]+/)===undefined){
+            if(document.getWordRangeAtPosition(position,/(?:id|ref-id|href)[ ]*'.+'|(?:id|ref-id|href)[ ][^'{}\[\],]+/)===undefined){
                 return edit
             }
-            const {label,labelsWithIndex}=getLabelAtPosition(document,position)
-            if(label===''){
+            const {id,idsWithIndex}=getIdAtPosition(document,position)
+            if(id===''){
                 return edit
             }
-            newName=ston.stringify(newName)
-            labelsWithIndex
-            .filter(val=>val.value===label)
+            const idStr=ston.stringify(newName)
+            const hrefStr=ston.stringify('#'+encodeURIComponent(newName))
+            idsWithIndex
+            .filter(val=>val.value===id)
             .forEach(val=>{
-                edit.replace(document.uri,getLabelRange(document,val.index,val.value),newName)
+                edit.replace(document.uri,getStringRange(document,val.index,val.originalString),val.type==='href'?hrefStr:idStr)
             })
             for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
                 const otherDocument =await vscode.workspace.openTextDocument(uri)
                 if(otherDocument.languageId!=='stdn'||otherDocument.uri===document.uri){
                     continue
                 }
-                extractLabelsWithIndex(otherDocument.getText())
-                .filter(val=>val.value===label)
+                extractIdsWithIndex(otherDocument.getText())
+                .filter(val=>val.value===id)
                 .forEach(val=>{
-                    edit.replace(otherDocument.uri,getLabelRange(otherDocument,val.index,val.value),newName)
+                    edit.replace(otherDocument.uri,getStringRange(otherDocument,val.index,val.originalString),val.type==='href'?hrefStr:idStr)
                 })
             }
             return edit
@@ -363,6 +399,6 @@ export function activate(context: vscode.ExtensionContext) {
             .split('\n').map(val=>ston.stringify(val)).join('\n')
         )
     })
-	context.subscriptions.push(backslash,labelHover,labelCompletion,labelReference,labelRename,formatSTDN,formatURLs,formatSTON,preview,stringify)
+	context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,stringify)
 }
 export function deactivate() {}

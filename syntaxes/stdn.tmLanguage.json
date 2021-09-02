@@ -309,7 +309,7 @@
 		"val": {
 			"patterns": [
 				{
-					"begin": "(?<=label\\s*)'",
+					"begin": "(?<=(?:id|ref-id|href)\\s*)'",
 					"end": "'",
 					"name": "string.quoted.single",
 					"contentName": "markup.underline.link",
@@ -322,14 +322,14 @@
 				},
 				{
 					"name": "invalid.illegal",
-					"match": "(?<=label\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))"
+					"match": "(?<=(?:id|ref-id|href)\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))"
 				},
 				{
 					"name": "invalid.illegal",
-					"match": "(?<=label\\s+)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
+					"match": "(?<=(?:id|ref-id|href)\\s+)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
 				},
 				{
-					"match": "(?<=label\\s+)([^\\s'{}\\[\\],][^'{}\\[\\],]*?)(?=\\s*(?:$|['{}\\[\\],]))",
+					"match": "(?<=(?:id|ref-id|href)\\s+)([^\\s'{}\\[\\],][^'{}\\[\\],]*?)(?=\\s*(?:$|['{}\\[\\],]))",
 					"captures": {
 						"0": {
 							"name": "string.unquoted"

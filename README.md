@@ -18,6 +18,6 @@ Here are main features.
 
 - Completion of katex commands in stdn.
 
-- Completion, hover, reference and rename of labels in stdn.
+- Completion, hover, reference and rename of ids in stdn.
 
 - A snippet of heading in stdn.
