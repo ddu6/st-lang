@@ -1,6 +1,6 @@
 # Change Log
 
-## [0.0.49] - 2021-09-02
+## [0.0.50] - 2021-09-02
 ### Added
 - Stringify command.
 
@@ -99,7 +99,7 @@
 - Completion, reference and rename of labels.
 
 
-[0.0.49]: https://github.com/st-org/st-lang/compare/v0.0.47...v0.0.49
+[0.0.50]: https://github.com/st-org/st-lang/compare/v0.0.47...v0.0.50
 [0.0.47]: https://github.com/st-org/st-lang/compare/v0.0.46...v0.0.47
 [0.0.46]: https://github.com/st-org/st-lang/compare/v0.0.43...v0.0.46
 [0.0.43]: https://github.com/st-org/st-lang/compare/v0.0.40...v0.0.43
