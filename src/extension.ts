@@ -30,7 +30,7 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
                     vertical-align:baseline;
                 }
             </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.1.7/dist/main.js"></script>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.1.9/dist/main.js"></script>
             <script type="module">
                 const vscode = acquireVsCodeApi()
                 window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
@@ -143,7 +143,7 @@ export function activate(context: vscode.ExtensionContext) {
             const out=extractIdsWithTag(document.getText())
             .filter(val=>val.type==='id')
             .map(val=>new vscode.CompletionItem({
-                label:ston.stringify(val.value),
+                label:ston.stringify(val.value,{useUnquotedString:true}),
                 detail:val.tag
             },17))
             for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
@@ -155,7 +155,7 @@ export function activate(context: vscode.ExtensionContext) {
                     ...extractIdsWithTag(otherDocument.getText())
                     .filter(val=>val.type==='id')
                     .map(val=>new vscode.CompletionItem({
-                        label:ston.stringify(val.value),
+                        label:ston.stringify(val.value,{useUnquotedString:true}),
                         detail:val.tag,
                         description:uri.path
                     },17))
@@ -172,7 +172,7 @@ export function activate(context: vscode.ExtensionContext) {
             const out=extractIdsWithTag(document.getText())
             .filter(val=>val.type==='id')
             .map(val=>new vscode.CompletionItem({
-                label:ston.stringify('#'+encodeURIComponent(val.value)),
+                label:ston.stringify('#'+encodeURIComponent(val.value),{useUnquotedString:true}),
                 detail:val.tag
             },17))
             for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
@@ -184,7 +184,7 @@ export function activate(context: vscode.ExtensionContext) {
                     ...extractIdsWithTag(otherDocument.getText())
                     .filter(val=>val.type==='id')
                     .map(val=>new vscode.CompletionItem({
-                        label:ston.stringify('#'+encodeURIComponent(val.value)),
+                        label:ston.stringify('#'+encodeURIComponent(val.value),{useUnquotedString:true}),
                         detail:val.tag,
                         description:uri.path
                     },17))
@@ -242,8 +242,8 @@ export function activate(context: vscode.ExtensionContext) {
             if(id===''){
                 return edit
             }
-            const idStr=ston.stringify(newName)
-            const hrefStr=ston.stringify('#'+encodeURIComponent(newName))
+            const idStr=ston.stringify(newName,{useUnquotedString:true})
+            const hrefStr=ston.stringify('#'+encodeURIComponent(newName),{useUnquotedString:true})
             idsWithIndex
             .filter(val=>val.value===id)
             .forEach(val=>{
@@ -275,7 +275,8 @@ export function activate(context: vscode.ExtensionContext) {
                     new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),
                     ston.stringifyWithComment(result.value,{
                         indentLevel:-1,
-                        indentTarget:'all'
+                        indentTarget:'all',
+                        useUnquotedString:true,
                     }).slice(2,-2)
                 )
             ]
@@ -293,7 +294,8 @@ export function activate(context: vscode.ExtensionContext) {
                     new vscode.Range(new vscode.Position(0,0),document.positionAt(string.length)),
                     ston.stringifyWithComment(result.value,{
                         indentTarget:'all',
-                        addDecorativeSpace:'always'
+                        addDecorativeSpace:'always',
+                        useUnquotedString:true,
                     })
                 )
             ]
@@ -385,7 +387,7 @@ export function activate(context: vscode.ExtensionContext) {
         edit.replace(
             editor.selection,
             editor.document.getText(editor.selection)
-            .split('\n').map(val=>ston.stringify(val)).join('\n')
+            .split('\n').map(val=>ston.stringify(val),{useUnquotedString:true}).join('\n')
         )
     })
 	context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,stringify)
