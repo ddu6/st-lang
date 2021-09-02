@@ -3,6 +3,9 @@
 ### Changed
 - Replace label with id.
 
+### Removed
+- Cross file rename of ids.
+
 ## [0.0.51] - 2021-09-02
 ### Added
 - Stringify command.

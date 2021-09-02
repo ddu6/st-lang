@@ -78,13 +78,13 @@ function getIdAtPosition(document:vscode.TextDocument,position:vscode.Position){
     for(let i=0;i<result.length;i++){
         const item=result[i]
         const idPosition=document.positionAt(item.index)
-        if(idPosition.line<position.line){
-            continue
-        }
         if(
             idPosition.line>position.line
-            ||idPosition.character>position.character+10
+            ||idPosition.line<position.line
         ){
+            continue
+        }
+        if(idPosition.character>position.character){
             break
         }
         id=item.value
@@ -221,7 +221,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
     const idRename=vscode.languages.registerRenameProvider('stdn',{
         prepareRename(document,position){
-            if(document.getWordRangeAtPosition(position,/lab(?:id|ref-id|href)el[ ]*'.+'|(?:id|ref-id|href)[ ][^'{}\[\],]+/)===undefined){
+            if(document.getWordRangeAtPosition(position,/(?:id|ref-id|href)[ ]*'.+'|(?:id|ref-id|href)[ ][^'{}\[\],]+/)===undefined){
                 return undefined
             }
             const {id,index,originalString}=getIdAtPosition(document,position)
@@ -249,17 +249,6 @@ export function activate(context: vscode.ExtensionContext) {
             .forEach(val=>{
                 edit.replace(document.uri,getStringRange(document,val.index,val.originalString),val.type==='href'?hrefStr:idStr)
             })
-            for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
-                const otherDocument =await vscode.workspace.openTextDocument(uri)
-                if(otherDocument.languageId!=='stdn'||otherDocument.uri===document.uri){
-                    continue
-                }
-                extractIdsWithIndex(otherDocument.getText())
-                .filter(val=>val.value===id)
-                .forEach(val=>{
-                    edit.replace(otherDocument.uri,getStringRange(otherDocument,val.index,val.originalString),val.type==='href'?hrefStr:idStr)
-                })
-            }
             return edit
         }
     })
