@@ -62,16 +62,16 @@
 			"match": ","
 		},
 		"numberHolder": {
-			"name": "invalid.illegal",
-			"match": "(?<=(?:^|[\\['},])\\s*)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))"
+			"match": "(?<=(?:^|[\\['},])\\s*)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))",
+			"name": "invalid.illegal"
 		},
 		"booleanHolder": {
-			"name": "invalid.illegal",
-			"match": "(?<=(?:^|[\\['},])\\s*)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
+			"match": "(?<=(?:^|[\\['},])\\s*)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))",
+			"name": "invalid.illegal"
 		},
 		"unquotedString": {
-			"name": "string.unquoted",
-			"match": "(?<=(?:^|[\\['},])\\s*)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))"
+			"match": "(?<=(?:^|[\\['},])\\s*)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))",
+			"name": "string.unquoted"
 		},
 		"string": {
 			"name": "string.quoted.single",
@@ -79,8 +79,8 @@
 			"end": "'",
 			"patterns": [
 				{
-					"name": "constant.character.escape",
-					"match": "\\\\['\\\\]"
+					"match": "\\\\['\\\\]",
+					"name": "constant.character.escape"
 				}
 			]
 		},
@@ -90,20 +90,20 @@
 			"end": "'",
 			"patterns": [
 				{
-					"name": "keyword.control",
-					"match": "\\\\{4}"
+					"match": "\\\\{4}",
+					"name": "keyword.control"
 				},
 				{
-					"name": "constant.character.escape",
-					"match": "\\\\['\\\\]"
+					"match": "\\\\['\\\\]",
+					"name": "constant.character.escape"
 				},
 				{
-					"name": "support.function.katex",
-					"match": "\\\\[a-zA-Z]+"
+					"match": "\\\\[a-zA-Z]+",
+					"name": "support.function.katex"
 				},
 				{
-					"name": "constant.numeric",
-					"match": "\\d+"
+					"match": "\\d+",
+					"name": "constant.numeric"
 				}
 			]
 		},
@@ -315,18 +315,18 @@
 					"contentName": "markup.underline.link",
 					"patterns": [
 						{
-							"name": "constant.character.escape",
-							"match": "\\\\['\\\\]"
+							"match": "\\\\['\\\\]",
+							"name": "constant.character.escape"
 						}
 					]
 				},
 				{
-					"name": "invalid.illegal",
-					"match": "(?<=(?:id|ref-id|href)\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))"
+					"match": "(?<=(?:id|ref-id|href)\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))",
+					"name": "invalid.illegal"
 				},
 				{
-					"name": "invalid.illegal",
-					"match": "(?<=(?:id|ref-id|href)\\s+)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
+					"match": "(?<=(?:id|ref-id|href)\\s+)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))",
+					"name": "invalid.illegal"
 				},
 				{
 					"match": "(?<=(?:id|ref-id|href)\\s+)([^\\s'{}\\[\\],][^'{}\\[\\],]*?)(?=\\s*(?:$|['{}\\[\\],]))",
@@ -345,8 +345,8 @@
 					"name": "string.quoted.single",
 					"patterns": [
 						{
-							"name": "constant.character.escape",
-							"match": "\\\\['\\\\]"
+							"match": "\\\\['\\\\]",
+							"name": "constant.character.escape"
 						}
 					]
 				},
@@ -369,12 +369,12 @@
 					]
 				},
 				{
-					"name": "constant.numeric",
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))"
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))",
+					"name": "constant.numeric"
 				},
 				{
-					"name": "constant.language",
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))"
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))",
+					"name": "constant.language"
 				},
 				{
 					"begin": "(?<=(?:katex|aligned|alignedat|array|arraystretch|Bmatrix|bmatrix|cases|matrix|pmatrix|rcases|smallmatrix|Vmatrix|vmatrix)\\s*)\\[",
@@ -452,8 +452,8 @@
 					]
 				},
 				{
-					"name": "string.unquoted",
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))"
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))",
+					"name": "string.unquoted"
 				},
 				{
 					"include": "#kstring"
