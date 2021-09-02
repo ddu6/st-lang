@@ -118,7 +118,7 @@
 					"include": "#lineComment"
 				},
 				{
-					"include": "#val"
+					"include": "#value"
 				},
 				{
 					"include": "#key"
@@ -146,7 +146,7 @@
 					"include": "#lineComment"
 				},
 				{
-					"include": "#val"
+					"include": "#value"
 				},
 				{
 					"include": "#key"
@@ -231,7 +231,7 @@
 				}
 			]
 		},
-		"transfer": {
+		"children": {
 			"begin": "\\[",
 			"end": "\\]",
 			"patterns": [
@@ -273,7 +273,7 @@
 				}
 			]
 		},
-		"ktransfer": {
+		"kchildren": {
 			"begin": "\\[",
 			"end": "\\]",
 			"patterns": [
@@ -306,7 +306,7 @@
 				}
 			]
 		},
-		"val": {
+		"value": {
 			"patterns": [
 				{
 					"begin": "(?<=(?:id|ref-id|href)\\s*)'",
@@ -358,7 +358,7 @@
 							"include": "#kstring"
 						},
 						{
-							"include": "#transfer"
+							"include": "#children"
 						},
 						{
 							"include": "#space"
@@ -459,7 +459,7 @@
 					"include": "#kstring"
 				},
 				{
-					"include": "#ktransfer"
+					"include": "#kchildren"
 				}
 			]
 		},
