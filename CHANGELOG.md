@@ -1,4 +1,10 @@
 # Change Log
+## [0.1.1] - 2021-09-03
+### Added
+- Stringify command, copy stringify result command and copy id command.
+
+- Completion of orbits.
+
 ## [0.1.0] - 2021-09-03
 ### Changed
 - Replace label with id.
@@ -105,6 +111,7 @@
 - Completion, reference and rename of labels.
 
 
+[0.1.1]: https://github.com/st-org/st-lang/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/st-org/st-lang/compare/v0.0.51...v0.1.0
 [0.0.51]: https://github.com/st-org/st-lang/compare/v0.0.47...v0.0.51
 [0.0.47]: https://github.com/st-org/st-lang/compare/v0.0.46...v0.0.47
