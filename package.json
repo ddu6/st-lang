@@ -28,6 +28,14 @@
             {
                 "command": "st-lang.stringify",
                 "title": "Stringify"
+            },
+            {
+                "command": "st-lang.copy-stringify-result",
+                "title": "Copy Stringify Result"
+            },
+            {
+                "command": "st-lang.copy-id",
+                "title": "Copy Id"
             }
         ],
         "menus": {
@@ -41,6 +49,16 @@
                     "command": "st-lang.stringify",
                     "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
                     "group": "navigation"
+                },
+                {
+                    "command": "st-lang.copy-stringify-result",
+                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "group": "navigation"
+                },
+                {
+                    "command": "st-lang.copy-id",
+                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "group": "navigation"
                 }
             ],
             "editor/context": [
@@ -51,6 +69,16 @@
                 },
                 {
                     "command": "st-lang.stringify",
+                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "group": "navigation"
+                },
+                {
+                    "command": "st-lang.copy-stringify-result",
+                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "group": "navigation"
+                },
+                {
+                    "command": "st-lang.copy-id",
                     "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
                     "group": "navigation"
                 }
@@ -116,12 +144,6 @@
                     "meta.embedded.block.urls": "urls",
                     "meta.embedded.block.ston": "ston"
                 }
-            }
-        ],
-        "snippets": [
-            {
-                "language": "stdn",
-                "path": "snippets.json"
             }
         ]
     },

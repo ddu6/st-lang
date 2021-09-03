@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
-import { IdType, extractIdsWithTag, extractIdsWithIndex } from './id'
+import { IdType, extractIdsWithTag, extractIdsWithIndex, extractOrbitsWithTag } from './extract'
 import { URL } from 'url'
 function producePreviewHTML(src:string,focusURL:string,focusLine:number){
     return `<!DOCTYPE html>
@@ -106,7 +106,7 @@ export function activate(context: vscode.ExtensionContext) {
             if(document.getWordRangeAtPosition(position,/\\[a-zA-Z]*/)===undefined){
                 return []
             }
-            return cmds.map(val=>new vscode.CompletionItem(val))
+            return cmds.map(val=>new vscode.CompletionItem(val,2))
         }
     },'\\')
     const idHover=vscode.languages.registerHoverProvider('stdn',{
@@ -190,6 +190,38 @@ export function activate(context: vscode.ExtensionContext) {
                     },17))
                 )
             }
+            return out
+        }
+    }," ")
+    const orbitCompletion = vscode.languages.registerCompletionItemProvider('stdn',{
+        async provideCompletionItems(document,position) {
+            if(document.getWordRangeAtPosition(position,/orbit[ ]/)===undefined){
+                return []
+            }
+            const out=[
+                'heading',
+                'equation',
+                'figure',
+                'conjecture',
+                'corollary',
+                'definition',
+                'example',
+                'exercise',
+                'lemma',
+                'notation',
+                'proposition',
+                'remark',
+                'theorem',
+            ].map(val=>new vscode.CompletionItem({
+                label:val,
+            },11))
+            .concat(
+                extractOrbitsWithTag(document.getText())
+                .map(val=>new vscode.CompletionItem({
+                    label:ston.stringify(val.value,{useUnquotedString:true}),
+                    detail:val.tag
+                },11))
+            )
             return out
         }
     }," ")
@@ -387,9 +419,37 @@ export function activate(context: vscode.ExtensionContext) {
         edit.replace(
             editor.selection,
             editor.document.getText(editor.selection)
-            .split('\n').map(val=>ston.stringify(val),{useUnquotedString:true}).join('\n')
+            .split('\n').map(val=>ston.stringify(val)).join('\n')
         )
     })
-	context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,stringify)
+    const copyStringifyResult=vscode.commands.registerTextEditorCommand('st-lang.copy-stringify-result',(editor)=>{
+        if(
+            editor.document.languageId!=='stdn'
+            &&editor.document.languageId!=='urls'
+            &&editor.document.languageId!=='ston'
+            ||editor.selection.isEmpty
+        ){
+            return
+        }
+        vscode.env.clipboard.writeText(
+            editor.document.getText(editor.selection)
+            .split('\n').map(val=>ston.stringify(val)).join('\n')
+        )
+    })
+    const copyId=vscode.commands.registerTextEditorCommand('st-lang.copy-id',(editor)=>{
+        if(
+            editor.document.languageId!=='stdn'
+            &&editor.document.languageId!=='urls'
+            &&editor.document.languageId!=='ston'
+            ||editor.selection.isEmpty
+        ){
+            return
+        }
+        vscode.env.clipboard.writeText(
+            editor.document.getText(editor.selection)
+            .split(/\s+/).map(val=>val.toLowerCase()).join('-')
+        )
+    })
+	context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,orbitCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,stringify,copyStringifyResult,copyId)
 }
 export function deactivate() {}

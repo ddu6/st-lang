@@ -127,3 +127,36 @@ function extractIdsWithIndexFromSTONArrayValueWithIndex(array:ston.STONArrayValu
     }
     return out
 }
+export function extractOrbitsWithTag(string:string){
+    const result=stdn.parse(string)
+    if(result===undefined){
+        return []
+    }
+    const out:{
+        value:string
+        tag:string
+    }[]=[]
+    const orbitSet:Record<string,true|undefined>={}
+    for(let i=0;i<result.length;i++){
+        const line=result[i]
+        for(let i=0;i<line.length;i++){
+            const unit=line[i]
+            if(typeof unit==='string'){
+                continue
+            }
+            const {orbit}=unit.options
+            if(
+                typeof orbit==='string'
+                &&orbit!==''
+                &&orbitSet[orbit]===undefined
+            ){
+                out.push({
+                    value:orbit,
+                    tag:unit.tag,
+                })
+                orbitSet[orbit]=true
+            }
+        }
+    }
+    return out
+}
