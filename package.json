@@ -47,17 +47,17 @@
                 },
                 {
                     "command": "st-lang.stringify",
-                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection",
                     "group": "navigation"
                 },
                 {
                     "command": "st-lang.copy-stringify-result",
-                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection",
                     "group": "navigation"
                 },
                 {
                     "command": "st-lang.copy-id",
-                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection",
                     "group": "navigation"
                 }
             ],
@@ -69,17 +69,17 @@
                 },
                 {
                     "command": "st-lang.stringify",
-                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection",
                     "group": "navigation"
                 },
                 {
                     "command": "st-lang.copy-stringify-result",
-                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection",
                     "group": "navigation"
                 },
                 {
                     "command": "st-lang.copy-id",
-                    "when": "editorLangId == stdn || editorLangId == urls || editorLangId == ston",
+                    "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection",
                     "group": "navigation"
                 }
             ],

@@ -202,6 +202,7 @@ export function activate(context: vscode.ExtensionContext) {
                 'heading',
                 'equation',
                 'figure',
+
                 'conjecture',
                 'corollary',
                 'definition',
