@@ -1,21 +1,15 @@
 import * as ston from 'ston'
 import * as stdn from 'stdn'
 export type IdType='id'|'ref-id'|'href'
-export function extractIdsWithTag(string:string){
-    const result=stdn.parse(string)
-    if(result===undefined){
-        return []
-    }
+function extractIdsWithTagFromSTDN(doc:stdn.STDN){
     const out:{
         value:string
         tag:string
         type:IdType
         originalString:string
     }[]=[]
-    for(let i=0;i<result.length;i++){
-        const line=result[i]
-        for(let i=0;i<line.length;i++){
-            const unit=line[i]
+    for(const line of doc){
+        for(const unit of line){
             if(typeof unit==='string'){
                 continue
             }
@@ -55,7 +49,99 @@ export function extractIdsWithTag(string:string){
                     originalString:href
                 })
             }
+            for(const key of Object.keys(unit.options)){
+                const value=unit.options[key]
+                if(typeof value==='object'){
+                    out.push(...extractIdsWithTagFromSTDN(value))
+                }
+            }
+            out.push(...extractIdsWithTagFromSTDN(unit.children))
         }
+    }
+    return out
+}
+export function extractIdsWithTag(string:string){
+    const doc=stdn.parse(string)
+    if(doc===undefined){
+        return []
+    }
+    return extractIdsWithTagFromSTDN(doc)
+}
+function extractIdsWithIndexFromSTONArrayValueWithIndex(array:ston.STONArrayValueWithIndex){
+    const out:{
+        value:string
+        index:number
+        type:'id'|'ref-id'|'href'
+        originalString:string
+    }[]=[]
+    for(const {value} of array){
+        if(typeof value!=='object'){
+            continue
+        }
+        if(Array.isArray(value)){
+            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value))
+            continue
+        }
+        out.push(...extractIdsWithIndexFromSTONObjectValueWithIndex(value))
+    }
+    return out
+}
+function extractIdsWithIndexFromSTONObjectValueWithIndex(object:ston.STONObjectValueWithIndex){
+    const out:{
+        value:string
+        index:number
+        type:'id'|'ref-id'|'href'
+        originalString:string
+    }[]=[]
+    const {id}=object
+    if(
+        id!==undefined
+        &&typeof id.value==='string'
+        &&id.value!==''
+    ){
+        out.push({
+            value:id.value,
+            index:id.index,
+            type:'id',
+            originalString:id.value
+        })
+    }
+    const rid=object['ref-id']
+    if(
+        rid!==undefined
+        &&typeof rid.value==='string'
+        &&rid.value!==''
+    ){
+        out.push({
+            value:rid.value,
+            index:rid.index,
+            type:'ref-id',
+            originalString:rid.value
+        })
+    }
+    const {href}=object
+    if(
+        href!==undefined
+        &&typeof href.value==='string'
+        &&href.value.startsWith('#')
+    ){
+        out.push({
+            value:decodeURIComponent(href.value.slice(1)),
+            index:href.index,
+            type:'href',
+            originalString:href.value
+        })
+    }
+    for(const key of Object.keys(object)){
+        const value=(object[key]??{}).value
+        if(typeof value!=='object'){
+            continue
+        }
+        if(Array.isArray(value)){
+            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value))
+            continue
+        }
+        out.push(...extractIdsWithIndexFromSTONObjectValueWithIndex(value))
     }
     return out
 }
@@ -69,78 +155,14 @@ export function extractIdsWithIndex(string:string){
     }
     return extractIdsWithIndexFromSTONArrayValueWithIndex(result.value)
 }
-function extractIdsWithIndexFromSTONArrayValueWithIndex(array:ston.STONArrayValueWithIndex){
-    const out:{
-        value:string
-        index:number
-        type:'id'|'ref-id'|'href'
-        originalString:string
-    }[]=[]
-    for(let i=0;i<array.length;i++){
-        const {value}=array[i]
-        if(typeof value!=='object'){
-            continue
-        }
-        if(Array.isArray(value)){
-            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value))
-            continue
-        }
-        const {id}=value
-        if(
-            id!==undefined
-            &&typeof id.value==='string'
-            &&id.value!==''
-        ){
-            out.push({
-                value:id.value,
-                index:id.index,
-                type:'id',
-                originalString:id.value
-            })
-        }
-        const rid=value['ref-id']
-        if(
-            rid!==undefined
-            &&typeof rid.value==='string'
-            &&rid.value!==''
-        ){
-            out.push({
-                value:rid.value,
-                index:rid.index,
-                type:'ref-id',
-                originalString:rid.value
-            })
-        }
-        const {href}=value
-        if(
-            href!==undefined
-            &&typeof href.value==='string'
-            &&href.value.startsWith('#')
-        ){
-            out.push({
-                value:decodeURIComponent(href.value.slice(1)),
-                index:href.index,
-                type:'href',
-                originalString:href.value
-            })
-        }
-    }
-    return out
-}
-export function extractOrbitsWithTag(string:string){
-    const result=stdn.parse(string)
-    if(result===undefined){
-        return []
-    }
+function extractOrbitsWithTagFromSTDN(doc:stdn.STDN){
     const out:{
         value:string
         tag:string
     }[]=[]
     const orbitSet:Record<string,true|undefined>={}
-    for(let i=0;i<result.length;i++){
-        const line=result[i]
-        for(let i=0;i<line.length;i++){
-            const unit=line[i]
+    for(const line of doc){
+        for(const unit of line){
             if(typeof unit==='string'){
                 continue
             }
@@ -156,7 +178,21 @@ export function extractOrbitsWithTag(string:string){
                 })
                 orbitSet[orbit]=true
             }
+            for(const key of Object.keys(unit.options)){
+                const value=unit.options[key]
+                if(typeof value==='object'){
+                    out.push(...extractOrbitsWithTagFromSTDN(value))
+                }
+            }
+            out.push(...extractOrbitsWithTagFromSTDN(unit.children))
         }
     }
     return out
+}
+export function extractOrbitsWithTag(string:string){
+    const doc=stdn.parse(string)
+    if(doc===undefined){
+        return []
+    }
+    return extractOrbitsWithTagFromSTDN(doc)
 }
