@@ -114,12 +114,8 @@
 				"0": {
 					"patterns": [
 						{
-							"match": "\\\\{4}",
+							"match": "\\\\{2}",
 							"name": "keyword.control"
-						},
-						{
-							"match": "\\\\['\\\\]",
-							"name": "constant.character.escape"
 						},
 						{
 							"match": "\\\\[a-zA-Z]+",
