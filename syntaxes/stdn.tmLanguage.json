@@ -107,6 +107,32 @@
 				}
 			]
 		},
+		"unquotedKString": {
+			"match": "(?<=(?:^|[\\['},])\\s*)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))",
+			"name": "string.unquoted",
+			"captures": {
+				"0": {
+					"patterns": [
+						{
+							"match": "\\\\{4}",
+							"name": "keyword.control"
+						},
+						{
+							"match": "\\\\['\\\\]",
+							"name": "constant.character.escape"
+						},
+						{
+							"match": "\\\\[a-zA-Z]+",
+							"name": "support.function.katex"
+						},
+						{
+							"match": "\\d+",
+							"name": "constant.numeric"
+						}
+					]
+				}
+			}
+		},
 		"unit": {
 			"begin": "\\{",
 			"end": "\\}",
@@ -224,6 +250,15 @@
 					"include": "#comma"
 				},
 				{
+					"include": "#numberHolder"
+				},
+				{
+					"include": "#booleanHolder"
+				},
+				{
+					"include": "#unquotedKString"
+				},
+				{
 					"include": "#space"
 				},
 				{
@@ -297,6 +332,15 @@
 				},
 				{
 					"include": "#comma"
+				},
+				{
+					"include": "#numberHolder"
+				},
+				{
+					"include": "#booleanHolder"
+				},
+				{
+					"include": "#unquotedKString"
 				},
 				{
 					"include": "#space"
