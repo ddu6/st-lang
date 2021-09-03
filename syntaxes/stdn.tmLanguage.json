@@ -446,6 +446,15 @@
 							"include": "#comma"
 						},
 						{
+							"include": "#numberHolder"
+						},
+						{
+							"include": "#booleanHolder"
+						},
+						{
+							"include": "#unquotedKString"
+						},
+						{
 							"include": "#space"
 						},
 						{
