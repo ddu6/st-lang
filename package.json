@@ -7,7 +7,7 @@
     "icon": "imgs/st.png",
     "publisher": "ddu",
     "engines": {
-        "vscode": "^1.58.1"
+        "vscode": "^1.60.0"
     },
     "categories": [
         "Programming Languages"
