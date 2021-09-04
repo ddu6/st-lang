@@ -160,7 +160,7 @@
         "typescript": "^4.4.2"
     },
     "dependencies": {
-        "stdn": "^0.1.0",
-        "ston": "^0.1.5"
+        "stdn": "^0.1.1",
+        "ston": "^0.1.6"
     }
 }
