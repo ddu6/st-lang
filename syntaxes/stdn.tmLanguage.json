@@ -94,6 +94,10 @@
 					"name": "keyword.control"
 				},
 				{
+					"match": "\\\\{3}(?=[^'\\\\]|$)",
+					"name": "keyword.control"
+				},
+				{
 					"match": "\\\\['\\\\]",
 					"name": "constant.character.escape"
 				},
