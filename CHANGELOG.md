@@ -1,5 +1,5 @@
 # Change Log
-## [0.1.15] - 2021-09-04
+## [0.1.16] - 2021-09-04
 ### Added
 - Stringify command, copy stringify result command and copy id command.
 
@@ -116,7 +116,7 @@
 - Completion, reference and rename of labels.
 
 
-[0.1.15]: https://github.com/st-org/st-lang/compare/v0.1.0...v0.1.15
+[0.1.16]: https://github.com/st-org/st-lang/compare/v0.1.0...v0.1.16
 [0.1.0]: https://github.com/st-org/st-lang/compare/v0.0.51...v0.1.0
 [0.0.51]: https://github.com/st-org/st-lang/compare/v0.0.47...v0.0.51
 [0.0.47]: https://github.com/st-org/st-lang/compare/v0.0.46...v0.0.47
