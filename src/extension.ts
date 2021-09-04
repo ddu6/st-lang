@@ -420,7 +420,7 @@ export function activate(context: vscode.ExtensionContext) {
         edit.replace(
             editor.selection,
             editor.document.getText(editor.selection)
-            .split('\n').map(val=>ston.stringify(val)).join('\n')
+            .split('\n').map(val=>ston.stringify(val,{useUnquotedString:true})).join('\n')
         )
     })
     const copyStringifyResult=vscode.commands.registerTextEditorCommand('st-lang.copy-stringify-result',(editor)=>{
@@ -434,7 +434,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
         vscode.env.clipboard.writeText(
             editor.document.getText(editor.selection)
-            .split('\n').map(val=>ston.stringify(val)).join('\n')
+            .split('\n').map(val=>ston.stringify(val,{useUnquotedString:true})).join('\n')
         )
     })
     const copyId=vscode.commands.registerTextEditorCommand('st-lang.copy-id',(editor)=>{
