@@ -68,9 +68,11 @@ function createPreviewHTML(src:string,focusURL:string,focusLine:number,focusId:s
         </body>
     </html>`
 }
-function createCodePreviewHTML(src:string,lang:string){
+function createCodePreviewHTML(src:string,lang:string,path:string){
     return `<!DOCTYPE html>
-    <html style="background:black" data-string="{src ${
+    <html style="background:black" data-string="{block, code [${
+        JSON.stringify(ston.stringify(path)).slice(1,-1)
+    }]}{src ${
         JSON.stringify(ston.stringify(src)).slice(1,-1)
     }, lang ${
         JSON.stringify(ston.stringify(lang)).slice(1,-1)
@@ -98,9 +100,11 @@ function createCodePreviewHTML(src:string,lang:string){
         </body>
     </html>`
 }
-function createImgPreviewHTML(src:string){
+function createImgPreviewHTML(src:string,path:string){
     return `<!DOCTYPE html>
-    <html style="background:black" data-string="{src ${
+    <html style="background:black" data-string="{block, code [${
+        JSON.stringify(ston.stringify(path)).slice(1,-1)
+    }]}{src ${
         JSON.stringify(ston.stringify(src)).slice(1,-1)
     }, style display:block, img []}">
         <body>
@@ -215,28 +219,30 @@ function createPreview(uri:vscode.Uri,focusURL:string,focusLine:number,focusId:s
     },undefined,context.subscriptions)
 }
 function createCodePreview(src:string,lang:string){
+    const {pathname}=new URL(src)
     const panel = vscode.window.createWebviewPanel(
         'st-lang.code-preview',
-        new URL(src).pathname.replace(/^.*\//,''),
+        pathname.replace(/^.*\//,''),
         vscode.ViewColumn.Beside,
         {
             enableScripts:true,
             enableFindWidget:true,
         }
     )
-    panel.webview.html=createCodePreviewHTML(src,lang)
+    panel.webview.html=createCodePreviewHTML(src,lang,pathname)
 }
 function createImgPreview(src:string){
+    const {pathname}=new URL(src)
     const panel = vscode.window.createWebviewPanel(
         'st-lang.img-preview',
-        new URL(src).pathname.replace(/^.*\//,''),
+        pathname.replace(/^.*\//,''),
         vscode.ViewColumn.Beside,
         {
             enableScripts:true,
             enableFindWidget:true,
         }
     )
-    panel.webview.html=createImgPreviewHTML(src)
+    panel.webview.html=createImgPreviewHTML(src,pathname)
 }
 function getCurrentLine(editor:vscode.TextEditor){
     return Math.max(0,(stdn.parse(editor.document.getText(new vscode.Range(
