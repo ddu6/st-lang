@@ -4,13 +4,16 @@ import * as ston from 'ston'
 import * as stdn from 'stdn'
 import { IdType, extractIdsWithTag, extractIdsWithIndex, extractOrbitsWithTag } from './extract'
 import { URL } from 'url'
-function producePreviewHTML(src:string,focusURL:string,focusLine:number){
+const stViewVersion='0.2.10'
+function createPreviewHTML(src:string,focusURL:string,focusLine:number,focusId:string){
     return `<!DOCTYPE html>
     <html style="background:black" data-src=${
         JSON.stringify(src+'?r='+Math.random())
     } data-focus-url=${
         JSON.stringify(focusURL)
-    } data-focus-line=${focusLine}>
+    } data-focus-line=${focusLine} data-focus-id=${
+        JSON.stringify(focusId)
+    }>
         <body>
             <style>
                 body{
@@ -30,17 +33,210 @@ function producePreviewHTML(src:string,focusURL:string,focusLine:number){
                     vertical-align:baseline;
                 }
             </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@0.2.8/dist/main.js"></script>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/dist/main.js"></script>
             <script type="module">
                 const vscode = acquireVsCodeApi()
-                window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
+                viewer.dblClickLineListeners.push((line,url,partialLine)=>{
                     vscode.postMessage({
-                        line,url,partialLine
+                        type:'reverse-focus',
+                        line,
+                        url,
+                        partialLine,
                     })
                 })
+                window.openSrc=(src,id)=>{
+                    vscode.postMessage({
+                        type:'open-src',
+                        src,
+                        id,
+                    })
+                }
+                window.openCode=(src,lang)=>{
+                    vscode.postMessage({
+                        type:'open-code',
+                        src,
+                        lang,
+                    })
+                }
+                window.openImg=(src)=>{
+                    vscode.postMessage({
+                        type:'open-img',
+                        src,
+                    })
+                }
             </script>
         </body>
     </html>`
+}
+function createCodePreviewHTML(src:string,lang:string){
+    return `<!DOCTYPE html>
+    <html style="background:black" data-string="{src ${
+        JSON.stringify(ston.stringify(src)).slice(1,-1)
+    }, lang ${
+        JSON.stringify(ston.stringify(lang)).slice(1,-1)
+    }, block, code []}">
+        <body>
+            <style>
+                body{
+                    color:inherit;
+                    font:inherit;
+                    padding:0;
+                }
+                blockquote{
+                    background:inherit;
+                }
+                code{
+                    color:inherit;
+                }
+                kbd{
+                    background:inherit;
+                    color:inherit;
+                    vertical-align:baseline;
+                }
+            </style>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/dist/main.js"></script>
+        </body>
+    </html>`
+}
+function createImgPreviewHTML(src:string){
+    return `<!DOCTYPE html>
+    <html style="background:black" data-string="{src ${
+        JSON.stringify(ston.stringify(src)).slice(1,-1)
+    }, style display:block, img []}">
+        <body>
+            <style>
+                body{
+                    color:inherit;
+                    font:inherit;
+                    padding:0;
+                }
+                blockquote{
+                    background:inherit;
+                }
+                code{
+                    color:inherit;
+                }
+                kbd{
+                    background:inherit;
+                    color:inherit;
+                    vertical-align:baseline;
+                }
+            </style>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/dist/main.js"></script>
+        </body>
+    </html>`
+}
+function createPreview(uri:vscode.Uri,focusURL:string,focusLine:number,focusId:string,context:vscode.ExtensionContext){
+    const panel = vscode.window.createWebviewPanel(
+        'st-lang.preview',
+        uri.path.replace(/^.*\//,''),
+        vscode.ViewColumn.Beside,
+        {
+            enableScripts:true,
+            enableFindWidget:true,
+        }
+    )
+    const src=panel.webview.asWebviewUri(uri).toString()
+    panel.webview.html=createPreviewHTML(src,focusURL,focusLine,focusId)
+    const t=vscode.workspace.onDidSaveTextDocument(document=>{
+        let focusURL=''
+        let focusLine=0
+        const editor=vscode.window.activeTextEditor
+        if(editor===undefined||editor.document!==document){
+            return
+        }
+        if(document.languageId==='stdn'){
+            focusURL=panel.webview.asWebviewUri(document.uri).toString()
+            focusLine=getCurrentLine(editor)
+        }
+        panel.webview.html=createPreviewHTML(src,focusURL,focusLine,'')
+    },undefined,context.subscriptions)
+    panel.onDidDispose(()=>{
+        t.dispose()
+    },undefined,context.subscriptions)
+    panel.webview.onDidReceiveMessage(async message=>{
+        if(message.type==='reverse-focus'){
+            const url0=new URL(message.url)
+            for(const editor of vscode.window.visibleTextEditors){
+                if(editor.document.languageId!=='stdn'){
+                    continue
+                }
+                const url1=new URL(panel.webview.asWebviewUri(editor.document.uri).toString())
+                if(url1.origin!==url0.origin||url1.pathname!==url0.pathname){
+                    continue
+                }
+                const result=ston.parseWithIndex('['+editor.document.getText()+']',-1)
+                if(
+                    result===undefined
+                    ||!Array.isArray(result.value)
+                ){
+                    return
+                }
+                let lineCount=0
+                for(let i=0;i<result.value.length;i++){
+                    const {value,index}=result.value[i]
+                    if(typeof value==='object'){
+                        lineCount++
+                    }else if(typeof value!=='string'){
+                        continue
+                    }else{
+                        lineCount+=value.split('\n').length
+                    }
+                    if(lineCount<=message.partialLine){
+                        continue
+                    }
+                    const position=editor.document.positionAt(index)
+                    editor.revealRange(new vscode.Range(position,position),3)
+                    return
+                }
+            }
+            return
+        }
+        if(message.type==='open-src'){
+            const url0=new URL(message.src)
+            for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
+                const url1=new URL(panel.webview.asWebviewUri(uri).toString())
+                if(url1.origin!==url0.origin||url1.pathname!==url0.pathname){
+                    continue
+                }
+                createPreview(uri,'',0,message.id,context)
+                return
+            }
+            return
+        }
+        if(message.type==='open-code'){
+            createCodePreview(message.src,message.lang)
+            return
+        }
+        if(message.type==='open-img'){
+            createImgPreview(message.src)
+            return
+        }
+    },undefined,context.subscriptions)
+}
+function createCodePreview(src:string,lang:string){
+    const panel = vscode.window.createWebviewPanel(
+        'st-lang.code-preview',
+        new URL(src).pathname.replace(/^.*\//,''),
+        vscode.ViewColumn.Beside,
+        {
+            enableScripts:true,
+            enableFindWidget:true,
+        }
+    )
+    panel.webview.html=createCodePreviewHTML(src,lang)
+}
+function createImgPreview(src:string){
+    const panel = vscode.window.createWebviewPanel(
+        'st-lang.img-preview',
+        new URL(src).pathname.replace(/^.*\//,''),
+        vscode.ViewColumn.Beside,
+        {
+            enableScripts:true,
+            enableFindWidget:true,
+        }
+    )
+    panel.webview.html=createImgPreviewHTML(src)
 }
 function getCurrentLine(editor:vscode.TextEditor){
     return Math.max(0,(stdn.parse(editor.document.getText(new vscode.Range(
@@ -100,7 +296,7 @@ function getIdAtPosition(document:vscode.TextDocument,position:vscode.Position){
         idsWithIndex:result
     }
 }
-export function activate(context: vscode.ExtensionContext) {
+export function activate(context:vscode.ExtensionContext) {
 	const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
         provideCompletionItems(document,position) {
             if(document.getWordRangeAtPosition(position,/\\[a-zA-Z]*/)===undefined){
@@ -345,68 +541,7 @@ export function activate(context: vscode.ExtensionContext) {
         if(editor.document.languageId==='stdn'){
             focusLine=getCurrentLine(editor)
         }
-        const panel = vscode.window.createWebviewPanel(
-            'st-lang.preview',
-            editor.document.uri.path.replace(/^.*\//,''),
-            vscode.ViewColumn.Beside,
-            {
-                enableScripts:true
-            }
-        )
-        const src=panel.webview.asWebviewUri(editor.document.uri).toString()
-        panel.webview.html=producePreviewHTML(src,'',focusLine)
-        const t=vscode.workspace.onDidSaveTextDocument(document=>{
-            let focusURL=''
-            let focusLine=0
-            const editor=vscode.window.activeTextEditor
-            if(editor===undefined||editor.document!==document){
-                return
-            }
-            if(document.languageId==='stdn'){
-                focusURL=panel.webview.asWebviewUri(document.uri).toString()
-                focusLine=getCurrentLine(editor)
-            }
-            panel.webview.html=producePreviewHTML(src,focusURL,focusLine)
-        },undefined,context.subscriptions)
-        panel.onDidDispose(()=>{
-            t.dispose()
-        },undefined,context.subscriptions)
-        panel.webview.onDidReceiveMessage(message=>{
-            const tmp0=new URL(message.url)
-            for(const editor of vscode.window.visibleTextEditors){
-                if(editor.document.languageId!=='stdn'){
-                    continue
-                }
-                const tmp1=new URL(panel.webview.asWebviewUri(editor.document.uri).toString())
-                if(tmp1.origin!==tmp0.origin||tmp1.pathname!==tmp0.pathname){
-                    continue
-                }
-                const result=ston.parseWithIndex('['+editor.document.getText()+']',-1)
-                if(
-                    result===undefined
-                    ||!Array.isArray(result.value)
-                ){
-                    return
-                }
-                let lineCount=0
-                for(let i=0;i<result.value.length;i++){
-                    const {value,index}=result.value[i]
-                    if(typeof value==='object'){
-                        lineCount++
-                    }else if(typeof value!=='string'){
-                        continue
-                    }else{
-                        lineCount+=value.split('\n').length
-                    }
-                    if(lineCount<=message.partialLine){
-                        continue
-                    }
-                    const position=editor.document.positionAt(index)
-                    editor.revealRange(new vscode.Range(position,position),3)
-                    return
-                }
-            }
-        },undefined,context.subscriptions)
+        createPreview(editor.document.uri,'',focusLine,'',context)
     })
     const stringify=vscode.commands.registerTextEditorCommand('st-lang.stringify',(editor,edit)=>{
         if(
@@ -453,4 +588,4 @@ export function activate(context: vscode.ExtensionContext) {
     })
 	context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,orbitCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,stringify,copyStringifyResult,copyId)
 }
-export function deactivate() {}
+export function deactivate(){}

@@ -1,4 +1,10 @@
 # Change Log
+## [0.5.0] - 2021-09-05
+### Added
+- Cross file ref support in preview.
+
+- Relative href support in preview.
+
 ## [0.3.2] - 2021-09-05
 ### Added
 - Underline for *src and *href.
@@ -125,6 +131,7 @@
 - Completion, reference and rename of labels.
 
 
+[0.5.0]: https://github.com/st-org/st-lang/compare/v0.3.2...v0.5.0
 [0.3.2]: https://github.com/st-org/st-lang/compare/v0.1.18...v0.3.2
 [0.1.18]: https://github.com/st-org/st-lang/compare/v0.1.0...v0.1.18
 [0.1.0]: https://github.com/st-org/st-lang/compare/v0.0.51...v0.1.0
