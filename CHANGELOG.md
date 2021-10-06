@@ -1,4 +1,8 @@
 # Change Log
+## [0.5.2] - 2021-10-07
+### Added
+- Update st-view.
+
 ## [0.5.1] - 2021-09-05
 ### Added
 - Cross file ref support in preview.
@@ -131,6 +135,7 @@
 - Completion, reference and rename of labels.
 
 
+[0.5.2]: https://github.com/st-org/st-lang/compare/v0.5.1...v0.5.2
 [0.5.1]: https://github.com/st-org/st-lang/compare/v0.3.2...v0.5.1
 [0.3.2]: https://github.com/st-org/st-lang/compare/v0.1.18...v0.3.2
 [0.1.18]: https://github.com/st-org/st-lang/compare/v0.1.0...v0.1.18
