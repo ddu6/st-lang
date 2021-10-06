@@ -4,7 +4,7 @@ import * as ston from 'ston'
 import * as stdn from 'stdn'
 import { IdType, extractIdsWithTag, extractIdsWithIndex, extractOrbitsWithTag } from './extract'
 import { URL } from 'url'
-const stViewVersion='0.2.11'
+const stViewVersion='0.2.12'
 function createPreviewHTML(src:string,focusURL:string,focusLine:number,focusId:string){
     return `<!DOCTYPE html>
     <html style="background:black" data-src=${
