@@ -16,7 +16,7 @@ function extractIdsWithTagFromSTDN(doc:stdn.STDN){
             const {id}=unit.options
             if(
                 typeof id==='string'
-                &&id!==''
+                &&id.length>0
             ){
                 out.push({
                     value:id,
@@ -28,7 +28,7 @@ function extractIdsWithTagFromSTDN(doc:stdn.STDN){
             const rid=unit.options['ref-id']
             if(
                 typeof rid==='string'
-                &&rid!==''
+                &&rid.length>0
             ){
                 out.push({
                     value:rid,
@@ -97,7 +97,7 @@ function extractIdsWithIndexFromSTONObjectValueWithIndex(object:ston.STONObjectV
     if(
         id!==undefined
         &&typeof id.value==='string'
-        &&id.value!==''
+        &&id.value.length>0
     ){
         out.push({
             value:id.value,
@@ -110,7 +110,7 @@ function extractIdsWithIndexFromSTONObjectValueWithIndex(object:ston.STONObjectV
     if(
         rid!==undefined
         &&typeof rid.value==='string'
-        &&rid.value!==''
+        &&rid.value.length>0
     ){
         out.push({
             value:rid.value,
@@ -169,7 +169,7 @@ function extractOrbitsWithTagFromSTDN(doc:stdn.STDN){
             const {orbit}=unit.options
             if(
                 typeof orbit==='string'
-                &&orbit!==''
+                &&orbit.length>0
                 &&orbitSet[orbit]===undefined
             ){
                 out.push({

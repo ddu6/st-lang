@@ -4,7 +4,7 @@ import * as ston from 'ston'
 import * as stdn from 'stdn'
 import { IdType, extractIdsWithTag, extractIdsWithIndex, extractOrbitsWithTag } from './extract'
 import { URL } from 'url'
-const stViewVersion='0.2.12'
+const stViewVersion='0.2.13'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -310,7 +310,7 @@ export function activate(context:vscode.ExtensionContext) {
                 return undefined
             }
             const {id,index,originalString}=getIdAtPosition(document,position)
-            if(id===''){
+            if(id.length===0){
                 return undefined
             }
             const contents=extractIdsWithTag(document.getText())
@@ -427,7 +427,7 @@ export function activate(context:vscode.ExtensionContext) {
                 return []
             }
             const {id,idsWithIndex}=getIdAtPosition(document,position)
-            if(id===''){
+            if(id.length===0){
                 return []
             }
             const out=idsWithIndex
@@ -453,7 +453,7 @@ export function activate(context:vscode.ExtensionContext) {
                 return undefined
             }
             const {id,index,originalString}=getIdAtPosition(document,position)
-            if(id===''){
+            if(id.length===0){
                 return undefined
             }
             return {
@@ -467,7 +467,7 @@ export function activate(context:vscode.ExtensionContext) {
                 return edit
             }
             const {id,idsWithIndex}=getIdAtPosition(document,position)
-            if(id===''){
+            if(id.length===0){
                 return edit
             }
             const idStr=ston.stringify(newName,{useUnquotedString:true})

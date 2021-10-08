@@ -1,7 +1,9 @@
 # Change Log
-## [0.5.4] - 2021-10-09
+## [0.5.5] - 2021-10-09
 ### Added
 - Update style patch.
+
+- Update st-view.
 
 ## [0.5.3] - 2021-10-07
 ### Added
@@ -139,7 +141,7 @@
 - Completion, reference and rename of labels.
 
 
-[0.5.4]: https://github.com/st-org/st-lang/compare/v0.5.3...v0.5.4
+[0.5.5]: https://github.com/st-org/st-lang/compare/v0.5.3...v0.5.5
 [0.5.3]: https://github.com/st-org/st-lang/compare/v0.5.1...v0.5.3
 [0.5.1]: https://github.com/st-org/st-lang/compare/v0.3.2...v0.5.1
 [0.3.2]: https://github.com/st-org/st-lang/compare/v0.1.18...v0.3.2
