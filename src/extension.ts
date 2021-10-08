@@ -5,6 +5,44 @@ import * as stdn from 'stdn'
 import { IdType, extractIdsWithTag, extractIdsWithIndex, extractOrbitsWithTag } from './extract'
 import { URL } from 'url'
 const stViewVersion='0.2.12'
+const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
+    --color-text: #cccccc;
+    --color-light: #8f8f8f;
+    --color-string: #df9e61;
+    --color-number: #B5CEA8;
+    --color-keyword: #cc80c6;
+    --color-function: #DCDCAA;
+    --color-variable: #6ec0ec;
+    --color-modifier: #3074ac;
+    --color-class: #4EC9B0;
+    --color-warn: #F44747;
+    --color-comment: #6A9955;
+    --color-border: #2e3133;
+    --color-bg: #131313;
+    --color-area: #161616;
+    --color-pre: #191b1d;
+    --color-slice: rgba(88, 88, 88, .5);
+    --color-selection: rgba(95, 144, 163, .5);
+    --color-span: rgba(58, 61, 65, .5);
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+body{
+    color:inherit;
+    font:inherit;
+    padding:0;
+}
+blockquote{
+    background:inherit;
+}
+code{
+    color:inherit;
+}
+kbd{
+    background:inherit;
+    color:inherit;
+    vertical-align:baseline;
+}`
 function createPreviewHTML(src:string,focusURL:string,focusLine:number,focusId:string){
     return `<!DOCTYPE html>
     <html style="background:black" data-src=${
@@ -16,22 +54,7 @@ function createPreviewHTML(src:string,focusURL:string,focusLine:number,focusId:s
     }>
         <body>
             <style>
-                body{
-                    color:inherit;
-                    font:inherit;
-                    padding:0;
-                }
-                blockquote{
-                    background:inherit;
-                }
-                code{
-                    color:inherit;
-                }
-                kbd{
-                    background:inherit;
-                    color:inherit;
-                    vertical-align:baseline;
-                }
+                ${stylePatch}
             </style>
             <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/dist/main.js"></script>
             <script type="module">
@@ -79,22 +102,7 @@ function createCodePreviewHTML(src:string,lang:string,path:string){
     }, block, code []}">
         <body>
             <style>
-                body{
-                    color:inherit;
-                    font:inherit;
-                    padding:0;
-                }
-                blockquote{
-                    background:inherit;
-                }
-                code{
-                    color:inherit;
-                }
-                kbd{
-                    background:inherit;
-                    color:inherit;
-                    vertical-align:baseline;
-                }
+                ${stylePatch}
             </style>
             <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/dist/main.js"></script>
         </body>
@@ -109,22 +117,7 @@ function createImgPreviewHTML(src:string,path:string){
     }, style display:block, img []}">
         <body>
             <style>
-                body{
-                    color:inherit;
-                    font:inherit;
-                    padding:0;
-                }
-                blockquote{
-                    background:inherit;
-                }
-                code{
-                    color:inherit;
-                }
-                kbd{
-                    background:inherit;
-                    color:inherit;
-                    vertical-align:baseline;
-                }
+                ${stylePatch}
             </style>
             <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/dist/main.js"></script>
         </body>
