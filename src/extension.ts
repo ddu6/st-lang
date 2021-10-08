@@ -170,8 +170,7 @@ function createPreview(uri:vscode.Uri,focusURL:string,focusLine:number,focusId:s
                     return
                 }
                 let lineCount=0
-                for(let i=0;i<result.value.length;i++){
-                    const {value,index}=result.value[i]
+                for(const {value,index} of result.value){
                     if(typeof value==='object'){
                         lineCount++
                     }else if(typeof value!=='string'){
@@ -270,8 +269,7 @@ function getIdAtPosition(document:vscode.TextDocument,position:vscode.Position){
     let index=0
     let type:IdType='id'
     let originalString=''
-    for(let i=0;i<result.length;i++){
-        const item=result[i]
+    for(const item of result){
         const idPosition=document.positionAt(item.index)
         if(
             idPosition.line>position.line
