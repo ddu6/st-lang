@@ -4,7 +4,7 @@ import * as ston from 'ston'
 import * as stdn from 'stdn'
 import { IdType, extractIdsWithTag, extractIdsWithIndex, extractOrbitsWithTag } from './extract'
 import { URL } from 'url'
-const stViewVersion='0.2.13'
+const stViewVersion='0.2.14'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -171,12 +171,8 @@ function createPreview(uri:vscode.Uri,focusURL:string,focusLine:number,focusId:s
                 }
                 let lineCount=0
                 for(const {value,index} of result.value){
-                    if(typeof value==='object'){
+                    if(typeof value==='object'||typeof value==='string'){
                         lineCount++
-                    }else if(typeof value!=='string'){
-                        continue
-                    }else{
-                        lineCount+=value.split('\n').length
                     }
                     if(lineCount<=message.partialLine){
                         continue
