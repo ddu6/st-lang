@@ -421,7 +421,7 @@
 					"name": "constant.language"
 				},
 				{
-					"begin": "(?<=(?:katex|aligned|alignedat|array|arraystretch|Bmatrix|bmatrix|cases|matrix|pmatrix|rcases|smallmatrix|Vmatrix|vmatrix)\\s*)\\[",
+					"begin": "(?<=(?:katex|align|alignat|aligned|alignedat|array|arraystretch|Bmatrix|bmatrix|cases|CD|darray|dcases|drcases|gather|matrix|pmatrix|rcases|smallmatrix|split|subarray|Vmatrix|vmatrix)\\s*)\\[",
 					"end": "\\]",
 					"patterns": [
 						{
