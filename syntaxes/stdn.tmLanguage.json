@@ -15,9 +15,6 @@
 			"include": "#string"
 		},
 		{
-			"include": "#heading"
-		},
-		{
 			"include": "#unit"
 		},
 		{
@@ -160,34 +157,6 @@
 				}
 			]
 		},
-		"heading": {
-			"begin": "\\{(?=[^\\[]*heading)",
-			"end": "\\}",
-			"name": "markup.heading",
-			"patterns": [
-				{
-					"include": "#blockComment"
-				},
-				{
-					"include": "#lineComment"
-				},
-				{
-					"include": "#value"
-				},
-				{
-					"include": "#key"
-				},
-				{
-					"include": "#comma"
-				},
-				{
-					"include": "#space"
-				},
-				{
-					"include": "#invalid"
-				}
-			]
-		},
 		"line": {
 			"begin": "\\[",
 			"end": "\\]",
@@ -200,9 +169,6 @@
 				},
 				{
 					"include": "#string"
-				},
-				{
-					"include": "#heading"
 				},
 				{
 					"include": "#unit"
@@ -239,9 +205,6 @@
 				},
 				{
 					"include": "#kstring"
-				},
-				{
-					"include": "#heading"
 				},
 				{
 					"include": "#unit"
@@ -283,9 +246,6 @@
 					"include": "#string"
 				},
 				{
-					"include": "#heading"
-				},
-				{
 					"include": "#unit"
 				},
 				{
@@ -323,9 +283,6 @@
 				},
 				{
 					"include": "#kstring"
-				},
-				{
-					"include": "#heading"
 				},
 				{
 					"include": "#unit"
@@ -421,7 +378,7 @@
 					"name": "constant.language"
 				},
 				{
-					"begin": "(?<=(?:katex|align|alignat|aligned|alignedat|array|arraystretch|Bmatrix|bmatrix|cases|CD|darray|dcases|drcases|gather|matrix|pmatrix|rcases|smallmatrix|split|subarray|Vmatrix|vmatrix)\\s*)\\[",
+					"begin": "(?<=(?:^|[,{}'])\\s*(?:katex|align|alignat|aligned|alignedat|array|arraystretch|Bmatrix|bmatrix|cases|CD|darray|dcases|drcases|gather|matrix|pmatrix|rcases|smallmatrix|split|subarray|Vmatrix|vmatrix)\\s*)\\[",
 					"end": "\\]",
 					"patterns": [
 						{
@@ -435,9 +392,6 @@
 						},
 						{
 							"include": "#kstring"
-						},
-						{
-							"include": "#heading"
 						},
 						{
 							"include": "#unit"
@@ -463,8 +417,9 @@
 					]
 				},
 				{
-					"begin": "(?<=[a-zA-Z0-9_-]+\\s*)\\[",
+					"begin": "(?<=(?:^|[,{}'])\\s*(?:heading|h1|h2|h3|h4|h5|h6)\\s*)\\[",
 					"end": "\\]",
+					"name": "markup.heading",
 					"patterns": [
 						{
 							"include": "#blockComment"
@@ -479,7 +434,43 @@
 							"include": "#string"
 						},
 						{
-							"include": "#heading"
+							"include": "#unit"
+						},
+						{
+							"include": "#comma"
+						},
+						{
+							"include": "#numberHolder"
+						},
+						{
+							"include": "#booleanHolder"
+						},
+						{
+							"include": "#unquotedString"
+						},
+						{
+							"include": "#space"
+						},
+						{
+							"include": "#invalid"
+						}
+					]
+				},
+				{
+					"begin": "(?<=[a-zA-Z0-9_-]+\\s*)\\[",
+					"end": "\\]",
+					"patterns": [
+						{
+							"include": "#blockComment"
+						},
+						{
+							"include": "#lineComment"
+						},
+						{
+							"include": "#line"
+						},
+						{
+							"include": "#string"
 						},
 						{
 							"include": "#unit"
