@@ -236,7 +236,7 @@ function getCurrentLine(editor:vscode.TextEditor){
     return Math.max(0,(stdn.parse(editor.document.getText(new vscode.Range(
         new vscode.Position(0,0),
         editor.visibleRanges[0].start
-    )))??[]).length-1)
+    )))??[]).length)
 }
 function getStringRange(document:vscode.TextDocument,index:number,string:string){
     const start=document.positionAt(index)
