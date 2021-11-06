@@ -4,7 +4,7 @@ import * as ston from 'ston'
 import * as stdn from 'stdn'
 import { IdType, extractIdsWithTag, extractIdsWithIndex, extractOrbitsWithTag } from './extract'
 import { URL } from 'url'
-const stViewVersion='0.2.41'
+const stViewVersion='0.2.42'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
