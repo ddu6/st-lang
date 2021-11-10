@@ -2,9 +2,9 @@ import * as vscode from 'vscode'
 import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
-import { IdType, extractIdsWithTag, extractIdsWithIndex, extractOrbitsWithTag } from './extract'
-import { URL } from 'url'
-const stViewVersion='0.2.44'
+import {IdType,extractIdsWithTag,extractIdsWithIndex,extractOrbitsWithTag} from './extract'
+import {URL} from 'url'
+const stViewVersion='0.3.0'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -288,6 +288,9 @@ function getIdAtPosition(document:vscode.TextDocument,position:vscode.Position){
         originalString,
         idsWithIndex:result
     }
+}
+function stringToId(string:string){
+    return string.replace(/[^\s\w-]/g,'').toLowerCase().trim().split(/[\s_-]+/).join('-')
 }
 export function activate(context:vscode.ExtensionContext) {
 	const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
@@ -575,8 +578,7 @@ export function activate(context:vscode.ExtensionContext) {
             return
         }
         vscode.env.clipboard.writeText(
-            editor.document.getText(editor.selection)
-            .split(/\s+/).map(val=>val.toLowerCase()).join('-')
+            stringToId(editor.document.getText(editor.selection))
         )
     })
 	context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,orbitCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,stringify,copyStringifyResult,copyId)
