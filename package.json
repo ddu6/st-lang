@@ -156,11 +156,11 @@
     },
     "devDependencies": {
         "@types/node": "^16.11.7",
-        "@types/vscode": "^1.60.0",
+        "@types/vscode": "^1.62.0",
         "typescript": "^4.4.4"
     },
     "dependencies": {
-        "stdn": "^0.2.4",
+        "stdn": "^0.2.5",
         "ston": "^0.2.3"
     }
 }
