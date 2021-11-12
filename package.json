@@ -148,9 +148,6 @@
             }
         ]
     },
-    "scripts": {
-        "compile": "tsc -p ./"
-    },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/st-org/st-lang.git"
