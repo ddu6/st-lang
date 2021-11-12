@@ -2,9 +2,9 @@
 	"compilerOptions": {
 		"outDir": "out",
 		"module": "commonjs",
-		"target": "ES6",
+		"target": "es6",
 		"lib": [
-			"ES2020"
+			"es2020"
 		],
 		"strict": true,
 		"sourceMap": true,
