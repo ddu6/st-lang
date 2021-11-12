@@ -3,7 +3,6 @@ import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
 import {IdType,extractIdsWithTag,extractIdsWithIndex,extractOrbitsWithTag} from './extract'
-import {URL} from 'url'
 const stViewVersion='0.3.12'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
@@ -67,59 +66,7 @@ function createPreviewHTML(src:string,focusURL:string,focusLine:number,focusId:s
                         partialLine,
                     })
                 })
-                window.openSrc=(src,id)=>{
-                    vscode.postMessage({
-                        type:'open-src',
-                        src,
-                        id,
-                    })
-                }
-                window.openCode=(src,lang)=>{
-                    vscode.postMessage({
-                        type:'open-code',
-                        src,
-                        lang,
-                    })
-                }
-                window.openImg=(src)=>{
-                    vscode.postMessage({
-                        type:'open-img',
-                        src,
-                    })
-                }
             </script>
-        </body>
-    </html>`
-}
-function createCodePreviewHTML(src:string,lang:string,path:string){
-    return `<!DOCTYPE html>
-    <html style="background:black" data-string="{block, code [${
-        JSON.stringify(ston.stringify(path)).slice(1,-1)
-    }]}{src ${
-        JSON.stringify(ston.stringify(src)).slice(1,-1)
-    }, lang ${
-        JSON.stringify(ston.stringify(lang)).slice(1,-1)
-    }, block, code []}">
-        <body>
-            <style>
-                ${stylePatch}
-            </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/dist/main.js"></script>
-        </body>
-    </html>`
-}
-function createImgPreviewHTML(src:string,path:string){
-    return `<!DOCTYPE html>
-    <html style="background:black" data-string="{block, code [${
-        JSON.stringify(ston.stringify(path)).slice(1,-1)
-    }]}{src ${
-        JSON.stringify(ston.stringify(src)).slice(1,-1)
-    }, style display:block, img []}">
-        <body>
-            <style>
-                ${stylePatch}
-            </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/dist/main.js"></script>
         </body>
     </html>`
 }
@@ -131,6 +78,7 @@ function createPreview(uri:vscode.Uri,focusURL:string,focusLine:number,focusId:s
         {
             enableScripts:true,
             enableFindWidget:true,
+            enableCommandUris:true,
         }
     )
     const src=panel.webview.asWebviewUri(uri).toString()
@@ -153,13 +101,13 @@ function createPreview(uri:vscode.Uri,focusURL:string,focusLine:number,focusId:s
     },undefined,context.subscriptions)
     panel.webview.onDidReceiveMessage(async message=>{
         if(message.type==='reverse-focus'){
-            const url0=new URL(message.url)
+            const uri0=vscode.Uri.parse(message.url)
             for(const editor of vscode.window.visibleTextEditors){
                 if(editor.document.languageId!=='stdn'){
                     continue
                 }
-                const url1=new URL(panel.webview.asWebviewUri(editor.document.uri).toString())
-                if(url1.origin!==url0.origin||url1.pathname!==url0.pathname){
+                const uri1=panel.webview.asWebviewUri(editor.document.uri)
+                if(uri1.authority!==uri0.authority||uri1.path!==uri0.path){
                     continue
                 }
                 const result=ston.parseWithIndex('['+editor.document.getText()+']',-1)
@@ -184,53 +132,7 @@ function createPreview(uri:vscode.Uri,focusURL:string,focusLine:number,focusId:s
             }
             return
         }
-        if(message.type==='open-src'){
-            const url0=new URL(message.src)
-            for(const uri of await vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')){
-                const url1=new URL(panel.webview.asWebviewUri(uri).toString())
-                if(url1.origin!==url0.origin||url1.pathname!==url0.pathname){
-                    continue
-                }
-                createPreview(uri,'',0,message.id,context)
-                return
-            }
-            return
-        }
-        if(message.type==='open-code'){
-            createCodePreview(message.src,message.lang)
-            return
-        }
-        if(message.type==='open-img'){
-            createImgPreview(message.src)
-            return
-        }
     },undefined,context.subscriptions)
-}
-function createCodePreview(src:string,lang:string){
-    const {pathname}=new URL(src)
-    const panel = vscode.window.createWebviewPanel(
-        'st-lang.code-preview',
-        pathname.replace(/^.*\//,''),
-        vscode.ViewColumn.Beside,
-        {
-            enableScripts:true,
-            enableFindWidget:true,
-        }
-    )
-    panel.webview.html=createCodePreviewHTML(src,lang,pathname)
-}
-function createImgPreview(src:string){
-    const {pathname}=new URL(src)
-    const panel = vscode.window.createWebviewPanel(
-        'st-lang.img-preview',
-        pathname.replace(/^.*\//,''),
-        vscode.ViewColumn.Beside,
-        {
-            enableScripts:true,
-            enableFindWidget:true,
-        }
-    )
-    panel.webview.html=createImgPreviewHTML(src,pathname)
 }
 function getCurrentLine(editor:vscode.TextEditor){
     return Math.max(0,(stdn.parse(editor.document.getText(new vscode.Range(
@@ -539,6 +441,9 @@ export function activate(context:vscode.ExtensionContext) {
         }
         createPreview(editor.document.uri,'',focusLine,'',context)
     })
+    const previewPath=vscode.commands.registerCommand('st-lang.preview-path',(path:string)=>{
+        createPreview(vscode.Uri.file(path),'',0,'',context)
+    })
     const stringify=vscode.commands.registerTextEditorCommand('st-lang.stringify',(editor,edit)=>{
         if(
             editor.document.languageId!=='stdn'
@@ -581,6 +486,6 @@ export function activate(context:vscode.ExtensionContext) {
             stringToId(editor.document.getText(editor.selection))
         )
     })
-	context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,orbitCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,stringify,copyStringifyResult,copyId)
+	context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,orbitCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,previewPath,stringify,copyStringifyResult,copyId)
 }
 export function deactivate(){}
