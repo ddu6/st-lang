@@ -6,6 +6,7 @@
     "main": "out/extension.js",
     "icon": "imgs/st.png",
     "publisher": "ddu",
+    "license": "MIT",
     "engines": {
         "vscode": "^1.60.0"
     },
