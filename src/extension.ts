@@ -3,7 +3,7 @@ import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
 import {IdType,extractIdsWithTag,extractIdsWithIndex,extractOrbitsWithTag} from './extract'
-const stViewVersion='0.3.12'
+const stViewVersion='0.4.1'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -55,10 +55,10 @@ function createPreviewHTML(src:string,focusURL:string,focusLine:number,focusId:s
             <style>
                 ${stylePatch}
             </style>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/dist/main.js"></script>
+            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"></script>
             <script type="module">
                 const vscode = acquireVsCodeApi()
-                viewer.dblClickLineListeners.push((line,url,partialLine)=>{
+                window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
                     vscode.postMessage({
                         type:'reverse-focus',
                         line,
