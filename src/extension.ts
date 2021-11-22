@@ -3,7 +3,7 @@ import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
 import {IdType,extractIdsWithTag,extractIdsWithIndex,extractOrbitsWithTag} from './extract'
-const stViewVersion='0.4.5'
+const stViewVersion='0.4.6'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -195,7 +195,7 @@ function stringToId(string:string){
     return string.replace(/[^\s\w-]/g,'').toLowerCase().trim().split(/[\s_-]+/).join('-')
 }
 export function activate(context:vscode.ExtensionContext) {
-	const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
+    const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
         provideCompletionItems(document,position) {
             if(document.getWordRangeAtPosition(position,/\\[a-zA-Z]*/)===undefined){
                 return []
@@ -486,6 +486,6 @@ export function activate(context:vscode.ExtensionContext) {
             stringToId(editor.document.getText(editor.selection))
         )
     })
-	context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,orbitCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,previewPath,stringify,copyStringifyResult,copyId)
+    context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,orbitCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,previewPath,stringify,copyStringifyResult,copyId)
 }
 export function deactivate(){}
