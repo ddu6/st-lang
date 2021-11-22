@@ -441,8 +441,8 @@ export function activate(context:vscode.ExtensionContext) {
         }
         createPreview(editor.document.uri,'',focusLine,'',context)
     })
-    const previewPath=vscode.commands.registerCommand('st-lang.preview-path',(path:string)=>{
-        createPreview(vscode.Uri.file(path),'',0,'',context)
+    const previewPath=vscode.commands.registerCommand('st-lang.preview-path',(path:string,focusURL='',focusLine=0,focusId='')=>{
+        createPreview(vscode.Uri.file(path),focusURL,focusLine,focusId,context)
     })
     const stringify=vscode.commands.registerTextEditorCommand('st-lang.stringify',(editor,edit)=>{
         if(
