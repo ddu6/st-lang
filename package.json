@@ -153,9 +153,9 @@
         "url": "git+https://github.com/st-org/st-lang.git"
     },
     "devDependencies": {
-        "@types/node": "^16.11.7",
+        "@types/node": "^16.11.9",
         "@types/vscode": "^1.60.0",
-        "typescript": "^4.4.4"
+        "typescript": "^4.5.2"
     },
     "dependencies": {
         "stdn": "^0.2.5",
