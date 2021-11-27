@@ -38,6 +38,12 @@ const stylePatch = `html:not([data-color-scheme=light])>body.vscode-dark{
     color: var(--color-text);
     background-color: var(--color-bg);
 }
+html:not([data-color-scheme=light])>body.vscode-dark .dark{
+    filter: brightness(.5);
+}
+html:not([data-color-scheme=light])>body.vscode-dark .invert{
+    filter: invert(.9147982) brightness(.8745098);
+}
 body{
     color:inherit;
     font:inherit;
