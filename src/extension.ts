@@ -197,6 +197,20 @@ function getIdAtPosition(document:vscode.TextDocument,position:vscode.Position){
         idsWithIndex:result
     }
 }
+function stdnToInlinePlainString(stdn:stdn.STDN){
+    if(stdn.length===0){
+        return ''
+    }
+    let string=''
+    for(const inline of stdn[0]){
+        if(typeof inline==='string'){
+            string+=inline
+            continue
+        }
+        string+=stdnToInlinePlainString(inline.children)
+    }
+    return string
+}
 function stringToId(string:string){
     return Array.from(string.slice(0,100).matchAll(/[a-zA-Z0-9]+/g)).join('-').toLowerCase()
 }
@@ -488,8 +502,13 @@ export function activate(context:vscode.ExtensionContext) {
         ){
             return
         }
+        let string=editor.document.getText(editor.selection)
+        const result=stdn.parse(string)
+        if(result!==undefined){
+            string=stdnToInlinePlainString(result)
+        }
         vscode.env.clipboard.writeText(
-            stringToId(editor.document.getText(editor.selection))
+            stringToId(string)
         )
     })
     context.subscriptions.push(backslash,idHover,ridCompletion,hrefCompletion,orbitCompletion,idReference,idRename,formatSTDN,formatURLs,formatSTON,preview,previewPath,stringify,copyStringifyResult,copyId)
