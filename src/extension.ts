@@ -3,7 +3,7 @@ import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
 import {IdType,extractIdsWithTag,extractIdsWithIndex,extractOrbitsWithTag} from './extract'
-const stViewVersion='0.4.13'
+const stViewVersion='0.4.14'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -198,7 +198,7 @@ function getIdAtPosition(document:vscode.TextDocument,position:vscode.Position){
     }
 }
 function stringToId(string:string){
-    return string.replace(/[^\s\w-]/g,'').toLowerCase().trim().split(/[\s_-]+/).join('-')
+    return Array.from(string.slice(0,100).matchAll(/[a-zA-Z0-9]+/g)).join('-').toLowerCase()
 }
 export function activate(context:vscode.ExtensionContext) {
     const backslash = vscode.languages.registerCompletionItemProvider('stdn', {

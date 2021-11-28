@@ -15,7 +15,7 @@ const katex_1 = require("./katex");
 const ston = require("ston");
 const stdn = require("stdn");
 const extract_1 = require("./extract");
-const stViewVersion = '0.4.13';
+const stViewVersion = '0.4.14';
 const stylePatch = `html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -193,7 +193,7 @@ function getIdAtPosition(document, position) {
     };
 }
 function stringToId(string) {
-    return string.replace(/[^\s\w-]/g, '').toLowerCase().trim().split(/[\s_-]+/).join('-');
+    return Array.from(string.slice(0, 100).matchAll(/[a-zA-Z0-9]+/g)).join('-').toLowerCase();
 }
 function activate(context) {
     const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
