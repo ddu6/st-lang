@@ -105,6 +105,22 @@
 				{
 					"match": "\\d+",
 					"name": "constant.numeric"
+				},
+				{
+					"match": "$",
+					"name": "invalid.illegal"
+				},
+				{
+					"match": "[{}#^_~]",
+					"name": "meta.template.expression.punctuation"
+				},
+				{
+					"match": "&",
+					"name": "keyword.control"
+				},
+				{
+					"match": "%.*$",
+					"name": "comment.line"
 				}
 			]
 		},
@@ -125,6 +141,22 @@
 						{
 							"match": "\\d+",
 							"name": "constant.numeric"
+						},
+						{
+							"match": "$",
+							"name": "invalid.illegal"
+						},
+						{
+							"match": "[{}#^_~]",
+							"name": "meta.template.expression.punctuation"
+						},
+						{
+							"match": "&",
+							"name": "keyword.control"
+						},
+						{
+							"match": "%.*$",
+							"name": "comment.line"
 						}
 					]
 				}
