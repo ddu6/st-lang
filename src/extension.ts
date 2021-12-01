@@ -2,8 +2,9 @@ import * as vscode from 'vscode'
 import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
+import {stdnToInlinePlainString,stringToId} from '@ddu6/stc/dist/base'
 import {IdType,extractIdsWithTag,extractIdsWithIndex,extractOrbitsWithTag} from './extract'
-const stViewVersion='0.4.17'
+const stViewVersion='0.5.0'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -196,23 +197,6 @@ function getIdAtPosition(document:vscode.TextDocument,position:vscode.Position){
         originalString,
         idsWithIndex:result
     }
-}
-function stdnToInlinePlainString(stdn:stdn.STDN){
-    if(stdn.length===0){
-        return ''
-    }
-    let string=''
-    for(const inline of stdn[0]){
-        if(typeof inline==='string'){
-            string+=inline
-            continue
-        }
-        string+=stdnToInlinePlainString(inline.children)
-    }
-    return string
-}
-function stringToId(string:string){
-    return Array.from(string.slice(0,100).matchAll(/[a-zA-Z0-9]+/g)).join('-').toLowerCase()
 }
 export function activate(context:vscode.ExtensionContext) {
     const backslash = vscode.languages.registerCompletionItemProvider('stdn', {

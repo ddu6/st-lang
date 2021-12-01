@@ -14,8 +14,9 @@ const vscode = require("vscode");
 const katex_1 = require("./katex");
 const ston = require("ston");
 const stdn = require("stdn");
+const base_1 = require("@ddu6/stc/dist/base");
 const extract_1 = require("./extract");
-const stViewVersion = '0.4.17';
+const stViewVersion = '0.5.0';
 const stylePatch = `html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -191,23 +192,6 @@ function getIdAtPosition(document, position) {
         originalString,
         idsWithIndex: result
     };
-}
-function stdnToInlinePlainString(stdn) {
-    if (stdn.length === 0) {
-        return '';
-    }
-    let string = '';
-    for (const inline of stdn[0]) {
-        if (typeof inline === 'string') {
-            string += inline;
-            continue;
-        }
-        string += stdnToInlinePlainString(inline.children);
-    }
-    return string;
-}
-function stringToId(string) {
-    return Array.from(string.slice(0, 100).matchAll(/[a-zA-Z0-9]+/g)).join('-').toLowerCase();
 }
 function activate(context) {
     const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
@@ -479,9 +463,9 @@ function activate(context) {
         let string = editor.document.getText(editor.selection);
         const result = stdn.parse(string);
         if (result !== undefined) {
-            string = stdnToInlinePlainString(result);
+            string = (0, base_1.stdnToInlinePlainString)(result);
         }
-        vscode.env.clipboard.writeText(stringToId(string));
+        vscode.env.clipboard.writeText((0, base_1.stringToId)(string));
     });
     context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, preview, previewPath, stringify, copyStringifyResult, copyId);
 }
