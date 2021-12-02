@@ -3,7 +3,7 @@ import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
 import {IdType,extractIdsWithTag,extractIdsWithIndex,extractOrbitsWithTag} from './extract'
-const stViewVersion='0.5.2'
+const stViewVersion='0.5.3'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -57,10 +57,12 @@ function createPreviewHTML(src:string,focusURL:string,focusLine:number,focusId:s
     } data-focus-line=${focusLine} data-focus-id=${
         JSON.stringify(focusId)
     }>
-        <body>
+        <head>
             <style>
                 ${stylePatch}
             </style>
+        </head>
+        <body>
             <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"></script>
             <script type="module">
                 const vscode = acquireVsCodeApi()
