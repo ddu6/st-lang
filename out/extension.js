@@ -15,7 +15,7 @@ const katex_1 = require("./katex");
 const ston = require("ston");
 const stdn = require("stdn");
 const extract_1 = require("./extract");
-const stViewVersion = '0.5.3';
+const stViewVersion = '0.5.4';
 const stylePatch = `html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
@@ -195,18 +195,20 @@ function getIdAtPosition(document, position) {
     };
 }
 function stdnToInlinePlainString(stdn) {
-    if (stdn.length === 0) {
-        return '';
-    }
-    let string = '';
-    for (const inline of stdn[0]) {
-        if (typeof inline === 'string') {
-            string += inline;
-            continue;
+    for (const line of stdn) {
+        let string = '';
+        for (const inline of line) {
+            if (typeof inline === 'string') {
+                string += inline;
+                continue;
+            }
+            string += stdnToInlinePlainString(inline.children);
         }
-        string += stdnToInlinePlainString(inline.children);
+        if (string.length > 0) {
+            return string;
+        }
     }
-    return string;
+    return '';
 }
 function stringToId(string) {
     return Array.from(string.slice(0, 100).matchAll(/[a-zA-Z0-9]+/g)).join('-').toLowerCase();
