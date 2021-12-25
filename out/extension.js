@@ -15,7 +15,7 @@ const katex_1 = require("./katex");
 const ston = require("ston");
 const stdn = require("stdn");
 const extract_1 = require("./extract");
-const stViewVersion = '0.6.0';
+const stViewVersion = '0.7.0';
 const stylePatch = `html:not([data-color-scheme=light])>body.vscode-dark{
     --color-text: #cccccc;
     --color-light: #8f8f8f;
