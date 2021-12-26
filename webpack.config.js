@@ -3,6 +3,7 @@ module.exports = {
     externals: {
         vscode: 'commonjs vscode'
     },
+    mode: 'production',
     output: {
         path: __dirname,
         filename: 'extension.js',

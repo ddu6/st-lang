@@ -20,7 +20,7 @@
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {
-    "@types/vscode": "^1.60.0",
+    "@types/vscode": "^1.63.1",
     "stdn": "^0.3.1",
     "ston": "^0.3.3"
   },
