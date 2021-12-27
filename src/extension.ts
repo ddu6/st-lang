@@ -4,7 +4,7 @@ import * as vscode from 'vscode'
 import {cmds} from './katex'
 import {IdType,extractIdsWithTag,extractIdsWithIndex,extractOrbitsWithTag} from './extract'
 const stViewVersion='0.14.0'
-const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
+const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark {
     --color-text: #cccccc;
     --color-light: #8f8f8f;
     --color-string: #df9e61;
@@ -23,30 +23,41 @@ const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
     --color-slice: rgba(88, 88, 88, .5);
     --color-selection: rgba(95, 144, 163, .5);
     --color-span: rgba(58, 61, 65, .5);
-    color: var(--color-text);
     background-color: var(--color-bg);
+    color: var(--color-text);
 }
-html:not([data-color-scheme=light])>body.vscode-dark .dark{
+
+html:not([data-color-scheme=light])>body.vscode-dark .dark {
     filter: brightness(.5);
 }
-html:not([data-color-scheme=light])>body.vscode-dark .invert{
+
+html:not([data-color-scheme=light])>body.vscode-dark .invert {
     filter: invert(.9147982) brightness(.8745098);
 }
-body{
-    color:inherit;
-    font:inherit;
-    padding:0;
+
+body {
+    color: inherit;
+    font: inherit;
+    padding: 0;
 }
-blockquote{
-    background:inherit;
+
+a:focus {
+    outline: none;
 }
-code{
-    color:inherit;
+
+blockquote {
+    background: inherit;
 }
-kbd{
-    background:inherit;
-    color:inherit;
-    vertical-align:baseline;
+
+code {
+    color: inherit;
+}
+
+kbd {
+    background: inherit;
+    box-shadow: none;
+    color: inherit;
+    vertical-align: baseline;
 }`
 function createPreviewHTML(src:string,focusURL:string,focusLine:number,focusId:string){
     return `<!DOCTYPE html>
