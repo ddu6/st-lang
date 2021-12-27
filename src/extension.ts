@@ -46,7 +46,7 @@ a:focus {
 }
 
 blockquote {
-    background: inherit;
+    background-color: transparent;
 }
 
 code {
@@ -54,7 +54,7 @@ code {
 }
 
 kbd {
-    background: inherit;
+    background-color: transparent;
     box-shadow: none;
     color: inherit;
     vertical-align: baseline;
