@@ -10,10 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
-const vscode = require("vscode");
-const katex_1 = require("./katex");
 const ston = require("ston");
 const stdn = require("stdn");
+const vscode = require("vscode");
+const katex_1 = require("./katex");
 const extract_1 = require("./extract");
 const stViewVersion = '0.12.0';
 const stylePatch = `html:not([data-color-scheme=light])>body.vscode-dark{

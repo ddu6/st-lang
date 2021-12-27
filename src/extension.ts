@@ -1,7 +1,7 @@
-import * as vscode from 'vscode'
-import {cmds} from './katex'
 import * as ston from 'ston'
 import * as stdn from 'stdn'
+import * as vscode from 'vscode'
+import {cmds} from './katex'
 import {IdType,extractIdsWithTag,extractIdsWithIndex,extractOrbitsWithTag} from './extract'
 const stViewVersion='0.12.0'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark{
