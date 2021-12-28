@@ -133,15 +133,15 @@ function extractIdsWithIndexFromSTONObjectValueWithIndex(object:ston.STONObjectV
         })
     }
     for(const key of Object.keys(object)){
-        const value=(object[key]??{}).value
-        if(typeof value!=='object'){
+        const value=object[key]
+        if(value===undefined||typeof value.value!=='object'){
             continue
         }
-        if(Array.isArray(value)){
-            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value))
+        if(Array.isArray(value.value)){
+            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value.value))
             continue
         }
-        out.push(...extractIdsWithIndexFromSTONObjectValueWithIndex(value))
+        out.push(...extractIdsWithIndexFromSTONObjectValueWithIndex(value.value))
     }
     return out
 }

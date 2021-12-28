@@ -74,7 +74,6 @@ function extractIdsWithIndexFromSTONArrayValueWithIndex(array) {
     return out;
 }
 function extractIdsWithIndexFromSTONObjectValueWithIndex(object) {
-    var _a;
     const out = [];
     const { id } = object;
     if (id !== undefined
@@ -110,15 +109,15 @@ function extractIdsWithIndexFromSTONObjectValueWithIndex(object) {
         });
     }
     for (const key of Object.keys(object)) {
-        const value = ((_a = object[key]) !== null && _a !== void 0 ? _a : {}).value;
-        if (typeof value !== 'object') {
+        const value = object[key];
+        if (value === undefined || typeof value.value !== 'object') {
             continue;
         }
-        if (Array.isArray(value)) {
-            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value));
+        if (Array.isArray(value.value)) {
+            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value.value));
             continue;
         }
-        out.push(...extractIdsWithIndexFromSTONObjectValueWithIndex(value));
+        out.push(...extractIdsWithIndexFromSTONObjectValueWithIndex(value.value));
     }
     return out;
 }
