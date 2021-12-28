@@ -3,7 +3,7 @@ import * as stdn from 'stdn'
 import * as vscode from 'vscode'
 import {cmds} from './katex'
 import {IdType,extractIdsWithTag,extractIdsWithIndex,extractOrbitsWithTag} from './extract'
-const stViewVersion='0.15.1'
+const stViewVersion='0.16.0'
 const stylePatch=`html:not([data-color-scheme=light])>body.vscode-dark {
     --color-text: #cccccc;
     --color-light: #8f8f8f;
