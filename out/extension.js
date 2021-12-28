@@ -153,8 +153,11 @@ function createPreview(uri, focusURL, focusLine, focusId, context) {
     }), undefined, context.subscriptions);
 }
 function getCurrentLine(editor) {
-    var _a;
-    return Math.max(0, ((_a = stdn.parse(editor.document.getText(new vscode.Range(new vscode.Position(0, 0), editor.visibleRanges[0].start)))) !== null && _a !== void 0 ? _a : []).length);
+    const result = stdn.parse(editor.document.getText(new vscode.Range(new vscode.Position(0, 0), editor.visibleRanges[0].start)));
+    if (result === undefined) {
+        return 0;
+    }
+    return Math.max(0, result.length);
 }
 function getStringRange(document, index, string) {
     const start = document.positionAt(index);

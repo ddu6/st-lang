@@ -154,10 +154,11 @@ function createPreview(uri:vscode.Uri,focusURL:string,focusLine:number,focusId:s
     },undefined,context.subscriptions)
 }
 function getCurrentLine(editor:vscode.TextEditor){
-    return Math.max(0,(stdn.parse(editor.document.getText(new vscode.Range(
-        new vscode.Position(0,0),
-        editor.visibleRanges[0].start
-    )))??[]).length)
+    const result=stdn.parse(editor.document.getText(new vscode.Range(new vscode.Position(0,0),editor.visibleRanges[0].start)))
+    if(result===undefined){
+        return 0
+    }
+    return Math.max(0,result.length)
 }
 function getStringRange(document:vscode.TextDocument,index:number,string:string){
     const start=document.positionAt(index)
