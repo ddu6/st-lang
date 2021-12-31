@@ -1,6 +1,6 @@
 {
   "name": "st-lang",
-  "version": "0.17.3",
+  "version": "0.17.4",
   "displayName": "ST Lang",
   "description": "Highlight, preview and more for st lang",
   "main": "extension.js",
