@@ -440,7 +440,7 @@ export function activate(context:vscode.ExtensionContext) {
                         indentLevel:-1,
                         indentTarget:'all',
                         useUnquotedString:true,
-                    }).slice(2,-2)
+                    }).slice(1,-1).trim()
                 )
             ]
         }
