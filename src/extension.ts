@@ -61,10 +61,7 @@ kbd {
 }`
 function createPreviewHTML(src: string, focusURL: string, focusLine: number, focusId: string) {
     return `<!DOCTYPE html>
-<html style="background:black" data-src=${JSON.stringify(src + '?r=' + Math.random())
-    } data-focus-url=${JSON.stringify(focusURL)
-    } data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)
-    }>
+<html style="background:black" data-src=${JSON.stringify(src + '?r=' + Math.random())} data-focus-url=${JSON.stringify(focusURL)} data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)}>
     <head>
         <style>
             ${stylePatch}
