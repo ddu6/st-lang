@@ -53,10 +53,6 @@ body {
     padding: 0;
 }
 
-a:focus {
-    outline: none;
-}
-
 blockquote {
     background-color: transparent;
 }
@@ -65,8 +61,10 @@ code {
     color: inherit;
 }
 
-kbd {
+kbd,
+.vscode-light kbd {
     background-color: transparent;
+    border: 1px solid var(--color-border);
     box-shadow: none;
     color: inherit;
     vertical-align: baseline;
