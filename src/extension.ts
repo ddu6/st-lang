@@ -61,30 +61,30 @@ kbd {
 }`
 function createPreviewHTML(src: string, focusURL: string, focusLine: number, focusId: string) {
     return `<!DOCTYPE html>
-    <html style="background:black" data-src=${JSON.stringify(src + '?r=' + Math.random())
-        } data-focus-url=${JSON.stringify(focusURL)
-        } data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)
-        }>
-        <head>
-            <style>
-                ${stylePatch}
-            </style>
-        </head>
-        <body>
-            <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"></script>
-            <script type="module">
-                const vscode = acquireVsCodeApi()
-                window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
-                    vscode.postMessage({
-                        type:'reverse-focus',
-                        line,
-                        url,
-                        partialLine,
-                    })
+<html style="background:black" data-src=${JSON.stringify(src + '?r=' + Math.random())
+    } data-focus-url=${JSON.stringify(focusURL)
+    } data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)
+    }>
+    <head>
+        <style>
+            ${stylePatch}
+        </style>
+    </head>
+    <body>
+        <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"></script>
+        <script type="module">
+            const vscode = acquireVsCodeApi()
+            window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
+                vscode.postMessage({
+                    type:'reverse-focus',
+                    line,
+                    url,
+                    partialLine,
                 })
-            </script>
-        </body>
-    </html>`
+            })
+        </script>
+    </body>
+</html>`
 }
 function createPreview(uri: vscode.Uri, focusURL: string, focusLine: number, focusId: string, context: vscode.ExtensionContext) {
     const panel = vscode.window.createWebviewPanel(
