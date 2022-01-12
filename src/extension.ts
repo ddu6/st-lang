@@ -2,9 +2,11 @@ import * as ston from 'ston'
 import * as stdn from 'stdn'
 import * as vscode from 'vscode'
 import {cmds} from './katex'
-import {IdType, extractIdsWithTag, extractIdsWithIndex, extractOrbitsWithTag} from './extract'
-const stViewVersion = '0.23.1'
-const stylePatch = `html:not([data-color-scheme=light])>body.vscode-dark {
+import {extractIdsWithIndex, extractIdsWithTag, extractOrbitsWithTag, IdType} from './extract'
+const stViewVersion = '0.24.0'
+const css = `@import url(https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.css);
+
+html:not([data-color-scheme=light])>body.vscode-dark {
     --color-text: #cccccc;
     --color-light: #8f8f8f;
     --color-string: #df9e61;
@@ -60,25 +62,28 @@ kbd,
 function createPreviewHTML(src: string, focusURL: string, focusLine: number, focusId: string) {
     return `<!DOCTYPE html>
 <html style="background:black" data-src=${JSON.stringify(src + '?r=' + Math.random())} data-focus-url=${JSON.stringify(focusURL)} data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)}>
-    <head>
-        <style>
-            ${stylePatch}
-        </style>
-    </head>
-    <body>
-        <script type="module" src="https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"></script>
-        <script type="module">
-            const vscode = acquireVsCodeApi()
-            window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
-                vscode.postMessage({
-                    type:'reverse-focus',
-                    line,
-                    url,
-                    partialLine,
-                })
+
+<head>
+    <style>
+        ${css}
+    </style>
+</head>
+
+<body>
+    <script type="module">
+        import "https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"
+        const vscode = acquireVsCodeApi()
+        window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
+            vscode.postMessage({
+                type:'reverse-focus',
+                line,
+                url,
+                partialLine,
             })
-        </script>
-    </body>
+        })
+    </script>
+</body>
+
 </html>`
 }
 function createPreview(uri: vscode.Uri, focusURL: string, focusLine: number, focusId: string, context: vscode.ExtensionContext) {
