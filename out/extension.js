@@ -15,7 +15,7 @@ const stdn = require("stdn");
 const vscode = require("vscode");
 const katex_1 = require("./katex");
 const extract_1 = require("./extract");
-const stViewVersion = '0.24.4';
+const stViewVersion = '0.25.0';
 const css = `@import url(https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.css);
 
 html:not([data-color-scheme=light])>body.vscode-dark {
@@ -26,7 +26,7 @@ html:not([data-color-scheme=light])>body.vscode-dark {
     --color-keyword: #cc80c6;
     --color-function: #DCDCAA;
     --color-variable: #6ec0ec;
-    --color-modifier: #3074ac;
+    --color-modifier: #5991cc;
     --color-class: #4EC9B0;
     --color-warn: #F44747;
     --color-comment: #6A9955;
