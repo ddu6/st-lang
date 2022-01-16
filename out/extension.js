@@ -15,38 +15,40 @@ const stdn = require("stdn");
 const vscode = require("vscode");
 const katex_1 = require("./katex");
 const extract_1 = require("./extract");
-const stViewVersion = '0.25.0';
+const stViewVersion = '0.26.1';
 const css = `@import url(https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.css);
 
 html:not([data-color-scheme=light])>body.vscode-dark {
-    --color-text: #cccccc;
-    --color-light: #8f8f8f;
-    --color-string: #df9e61;
-    --color-number: #B5CEA8;
-    --color-keyword: #cc80c6;
-    --color-function: #DCDCAA;
-    --color-variable: #6ec0ec;
-    --color-modifier: #5991cc;
-    --color-class: #4EC9B0;
-    --color-warn: #F44747;
-    --color-comment: #6A9955;
-    --color-border: #2e3133;
-    --color-bg: #131313;
-    --color-area: #161616;
-    --color-pre: #191b1d;
-    --color-slice: rgba(88, 88, 88, .5);
-    --color-selection: rgba(95, 144, 163, .5);
-    --color-span: rgba(58, 61, 65, .5);
-    background-color: var(--color-bg);
+    --color-text: rgb(204 204 204);
+    --color-light: rgb(110 110 110);
+    --color-border: rgb(43 43 43);
+    --color-pre: rgb(24 24 24);
+    --color-background: rgb(17 17 17);
+    --color-warn: rgb(204 111 111);
+    --color-string: rgb(204 162 111);
+    --color-function: rgb(190 171 122);
+    --color-number: rgb(111 157 111);
+    --color-comment: rgb(129 186 129);
+    --color-class: rgb(133 176 152);
+    --color-modifier: rgb(122 163 204);
+    --color-variable: rgb(111 181 204);
+    --color-keyword: rgb(183 118 159);
+    --color-slice: rgb(94 94 94 / .5);
+    --color-selection: rgb(67 93 103 / .5);
+    background-color: var(--color-background);
     color: var(--color-text);
 }
 
-html:not([data-color-scheme=light])>body.vscode-dark .dark {
-    filter: brightness(.5);
+html:not([data-color-scheme=light])>body.vscode-dark .invert {
+    filter: brightness(calc(11 / 12)) invert(1) brightness(.8);
 }
 
-html:not([data-color-scheme=light])>body.vscode-dark .invert {
-    filter: invert(.9147982) brightness(.8745098);
+html:not([data-color-scheme=light])>body.vscode-dark .light {
+    filter: brightness(calc(11 / 14)) invert(.325) brightness(calc(4 / 3));
+}
+
+html:not([data-color-scheme=light])>body.vscode-dark .dark {
+    filter: brightness(.6875) invert(.1) brightness(calc(2 / 3));
 }
 
 body {
@@ -73,7 +75,7 @@ kbd,
 }`;
 function createPreviewHTML(src, focusURL, focusLine, focusId) {
     return `<!DOCTYPE html>
-<html style="background:black" data-src=${JSON.stringify(src + '?r=' + Math.random())} data-focus-url=${JSON.stringify(focusURL)} data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)}>
+<html data-src=${JSON.stringify(src + '?r=' + Math.random())} data-focus-url=${JSON.stringify(focusURL)} data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)}>
 
 <head>
     <style>
