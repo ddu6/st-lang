@@ -15,7 +15,7 @@ const stdn = require("stdn");
 const vscode = require("vscode");
 const katex_1 = require("./katex");
 const extract_1 = require("./extract");
-const stViewVersion = '0.26.1';
+const stViewVersion = '0.26.2';
 const css = `@import url(https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.css);
 
 html:not([data-color-scheme=light])>body.vscode-dark {
