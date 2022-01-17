@@ -49,8 +49,13 @@ blockquote {
     background-color: transparent;
 }
 
-code {
+code,
+a code {
     color: inherit;
+}
+
+img {
+    max-height: none;
 }
 
 kbd,
