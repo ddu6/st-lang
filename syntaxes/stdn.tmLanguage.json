@@ -99,7 +99,7 @@
 					"name": "constant.character.escape"
 				},
 				{
-					"match": "\\\\[a-zA-Z]+",
+					"match": "\\\\[a-zA-Z]+\\*?",
 					"name": "support.function.katex"
 				},
 				{
@@ -135,7 +135,7 @@
 							"name": "keyword.control"
 						},
 						{
-							"match": "\\\\[a-zA-Z]+",
+							"match": "\\\\[a-zA-Z]+\\*?",
 							"name": "support.function.katex"
 						},
 						{
