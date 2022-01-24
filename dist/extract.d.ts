@@ -8,7 +8,7 @@ export declare function extractIdsWithTag(string: string): {
 export declare function extractIdsWithIndex(string: string): {
     value: string;
     index: number;
-    type: "href" | "id" | "ref-id";
+    type: "id" | "ref-id" | "href";
     originalString: string;
 }[];
 export declare function extractOrbitsWithTag(string: string): {

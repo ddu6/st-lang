@@ -3,7 +3,7 @@
   "version": "0.26.8",
   "displayName": "ST Lang",
   "description": "Highlight, preview and more for st lang",
-  "main": "extension.js",
+  "main": "mod.js",
   "icon": "imgs/st.png",
   "scripts": {
     "build": "tsc && webpack"

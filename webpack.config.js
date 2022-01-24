@@ -1,11 +1,11 @@
 module.exports = {
-    entry: './out/extension.js',
+    entry: './dist/mod.js',
     externals: {
         vscode: 'commonjs vscode'
     },
     mode: 'production',
     output: {
-        filename: 'extension.js',
+        filename: 'mod.js',
         library: {
             type: 'commonjs2'
         },

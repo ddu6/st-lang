@@ -2,12 +2,12 @@
     "compilerOptions": {
         "declaration": true,
         "module": "CommonJS",
-        "outDir": "out",
+        "outDir": "dist",
         "lib": [
             "ES2020"
         ],
         "strict": true,
-        "target": "es6",
+        "target": "ES6",
     },
     "include": [
         "src/**/*"
