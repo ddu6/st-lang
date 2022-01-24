@@ -6,7 +6,9 @@ module.exports = {
     mode: 'production',
     output: {
         filename: 'extension.js',
-        libraryTarget: 'commonjs2',
+        library: {
+            type: 'commonjs2'
+        },
         path: __dirname
     },
     target: 'webworker'
