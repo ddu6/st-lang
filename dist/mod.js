@@ -80,7 +80,7 @@ kbd,
 }`;
 function createPreviewHTML(src, focusURL, focusLine, focusId) {
     return `<!DOCTYPE html>
-<html data-src=${JSON.stringify(src + '?r=' + Math.random())} data-focus-url=${JSON.stringify(focusURL)} data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)}>
+<html data-src=${JSON.stringify(`${src}?r=${Math.random()}`)} data-focus-url=${JSON.stringify(focusURL)} data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)}>
 
 <head>
     <style>
@@ -92,7 +92,7 @@ function createPreviewHTML(src, focusURL, focusLine, focusId) {
     <script type="module">
         import "https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"
         const vscode = acquireVsCodeApi()
-        window.viewer.dblClickLineListeners.push((line,url,partialLine)=>{
+        window.viewer.dblClickLineListeners.push(({line,url,partialLine})=>{
             vscode.postMessage({
                 type:'reverse-focus',
                 line,
@@ -140,7 +140,7 @@ function createPreview(uri, focusURL, focusLine, focusId, context) {
                 if (uri1.authority !== uri0.authority || uri1.path !== uri0.path) {
                     continue;
                 }
-                const result = ston.parseWithIndex('[' + editor.document.getText() + ']', -1);
+                const result = ston.parseWithIndex(`[${editor.document.getText()}]`, -1);
                 if (result === undefined
                     || !Array.isArray(result.value)) {
                     return;
@@ -243,7 +243,7 @@ function activate(context) {
             if (document.getWordRangeAtPosition(position, /\\[a-zA-Z]*/) === undefined) {
                 return [];
             }
-            return katex_1.cmds.map(val => new vscode.CompletionItem(val, 2));
+            return katex_1.cmds.map(value => new vscode.CompletionItem(value, 2));
         }
     }, '\\');
     const idHover = vscode.languages.registerHoverProvider('stdn', {
@@ -257,16 +257,16 @@ function activate(context) {
                     return undefined;
                 }
                 const contents = (0, extract_1.extractIdsWithTag)(document.getText())
-                    .filter(val => val.value === id)
-                    .map(val => val.tag);
+                    .filter(value => value.value === id)
+                    .map(value => value.tag);
                 for (const uri of yield vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')) {
                     const otherDocument = yield vscode.workspace.openTextDocument(uri);
                     if (otherDocument.languageId !== 'stdn' || otherDocument.uri === document.uri) {
                         continue;
                     }
                     contents.push(...(0, extract_1.extractIdsWithTag)(otherDocument.getText())
-                        .filter(val => val.value === id)
-                        .map(val => `${val.tag} ${uri.path}`));
+                        .filter(value => value.value === id)
+                        .map(value => `${value.tag} ${uri.path}`));
                 }
                 return new vscode.Hover(contents, getStringRange(document, index, originalString));
             });
@@ -279,10 +279,10 @@ function activate(context) {
                     return [];
                 }
                 const out = (0, extract_1.extractIdsWithTag)(document.getText())
-                    .filter(val => val.type === 'id')
-                    .map(val => new vscode.CompletionItem({
-                    label: ston.stringify(val.value, { useUnquotedString: true }),
-                    detail: val.tag
+                    .filter(value => value.type === 'id')
+                    .map(value => new vscode.CompletionItem({
+                    label: ston.stringify(value.value, { useUnquotedString: true }),
+                    detail: value.tag
                 }, 17));
                 for (const uri of yield vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')) {
                     const otherDocument = yield vscode.workspace.openTextDocument(uri);
@@ -290,10 +290,10 @@ function activate(context) {
                         continue;
                     }
                     out.push(...(0, extract_1.extractIdsWithTag)(otherDocument.getText())
-                        .filter(val => val.type === 'id')
-                        .map(val => new vscode.CompletionItem({
-                        label: ston.stringify(val.value, { useUnquotedString: true }),
-                        detail: val.tag,
+                        .filter(value => value.type === 'id')
+                        .map(value => new vscode.CompletionItem({
+                        label: ston.stringify(value.value, { useUnquotedString: true }),
+                        detail: value.tag,
                         description: uri.path
                     }, 17)));
                 }
@@ -308,10 +308,10 @@ function activate(context) {
                     return [];
                 }
                 const out = (0, extract_1.extractIdsWithTag)(document.getText())
-                    .filter(val => val.type === 'id')
-                    .map(val => new vscode.CompletionItem({
-                    label: ston.stringify('#' + encodeURIComponent(val.value), { useUnquotedString: true }),
-                    detail: val.tag
+                    .filter(value => value.type === 'id')
+                    .map(value => new vscode.CompletionItem({
+                    label: ston.stringify(`#${encodeURIComponent(value.value)}`, { useUnquotedString: true }),
+                    detail: value.tag
                 }, 17));
                 for (const uri of yield vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')) {
                     const otherDocument = yield vscode.workspace.openTextDocument(uri);
@@ -319,10 +319,10 @@ function activate(context) {
                         continue;
                     }
                     out.push(...(0, extract_1.extractIdsWithTag)(otherDocument.getText())
-                        .filter(val => val.type === 'id')
-                        .map(val => new vscode.CompletionItem({
-                        label: ston.stringify('#' + encodeURIComponent(val.value), { useUnquotedString: true }),
-                        detail: val.tag,
+                        .filter(value => value.type === 'id')
+                        .map(value => new vscode.CompletionItem({
+                        label: ston.stringify(`#${encodeURIComponent(value.value)}`, { useUnquotedString: true }),
+                        detail: value.tag,
                         description: uri.path
                     }, 17)));
                 }
@@ -350,13 +350,13 @@ function activate(context) {
                     'proposition',
                     'remark',
                     'theorem',
-                ].map(val => new vscode.CompletionItem({
-                    label: val,
+                ].map(value => new vscode.CompletionItem({
+                    label: value,
                 }, 11))
                     .concat((0, extract_1.extractOrbitsWithTag)(document.getText())
-                    .map(val => new vscode.CompletionItem({
-                    label: ston.stringify(val.value, { useUnquotedString: true }),
-                    detail: val.tag
+                    .map(value => new vscode.CompletionItem({
+                    label: ston.stringify(value.value, { useUnquotedString: true }),
+                    detail: value.tag
                 }, 11)));
                 return out;
             });
@@ -373,16 +373,16 @@ function activate(context) {
                     return [];
                 }
                 const out = idsWithIndex
-                    .filter(val => val.value === id)
-                    .map(val => new vscode.Location(document.uri, getStringRange(document, val.index, val.originalString)));
+                    .filter(value => value.value === id)
+                    .map(value => new vscode.Location(document.uri, getStringRange(document, value.index, value.originalString)));
                 for (const uri of yield vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')) {
                     const otherDocument = yield vscode.workspace.openTextDocument(uri);
                     if (otherDocument.languageId !== 'stdn' || otherDocument.uri === document.uri) {
                         continue;
                     }
                     out.push(...(0, extract_1.extractIdsWithIndex)(otherDocument.getText())
-                        .filter(val => val.value === id)
-                        .map(val => new vscode.Location(otherDocument.uri, getStringRange(otherDocument, val.index, val.originalString))));
+                        .filter(value => value.value === id)
+                        .map(value => new vscode.Location(otherDocument.uri, getStringRange(otherDocument, value.index, value.originalString))));
                 }
                 return out;
             });
@@ -412,12 +412,12 @@ function activate(context) {
                 if (id.length === 0) {
                     return edit;
                 }
-                const idStr = ston.stringify(newName, { useUnquotedString: true });
-                const hrefStr = ston.stringify('#' + encodeURIComponent(newName), { useUnquotedString: true });
+                const idString = ston.stringify(newName, { useUnquotedString: true });
+                const hrefString = ston.stringify(`#${encodeURIComponent(newName)}`, { useUnquotedString: true });
                 idsWithIndex
-                    .filter(val => val.value === id)
-                    .forEach(val => {
-                    edit.replace(document.uri, getStringRange(document, val.index, val.originalString), val.type === 'href' ? hrefStr : idStr);
+                    .filter(value => value.value === id)
+                    .forEach(value => {
+                    edit.replace(document.uri, getStringRange(document, value.index, value.originalString), value.type === 'href' ? hrefString : idString);
                 });
                 return edit;
             });
@@ -434,7 +434,7 @@ function activate(context) {
     const formatURLs = vscode.languages.registerDocumentFormattingEditProvider('urls', {
         provideDocumentFormattingEdits(document) {
             const string = document.getText();
-            const result = ston.parseWithIndex('[' + string + ']');
+            const result = ston.parseWithIndex(`[${string}]`);
             if (result === undefined) {
                 return [];
             }
@@ -485,7 +485,7 @@ function activate(context) {
             return;
         }
         edit.replace(editor.selection, editor.document.getText(editor.selection)
-            .split('\n').map(val => ston.stringify(val, { useUnquotedString: true })).join('\n'));
+            .split('\n').map(value => ston.stringify(value, { useUnquotedString: true })).join('\n'));
     });
     const copyStringifyResult = vscode.commands.registerTextEditorCommand('st-lang.copy-stringify-result', (editor) => {
         if (editor.document.languageId !== 'stdn'
@@ -495,7 +495,7 @@ function activate(context) {
             return;
         }
         vscode.env.clipboard.writeText(editor.document.getText(editor.selection)
-            .split('\n').map(val => ston.stringify(val, { useUnquotedString: true })).join('\n'));
+            .split('\n').map(value => ston.stringify(value, { useUnquotedString: true })).join('\n'));
     });
     const copyId = vscode.commands.registerTextEditorCommand('st-lang.copy-id', (editor) => {
         if (editor.document.languageId !== 'stdn'
