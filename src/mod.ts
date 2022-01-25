@@ -1,12 +1,13 @@
+import type {STONWithIndex} from 'ston'
 import * as ston from 'ston'
+import type {STDN, STDNLine, STDNLineWithIndexValue, STDNUnit, STDNUnitOptionWithIndexValue, STDNUnitWithIndexValue, STDNWithIndexValue} from 'stdn'
 import * as stdn from 'stdn'
+import {stringToId, stdnToInlinePlainString} from '@ddu6/stc/dist/base'
 import * as vscode from 'vscode'
 import {cmds} from './katex'
 import {extractIdsWithIndex, extractIdsWithTag, extractOrbitsWithTag, IdType} from './extract'
-const stViewVersion = '0.26.7'
-const css = `@import url(https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.css);
-
-html:not([data-color-scheme=light])>body.vscode-dark {
+const stViewVersion = '0.28.2'
+const css = `html:not([data-color-scheme=light])>body.vscode-dark {
     --color-text: rgb(204 204 204);
     --color-light: rgb(110 110 110);
     --color-border: rgb(43 43 43);
@@ -66,9 +67,19 @@ kbd,
     color: inherit;
     vertical-align: baseline;
 }`
-function createPreviewHTML(src: string, focusURL: string, focusLine: number, focusId: string) {
+function createPreviewHTML(src: string, focusURL: string | undefined, focusPositionStr: string | undefined, focusId: string | undefined) {
+    const params: string[] = []
+    if (focusURL !== undefined) {
+        params.push(`data-focus-url=${JSON.stringify(focusURL)}`)
+    }
+    if (focusPositionStr !== undefined) {
+        params.push(`data-focus-posiiton=${JSON.stringify(focusPositionStr)}`)
+    }
+    if (focusId !== undefined) {
+        params.push(`data-focus-id=${JSON.stringify(focusId)}`)
+    }
     return `<!DOCTYPE html>
-<html data-src=${JSON.stringify(`${src}?r=${Math.random()}`)} data-focus-url=${JSON.stringify(focusURL)} data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)}>
+<html data-src=${JSON.stringify(`${src}?r=${Math.random()}`)} ${params.join(' ')}>
 
 <head>
     <style>
@@ -80,12 +91,10 @@ function createPreviewHTML(src: string, focusURL: string, focusLine: number, foc
     <script type="module">
         import "https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"
         const vscode = acquireVsCodeApi()
-        window.viewer.dblClickLineListeners.push(({line,url,partialLine})=>{
+        window.viewer.dblClickLineListeners.push(data => {
             vscode.postMessage({
-                type:'reverse-focus',
-                line,
-                url,
-                partialLine,
+                type: 'reverse-focus',
+                data
             })
         })
     </script>
@@ -93,7 +102,37 @@ function createPreviewHTML(src: string, focusURL: string, focusLine: number, foc
 
 </html>`
 }
-function createPreview(uri: vscode.Uri, focusURL: string, focusLine: number, focusId: string, context: vscode.ExtensionContext) {
+function posiitonToUnitOrLineOrSTDNWithIndex(position: (number | string)[], stdnWithIndex: STONWithIndex<STDNWithIndexValue>) {
+    let out: STONWithIndex<STDNWithIndexValue | STDNLineWithIndexValue | STDNUnitWithIndexValue> = stdnWithIndex
+    for (const step of position) {
+        if (typeof step === 'number') {
+            if (Array.isArray(out.value)) {
+                const next: STONWithIndex<STDNWithIndexValue | STDNLineWithIndexValue | STDNUnitWithIndexValue | string> | undefined = out.value[step]
+                if (next === undefined || typeof next.value === 'string') {
+                    break
+                }
+                out = <STONWithIndex<STDNWithIndexValue | STDNLineWithIndexValue | STDNUnitWithIndexValue>>next
+                continue
+            }
+            const next: STONWithIndex<STDNLineWithIndexValue> | undefined = out.value.children.value[step]
+            if (next === undefined) {
+                break
+            }
+            out = next
+            continue
+        }
+        if (Array.isArray(out.value)) {
+            break
+        }
+        const next: STONWithIndex<STDNUnitOptionWithIndexValue> | undefined = out.value.options.value[step]
+        if (next === undefined || typeof next.value !== 'object') {
+            break
+        }
+        out = <STONWithIndex<STDNWithIndexValue>>next
+    }
+    return out
+}
+function createPreview(uri: vscode.Uri, focusURL: string | undefined, focusPositionStr: string | undefined, focusId: string | undefined, context: vscode.ExtensionContext) {
     const panel = vscode.window.createWebviewPanel(
         'st-lang.preview',
         uri.path.replace(/^.*\//, ''),
@@ -105,64 +144,77 @@ function createPreview(uri: vscode.Uri, focusURL: string, focusLine: number, foc
         }
     )
     const src = panel.webview.asWebviewUri(uri).toString()
-    panel.webview.html = createPreviewHTML(src, focusURL, focusLine, focusId)
+    panel.webview.html = createPreviewHTML(src, focusURL, focusPositionStr, focusId)
     const t = vscode.workspace.onDidSaveTextDocument(document => {
-        let focusURL = ''
-        let focusLine = 0
         const editor = vscode.window.activeTextEditor
         if (editor === undefined || editor.document !== document) {
             return
         }
+        let focusURL: string | undefined
+        let focusPositionStr: string | undefined
         if (document.languageId === 'stdn') {
             focusURL = panel.webview.asWebviewUri(document.uri).toString()
-            focusLine = getCurrentLine(editor)
+            focusPositionStr = getCurrentPosition(editor).join(' ')
         }
-        panel.webview.html = createPreviewHTML(src, focusURL, focusLine, '')
+        panel.webview.html = createPreviewHTML(src, focusURL, focusPositionStr, undefined)
     }, undefined, context.subscriptions)
     panel.onDidDispose(() => {
         t.dispose()
     }, undefined, context.subscriptions)
     panel.webview.onDidReceiveMessage(async message => {
         if (message.type === 'reverse-focus') {
-            const uri0 = vscode.Uri.parse(message.url)
+            const {authority, path} = vscode.Uri.parse(message.data[0].url)
             for (const editor of vscode.window.visibleTextEditors) {
                 if (editor.document.languageId !== 'stdn') {
                     continue
                 }
-                const uri1 = panel.webview.asWebviewUri(editor.document.uri)
-                if (uri1.authority !== uri0.authority || uri1.path !== uri0.path) {
+                const uri = panel.webview.asWebviewUri(editor.document.uri)
+                if (uri.authority !== authority || uri.path !== path) {
                     continue
                 }
-                const result = ston.parseWithIndex(`[${editor.document.getText()}]`, -1)
-                if (
-                    result === undefined
-                    || !Array.isArray(result.value)
-                ) {
+                const result = stdn.parseWithIndex(editor.document.getText())
+                if (result === undefined) {
                     return
                 }
-                let lineCount = 0
-                for (const {value, index} of result.value) {
-                    if (typeof value === 'object' || typeof value === 'string') {
-                        lineCount++
-                    }
-                    if (lineCount <= message.partialLine) {
-                        continue
-                    }
-                    const position = editor.document.positionAt(index)
-                    editor.revealRange(new vscode.Range(position, position), 3)
+                const offset: number = message.data[1]
+                const position: (number | string)[] = message.data[2].slice()
+                let line = position[0]
+                if (typeof line !== 'number') {
                     return
                 }
+                position[0] = line - offset
+                const {index} = posiitonToUnitOrLineOrSTDNWithIndex(position, result)
+                const vposition = editor.document.positionAt(index)
+                editor.revealRange(new vscode.Range(vposition, vposition), 3)
             }
             return
         }
     }, undefined, context.subscriptions)
 }
-function getCurrentLine(editor: vscode.TextEditor) {
+function getCurrentPosition(editor: vscode.TextEditor) {
+    const out: number[] = []
     const result = stdn.parse(editor.document.getText(new vscode.Range(new vscode.Position(0, 0), editor.visibleRanges[0].start)))
     if (result === undefined) {
-        return 0
+        return out
     }
-    return Math.max(0, result.length)
+    let stdnOrLine: STDN | STDNLine = result
+    dig: while (true) {
+        for (let i: number = stdnOrLine.length - 1; i >= 0; i--) {
+            const item: STDNLine | STDNUnit | string = stdnOrLine[i]
+            if (Array.isArray(item)) {
+                stdnOrLine = item
+                out.push(i)
+                continue dig
+            }
+            if (typeof item === 'object') {
+                stdnOrLine = item.children
+                out.push(i)
+                continue dig
+            }
+        }
+        break
+    }
+    return out
 }
 function getStringRange(document: vscode.TextDocument, index: number, string: string) {
     const start = document.positionAt(index)
@@ -214,25 +266,6 @@ function getIdAtPosition(document: vscode.TextDocument, position: vscode.Positio
         originalString,
         idsWithIndex: result
     }
-}
-function stdnToInlinePlainString(stdn: stdn.STDN) {
-    for (const line of stdn) {
-        let string = ''
-        for (const inline of line) {
-            if (typeof inline === 'string') {
-                string += inline
-                continue
-            }
-            string += stdnToInlinePlainString(inline.children)
-        }
-        if (string.length > 0) {
-            return string
-        }
-    }
-    return ''
-}
-function stringToId(string: string) {
-    return Array.from(string.slice(0, 100).matchAll(/[a-zA-Z0-9]+/g)).join('-').toLowerCase()
 }
 export function activate(context: vscode.ExtensionContext) {
     const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
@@ -475,11 +508,11 @@ export function activate(context: vscode.ExtensionContext) {
         ) {
             return
         }
-        let focusLine = 0
+        let focusPositionStr = ''
         if (editor.document.languageId === 'stdn') {
-            focusLine = getCurrentLine(editor)
+            focusPositionStr = getCurrentPosition(editor).join(' ')
         }
-        createPreview(editor.document.uri, '', focusLine, '', context)
+        createPreview(editor.document.uri, undefined, focusPositionStr, undefined, context)
     })
     const previewPath = vscode.commands.registerCommand('st-lang.preview-path', (path: string, focusURL = '', focusLine = 0, focusId = '') => {
         createPreview(vscode.Uri.file(path), focusURL, focusLine, focusId, context)

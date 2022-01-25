@@ -12,13 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deactivate = exports.activate = void 0;
 const ston = require("ston");
 const stdn = require("stdn");
+const base_1 = require("@ddu6/stc/dist/base");
 const vscode = require("vscode");
 const katex_1 = require("./katex");
 const extract_1 = require("./extract");
-const stViewVersion = '0.26.7';
-const css = `@import url(https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.css);
-
-html:not([data-color-scheme=light])>body.vscode-dark {
+const stViewVersion = '0.28.2';
+const css = `html:not([data-color-scheme=light])>body.vscode-dark {
     --color-text: rgb(204 204 204);
     --color-light: rgb(110 110 110);
     --color-border: rgb(43 43 43);
@@ -78,9 +77,19 @@ kbd,
     color: inherit;
     vertical-align: baseline;
 }`;
-function createPreviewHTML(src, focusURL, focusLine, focusId) {
+function createPreviewHTML(src, focusURL, focusPositionStr, focusId) {
+    const params = [];
+    if (focusURL !== undefined) {
+        params.push(`data-focus-url=${JSON.stringify(focusURL)}`);
+    }
+    if (focusPositionStr !== undefined) {
+        params.push(`data-focus-posiiton=${JSON.stringify(focusPositionStr)}`);
+    }
+    if (focusId !== undefined) {
+        params.push(`data-focus-id=${JSON.stringify(focusId)}`);
+    }
     return `<!DOCTYPE html>
-<html data-src=${JSON.stringify(`${src}?r=${Math.random()}`)} data-focus-url=${JSON.stringify(focusURL)} data-focus-line=${focusLine} data-focus-id=${JSON.stringify(focusId)}>
+<html data-src=${JSON.stringify(`${src}?r=${Math.random()}`)} ${params.join(' ')}>
 
 <head>
     <style>
@@ -92,12 +101,10 @@ function createPreviewHTML(src, focusURL, focusLine, focusId) {
     <script type="module">
         import "https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"
         const vscode = acquireVsCodeApi()
-        window.viewer.dblClickLineListeners.push(({line,url,partialLine})=>{
+        window.viewer.dblClickLineListeners.push(data => {
             vscode.postMessage({
-                type:'reverse-focus',
-                line,
-                url,
-                partialLine,
+                type: 'reverse-focus',
+                data
             })
         })
     </script>
@@ -105,69 +112,114 @@ function createPreviewHTML(src, focusURL, focusLine, focusId) {
 
 </html>`;
 }
-function createPreview(uri, focusURL, focusLine, focusId, context) {
+function posiitonToUnitOrLineOrSTDNWithIndex(position, stdnWithIndex) {
+    let out = stdnWithIndex;
+    for (const step of position) {
+        if (typeof step === 'number') {
+            if (Array.isArray(out.value)) {
+                const next = out.value[step];
+                if (next === undefined || typeof next.value === 'string') {
+                    break;
+                }
+                out = next;
+                continue;
+            }
+            const next = out.value.children.value[step];
+            if (next === undefined) {
+                break;
+            }
+            out = next;
+            continue;
+        }
+        if (Array.isArray(out.value)) {
+            break;
+        }
+        const next = out.value.options.value[step];
+        if (next === undefined || typeof next.value !== 'object') {
+            break;
+        }
+        out = next;
+    }
+    return out;
+}
+function createPreview(uri, focusURL, focusPositionStr, focusId, context) {
     const panel = vscode.window.createWebviewPanel('st-lang.preview', uri.path.replace(/^.*\//, ''), vscode.ViewColumn.Beside, {
         enableScripts: true,
         enableFindWidget: true,
         enableCommandUris: true,
     });
     const src = panel.webview.asWebviewUri(uri).toString();
-    panel.webview.html = createPreviewHTML(src, focusURL, focusLine, focusId);
+    panel.webview.html = createPreviewHTML(src, focusURL, focusPositionStr, focusId);
     const t = vscode.workspace.onDidSaveTextDocument(document => {
-        let focusURL = '';
-        let focusLine = 0;
         const editor = vscode.window.activeTextEditor;
         if (editor === undefined || editor.document !== document) {
             return;
         }
+        let focusURL;
+        let focusPositionStr;
         if (document.languageId === 'stdn') {
             focusURL = panel.webview.asWebviewUri(document.uri).toString();
-            focusLine = getCurrentLine(editor);
+            focusPositionStr = getCurrentPosition(editor).join(' ');
         }
-        panel.webview.html = createPreviewHTML(src, focusURL, focusLine, '');
+        panel.webview.html = createPreviewHTML(src, focusURL, focusPositionStr, undefined);
     }, undefined, context.subscriptions);
     panel.onDidDispose(() => {
         t.dispose();
     }, undefined, context.subscriptions);
     panel.webview.onDidReceiveMessage((message) => __awaiter(this, void 0, void 0, function* () {
         if (message.type === 'reverse-focus') {
-            const uri0 = vscode.Uri.parse(message.url);
+            const { authority, path } = vscode.Uri.parse(message.data[0].url);
             for (const editor of vscode.window.visibleTextEditors) {
                 if (editor.document.languageId !== 'stdn') {
                     continue;
                 }
-                const uri1 = panel.webview.asWebviewUri(editor.document.uri);
-                if (uri1.authority !== uri0.authority || uri1.path !== uri0.path) {
+                const uri = panel.webview.asWebviewUri(editor.document.uri);
+                if (uri.authority !== authority || uri.path !== path) {
                     continue;
                 }
-                const result = ston.parseWithIndex(`[${editor.document.getText()}]`, -1);
-                if (result === undefined
-                    || !Array.isArray(result.value)) {
+                const result = stdn.parseWithIndex(editor.document.getText());
+                if (result === undefined) {
                     return;
                 }
-                let lineCount = 0;
-                for (const { value, index } of result.value) {
-                    if (typeof value === 'object' || typeof value === 'string') {
-                        lineCount++;
-                    }
-                    if (lineCount <= message.partialLine) {
-                        continue;
-                    }
-                    const position = editor.document.positionAt(index);
-                    editor.revealRange(new vscode.Range(position, position), 3);
+                const offset = message.data[1];
+                const position = message.data[2].slice();
+                let line = position[0];
+                if (typeof line !== 'number') {
                     return;
                 }
+                position[0] = line - offset;
+                const { index } = posiitonToUnitOrLineOrSTDNWithIndex(position, result);
+                const vposition = editor.document.positionAt(index);
+                editor.revealRange(new vscode.Range(vposition, vposition), 3);
             }
             return;
         }
     }), undefined, context.subscriptions);
 }
-function getCurrentLine(editor) {
+function getCurrentPosition(editor) {
+    const out = [];
     const result = stdn.parse(editor.document.getText(new vscode.Range(new vscode.Position(0, 0), editor.visibleRanges[0].start)));
     if (result === undefined) {
-        return 0;
+        return out;
     }
-    return Math.max(0, result.length);
+    let stdnOrLine = result;
+    dig: while (true) {
+        for (let i = stdnOrLine.length - 1; i >= 0; i--) {
+            const item = stdnOrLine[i];
+            if (Array.isArray(item)) {
+                stdnOrLine = item;
+                out.push(i);
+                continue dig;
+            }
+            if (typeof item === 'object') {
+                stdnOrLine = item.children;
+                out.push(i);
+                continue dig;
+            }
+        }
+        break;
+    }
+    return out;
 }
 function getStringRange(document, index, string) {
     const start = document.positionAt(index);
@@ -217,25 +269,6 @@ function getIdAtPosition(document, position) {
         originalString,
         idsWithIndex: result
     };
-}
-function stdnToInlinePlainString(stdn) {
-    for (const line of stdn) {
-        let string = '';
-        for (const inline of line) {
-            if (typeof inline === 'string') {
-                string += inline;
-                continue;
-            }
-            string += stdnToInlinePlainString(inline.children);
-        }
-        if (string.length > 0) {
-            return string;
-        }
-    }
-    return '';
-}
-function stringToId(string) {
-    return Array.from(string.slice(0, 100).matchAll(/[a-zA-Z0-9]+/g)).join('-').toLowerCase();
 }
 function activate(context) {
     const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
@@ -468,11 +501,11 @@ function activate(context) {
             && editor.document.languageId !== 'urls') {
             return;
         }
-        let focusLine = 0;
+        let focusPositionStr = '';
         if (editor.document.languageId === 'stdn') {
-            focusLine = getCurrentLine(editor);
+            focusPositionStr = getCurrentPosition(editor).join(' ');
         }
-        createPreview(editor.document.uri, '', focusLine, '', context);
+        createPreview(editor.document.uri, undefined, focusPositionStr, undefined, context);
     });
     const previewPath = vscode.commands.registerCommand('st-lang.preview-path', (path, focusURL = '', focusLine = 0, focusId = '') => {
         createPreview(vscode.Uri.file(path), focusURL, focusLine, focusId, context);
@@ -507,9 +540,9 @@ function activate(context) {
         let string = editor.document.getText(editor.selection);
         const result = stdn.parse(string);
         if (result !== undefined) {
-            string = stdnToInlinePlainString(result);
+            string = (0, base_1.stdnToInlinePlainString)(result);
         }
-        vscode.env.clipboard.writeText(stringToId(string));
+        vscode.env.clipboard.writeText((0, base_1.stringToId)(string));
     });
     context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, preview, previewPath, stringify, copyStringifyResult, copyId);
 }

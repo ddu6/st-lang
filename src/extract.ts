@@ -67,7 +67,7 @@ export function extractIdsWithTag(string: string) {
     }
     return extractIdsWithTagFromSTDN(doc)
 }
-function extractIdsWithIndexFromSTONArrayValueWithIndex(array: ston.STONArrayValueWithIndex) {
+function extractIdsWithIndexFromSTONArrayValueWithIndex(array: ston.STONArrayWithIndexValue) {
     const out: {
         value: string
         index: number
@@ -86,7 +86,7 @@ function extractIdsWithIndexFromSTONArrayValueWithIndex(array: ston.STONArrayVal
     }
     return out
 }
-function extractIdsWithIndexFromSTONObjectValueWithIndex(object: ston.STONObjectValueWithIndex) {
+function extractIdsWithIndexFromSTONObjectValueWithIndex(object: ston.STONObjectWithIndexValue) {
     const out: {
         value: string
         index: number
