@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.extractOrbitsWithTag = exports.extractIdsWithIndex = exports.extractIdsWithTag = void 0;
 const ston = require("ston");
-const stdn = require("stdn");
-function extractIdsWithTagFromSTDN(doc) {
+const stdn_1 = require("stdn");
+function extractIdsWithTagFromSTDN(stdn) {
     const out = [];
-    for (const line of doc) {
+    for (const line of stdn) {
         for (const unit of line) {
             if (typeof unit === 'string') {
                 continue;
@@ -52,7 +52,7 @@ function extractIdsWithTagFromSTDN(doc) {
     return out;
 }
 function extractIdsWithTag(string) {
-    const doc = stdn.parse(string);
+    const doc = (0, stdn_1.parse)(string);
     if (doc === undefined) {
         return [];
     }
@@ -130,10 +130,10 @@ function extractIdsWithIndex(string) {
     return extractIdsWithIndexFromSTONArrayValueWithIndex(result.value);
 }
 exports.extractIdsWithIndex = extractIdsWithIndex;
-function extractOrbitsWithTagFromSTDN(doc) {
+function extractOrbitsWithTagFromSTDN(stdn) {
     const out = [];
     const orbitSet = {};
-    for (const line of doc) {
+    for (const line of stdn) {
         for (const unit of line) {
             if (typeof unit === 'string') {
                 continue;
@@ -160,7 +160,7 @@ function extractOrbitsWithTagFromSTDN(doc) {
     return out;
 }
 function extractOrbitsWithTag(string) {
-    const doc = stdn.parse(string);
+    const doc = (0, stdn_1.parse)(string);
     if (doc === undefined) {
         return [];
     }

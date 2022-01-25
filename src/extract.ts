@@ -1,14 +1,14 @@
 import * as ston from 'ston'
-import * as stdn from 'stdn'
+import {parse, STDN} from 'stdn'
 export type IdType = 'id' | 'ref-id' | 'href'
-function extractIdsWithTagFromSTDN(doc: stdn.STDN) {
+function extractIdsFromSTDN(stdn: STDN) {
     const out: {
         value: string
         tag: string
         type: IdType
         originalString: string
     }[] = []
-    for (const line of doc) {
+    for (const line of stdn) {
         for (const unit of line) {
             if (typeof unit === 'string') {
                 continue
@@ -49,25 +49,25 @@ function extractIdsWithTagFromSTDN(doc: stdn.STDN) {
                     originalString: href
                 })
             }
-            for (const key of Object.keys(unit.options)) {
+            for (const key in unit.options) {
                 const value = unit.options[key]
                 if (typeof value === 'object') {
-                    out.push(...extractIdsWithTagFromSTDN(value))
+                    out.push(...extractIdsFromSTDN(value))
                 }
             }
-            out.push(...extractIdsWithTagFromSTDN(unit.children))
+            out.push(...extractIdsFromSTDN(unit.children))
         }
     }
     return out
 }
 export function extractIdsWithTag(string: string) {
-    const doc = stdn.parse(string)
-    if (doc === undefined) {
+    const stdn = parse(string)
+    if (stdn === undefined) {
         return []
     }
-    return extractIdsWithTagFromSTDN(doc)
+    return extractIdsFromSTDN(stdn)
 }
-function extractIdsWithIndexFromSTONArrayValueWithIndex(array: ston.STONArrayWithIndexValue) {
+function extractIdsFromSTONArrayWithIndexValue(array: ston.STONArrayWithIndexValue) {
     const out: {
         value: string
         index: number
@@ -79,14 +79,14 @@ function extractIdsWithIndexFromSTONArrayValueWithIndex(array: ston.STONArrayWit
             continue
         }
         if (Array.isArray(value)) {
-            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value))
+            out.push(...extractIdsFromSTONArrayWithIndexValue(value))
             continue
         }
-        out.push(...extractIdsWithIndexFromSTONObjectValueWithIndex(value))
+        out.push(...extractIdsFromSTONObjectWithIndexValue(value))
     }
     return out
 }
-function extractIdsWithIndexFromSTONObjectValueWithIndex(object: ston.STONObjectWithIndexValue) {
+function extractIdsFromSTONObjectWithIndexValue(object: ston.STONObjectWithIndexValue) {
     const out: {
         value: string
         index: number
@@ -132,36 +132,36 @@ function extractIdsWithIndexFromSTONObjectValueWithIndex(object: ston.STONObject
             originalString: href.value
         })
     }
-    for (const key of Object.keys(object)) {
+    for (const key in object) {
         const value = object[key]
         if (value === undefined || typeof value.value !== 'object') {
             continue
         }
         if (Array.isArray(value.value)) {
-            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value.value))
+            out.push(...extractIdsFromSTONArrayWithIndexValue(value.value))
             continue
         }
-        out.push(...extractIdsWithIndexFromSTONObjectValueWithIndex(value.value))
+        out.push(...extractIdsFromSTONObjectWithIndexValue(value.value))
     }
     return out
 }
 export function extractIdsWithIndex(string: string) {
-    const result = ston.parseWithIndex('[' + string + ']', -1)
+    const result = ston.parseWithIndex(`[${string}]`, -1)
     if (
         result === undefined
         || !Array.isArray(result.value)
     ) {
         return []
     }
-    return extractIdsWithIndexFromSTONArrayValueWithIndex(result.value)
+    return extractIdsFromSTONArrayWithIndexValue(result.value)
 }
-function extractOrbitsWithTagFromSTDN(doc: stdn.STDN) {
+function extractOrbitsFromSTDN(stdn: STDN) {
     const out: {
         value: string
         tag: string
     }[] = []
     const orbitSet: Record<string, true | undefined> = {}
-    for (const line of doc) {
+    for (const line of stdn) {
         for (const unit of line) {
             if (typeof unit === 'string') {
                 continue
@@ -178,21 +178,21 @@ function extractOrbitsWithTagFromSTDN(doc: stdn.STDN) {
                 })
                 orbitSet[orbit] = true
             }
-            for (const key of Object.keys(unit.options)) {
+            for (const key in unit.options) {
                 const value = unit.options[key]
                 if (typeof value === 'object') {
-                    out.push(...extractOrbitsWithTagFromSTDN(value))
+                    out.push(...extractOrbitsFromSTDN(value))
                 }
             }
-            out.push(...extractOrbitsWithTagFromSTDN(unit.children))
+            out.push(...extractOrbitsFromSTDN(unit.children))
         }
     }
     return out
 }
 export function extractOrbitsWithTag(string: string) {
-    const doc = stdn.parse(string)
-    if (doc === undefined) {
+    const stdn = parse(string)
+    if (stdn === undefined) {
         return []
     }
-    return extractOrbitsWithTagFromSTDN(doc)
+    return extractOrbitsFromSTDN(stdn)
 }
