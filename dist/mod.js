@@ -83,7 +83,7 @@ function createPreviewHTML(src, focusURL, focusPositionStr, focusId) {
         params.push(`data-focus-url=${JSON.stringify(focusURL)}`);
     }
     if (focusPositionStr !== undefined) {
-        params.push(`data-focus-posiiton=${JSON.stringify(focusPositionStr)}`);
+        params.push(`data-focus-position=${JSON.stringify(focusPositionStr)}`);
     }
     if (focusId !== undefined) {
         params.push(`data-focus-id=${JSON.stringify(focusId)}`);
@@ -101,7 +101,7 @@ function createPreviewHTML(src, focusURL, focusPositionStr, focusId) {
     <script type="module">
         import "https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"
         const vscode = acquireVsCodeApi()
-        window.viewer.dblClickLineListeners.push(data => {
+        window.viewer.dblClickLineListeners.push((...data) => {
             vscode.postMessage({
                 type: 'reverse-focus',
                 data
@@ -501,14 +501,14 @@ function activate(context) {
             && editor.document.languageId !== 'urls') {
             return;
         }
-        let focusPositionStr = '';
+        let focusPositionStr;
         if (editor.document.languageId === 'stdn') {
             focusPositionStr = getCurrentPosition(editor).join(' ');
         }
         createPreview(editor.document.uri, undefined, focusPositionStr, undefined, context);
     });
-    const previewPath = vscode.commands.registerCommand('st-lang.preview-path', (path, focusURL = '', focusLine = 0, focusId = '') => {
-        createPreview(vscode.Uri.file(path), focusURL, focusLine, focusId, context);
+    const previewPath = vscode.commands.registerCommand('st-lang.preview-path', (path, focusURL, focusPositionStr, focusId) => {
+        createPreview(vscode.Uri.file(path), focusURL, focusPositionStr, focusId, context);
     });
     const stringify = vscode.commands.registerTextEditorCommand('st-lang.stringify', (editor, edit) => {
         if (editor.document.languageId !== 'stdn'
