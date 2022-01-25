@@ -22,7 +22,7 @@
   "dependencies": {
     "@ddu6/stc": "^0.22.0",
     "@types/vscode": "^1.60.0",
-    "stdn": "^0.4.0",
+    "stdn": "^0.4.1",
     "ston": "^0.4.2"
   },
   "engines": {
