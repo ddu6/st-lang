@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.extractOrbitsWithTag = exports.extractIdsWithIndex = exports.extractIdsWithTag = void 0;
 const ston = require("ston");
 const stdn_1 = require("stdn");
-function extractIdsWithTagFromSTDN(stdn) {
+function extractIdsFromSTDN(stdn) {
     const out = [];
     for (const line of stdn) {
         for (const unit of line) {
@@ -40,40 +40,40 @@ function extractIdsWithTagFromSTDN(stdn) {
                     originalString: href
                 });
             }
-            for (const key of Object.keys(unit.options)) {
+            for (const key in unit.options) {
                 const value = unit.options[key];
                 if (typeof value === 'object') {
-                    out.push(...extractIdsWithTagFromSTDN(value));
+                    out.push(...extractIdsFromSTDN(value));
                 }
             }
-            out.push(...extractIdsWithTagFromSTDN(unit.children));
+            out.push(...extractIdsFromSTDN(unit.children));
         }
     }
     return out;
 }
 function extractIdsWithTag(string) {
-    const doc = (0, stdn_1.parse)(string);
-    if (doc === undefined) {
+    const stdn = (0, stdn_1.parse)(string);
+    if (stdn === undefined) {
         return [];
     }
-    return extractIdsWithTagFromSTDN(doc);
+    return extractIdsFromSTDN(stdn);
 }
 exports.extractIdsWithTag = extractIdsWithTag;
-function extractIdsWithIndexFromSTONArrayValueWithIndex(array) {
+function extractIdsFromSTONArrayWithIndexValue(array) {
     const out = [];
     for (const { value } of array) {
         if (typeof value !== 'object') {
             continue;
         }
         if (Array.isArray(value)) {
-            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value));
+            out.push(...extractIdsFromSTONArrayWithIndexValue(value));
             continue;
         }
-        out.push(...extractIdsWithIndexFromSTONObjectValueWithIndex(value));
+        out.push(...extractIdsFromSTONObjectWithIndexValue(value));
     }
     return out;
 }
-function extractIdsWithIndexFromSTONObjectValueWithIndex(object) {
+function extractIdsFromSTONObjectWithIndexValue(object) {
     const out = [];
     const { id } = object;
     if (id !== undefined
@@ -108,29 +108,29 @@ function extractIdsWithIndexFromSTONObjectValueWithIndex(object) {
             originalString: href.value
         });
     }
-    for (const key of Object.keys(object)) {
+    for (const key in object) {
         const value = object[key];
         if (value === undefined || typeof value.value !== 'object') {
             continue;
         }
         if (Array.isArray(value.value)) {
-            out.push(...extractIdsWithIndexFromSTONArrayValueWithIndex(value.value));
+            out.push(...extractIdsFromSTONArrayWithIndexValue(value.value));
             continue;
         }
-        out.push(...extractIdsWithIndexFromSTONObjectValueWithIndex(value.value));
+        out.push(...extractIdsFromSTONObjectWithIndexValue(value.value));
     }
     return out;
 }
 function extractIdsWithIndex(string) {
-    const result = ston.parseWithIndex('[' + string + ']', -1);
+    const result = ston.parseWithIndex(`[${string}]`, -1);
     if (result === undefined
         || !Array.isArray(result.value)) {
         return [];
     }
-    return extractIdsWithIndexFromSTONArrayValueWithIndex(result.value);
+    return extractIdsFromSTONArrayWithIndexValue(result.value);
 }
 exports.extractIdsWithIndex = extractIdsWithIndex;
-function extractOrbitsWithTagFromSTDN(stdn) {
+function extractOrbitsFromSTDN(stdn) {
     const out = [];
     const orbitSet = {};
     for (const line of stdn) {
@@ -148,22 +148,22 @@ function extractOrbitsWithTagFromSTDN(stdn) {
                 });
                 orbitSet[orbit] = true;
             }
-            for (const key of Object.keys(unit.options)) {
+            for (const key in unit.options) {
                 const value = unit.options[key];
                 if (typeof value === 'object') {
-                    out.push(...extractOrbitsWithTagFromSTDN(value));
+                    out.push(...extractOrbitsFromSTDN(value));
                 }
             }
-            out.push(...extractOrbitsWithTagFromSTDN(unit.children));
+            out.push(...extractOrbitsFromSTDN(unit.children));
         }
     }
     return out;
 }
 function extractOrbitsWithTag(string) {
-    const doc = (0, stdn_1.parse)(string);
-    if (doc === undefined) {
+    const stdn = (0, stdn_1.parse)(string);
+    if (stdn === undefined) {
         return [];
     }
-    return extractOrbitsWithTagFromSTDN(doc);
+    return extractOrbitsFromSTDN(stdn);
 }
 exports.extractOrbitsWithTag = extractOrbitsWithTag;
