@@ -1,6 +1,6 @@
 import type {STONWithIndex} from 'ston'
 import * as ston from 'ston'
-import type {STDN, STDNLine, STDNLineWithIndexValue, STDNUnit, STDNUnitOptionWithIndexValue, STDNUnitWithIndexValue, STDNWithIndexValue} from 'stdn'
+import type {STDNLineWithIndexValue, STDNUnitOptionWithIndexValue, STDNUnitWithIndexValue, STDNWithIndexValue} from 'stdn'
 import * as stdn from 'stdn'
 import {stringToId, stdnToInlinePlainString} from '@ddu6/stc/dist/base'
 import * as vscode from 'vscode'
@@ -193,26 +193,35 @@ function createPreview(uri: vscode.Uri, focusURL: string | undefined, focusPosit
 }
 function getCurrentPosition(editor: vscode.TextEditor) {
     const out: number[] = []
-    const result = stdn.parse(editor.document.getText(new vscode.Range(new vscode.Position(0, 0), editor.visibleRanges[0].start)))
+    const index = editor.document.offsetAt(editor.visibleRanges[0].start)
+    const result = stdn.parseWithIndex(editor.document.getText())
     if (result === undefined) {
         return out
     }
-    let stdnOrLine: STDN | STDNLine = result
-    dig: while (true) {
-        for (let i: number = stdnOrLine.length - 1; i >= 0; i--) {
-            const item: STDNLine | STDNUnit | string = stdnOrLine[i]
-            if (Array.isArray(item)) {
-                stdnOrLine = item
-                out.push(i)
-                continue dig
+    let stdnOrLine: STONWithIndex<STDNWithIndexValue | STDNLineWithIndexValue> = result
+    while (true) {
+        let next: STONWithIndex<STDNWithIndexValue | STDNLineWithIndexValue> | undefined
+        let j = 0
+        for (let i = 0; i < stdnOrLine.value.length; i++) {
+            const item: STONWithIndex<STDNLineWithIndexValue | STDNUnitWithIndexValue | string> = stdnOrLine.value[i]
+            if (item.index > index) {
+                break
             }
-            if (typeof item === 'object') {
-                stdnOrLine = item.children
-                out.push(i)
-                continue dig
+            if (Array.isArray(item.value)) {
+                next = <STONWithIndex<STDNLineWithIndexValue>>item
+                j = i
+                continue
+            }
+            if (typeof item.value === 'object') {
+                next = item.value.children
+                j = i
             }
         }
-        break
+        if (next === undefined) {
+            break
+        }
+        stdnOrLine = next
+        out.push(j)
     }
     return out
 }

@@ -198,26 +198,35 @@ function createPreview(uri, focusURL, focusPositionStr, focusId, context) {
 }
 function getCurrentPosition(editor) {
     const out = [];
-    const result = stdn.parse(editor.document.getText(new vscode.Range(new vscode.Position(0, 0), editor.visibleRanges[0].start)));
+    const index = editor.document.offsetAt(editor.visibleRanges[0].start);
+    const result = stdn.parseWithIndex(editor.document.getText());
     if (result === undefined) {
         return out;
     }
     let stdnOrLine = result;
-    dig: while (true) {
-        for (let i = stdnOrLine.length - 1; i >= 0; i--) {
-            const item = stdnOrLine[i];
-            if (Array.isArray(item)) {
-                stdnOrLine = item;
-                out.push(i);
-                continue dig;
+    while (true) {
+        let next;
+        let j = 0;
+        for (let i = 0; i < stdnOrLine.value.length; i++) {
+            const item = stdnOrLine.value[i];
+            if (item.index > index) {
+                break;
             }
-            if (typeof item === 'object') {
-                stdnOrLine = item.children;
-                out.push(i);
-                continue dig;
+            if (Array.isArray(item.value)) {
+                next = item;
+                j = i;
+                continue;
+            }
+            if (typeof item.value === 'object') {
+                next = item.value.children;
+                j = i;
             }
         }
-        break;
+        if (next === undefined) {
+            break;
+        }
+        stdnOrLine = next;
+        out.push(j);
     }
     return out;
 }
