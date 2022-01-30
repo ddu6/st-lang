@@ -112,8 +112,16 @@
     },
     "keybindings": [
       {
-        "command": "st-lang.select-string",
+        "key": "Escape",
+        "command": "cursorMove",
+        "args": {
+          "to": "right"
+        },
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
+      },
+      {
         "key": "shift+alt+s",
+        "command": "st-lang.select-string",
         "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
       }
     ],
