@@ -146,7 +146,7 @@ function createPreview(uri, focusURL, focusPositionStr, focusId, context) {
     const panel = vscode.window.createWebviewPanel('st-lang.preview', uri.path.replace(/^.*\//, ''), vscode.ViewColumn.Beside, {
         enableScripts: true,
         enableFindWidget: true,
-        enableCommandUris: true,
+        enableCommandUris: true
     });
     const src = panel.webview.asWebviewUri(uri).toString();
     panel.webview.html = createPreviewHTML(src, focusURL, focusPositionStr, focusId);
@@ -391,7 +391,7 @@ function activate(context) {
                     'notation',
                     'proposition',
                     'remark',
-                    'theorem',
+                    'theorem'
                 ].map(value => new vscode.CompletionItem({
                     label: value,
                 }, 11))
@@ -500,7 +500,7 @@ function activate(context) {
                 vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0, 0), document.positionAt(string.length)), ston.stringifyWithComment(result.value, {
                     indentTarget: 'all',
                     addDecorativeSpace: 'always',
-                    useUnquotedString: true,
+                    useUnquotedString: true
                 }))
             ];
         }
@@ -553,7 +553,19 @@ function activate(context) {
         }
         vscode.env.clipboard.writeText((0, base_1.stringToId)(string));
     });
-    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, preview, previewPath, stringify, copyStringifyResult, copyId);
+    const selectString = vscode.commands.registerTextEditorCommand('st-lang.select-string', (editor) => {
+        if (editor.document.languageId !== 'stdn'
+            && editor.document.languageId !== 'urls'
+            && editor.document.languageId !== 'ston') {
+            return;
+        }
+        const range = editor.document.getWordRangeAtPosition(editor.selection.anchor, /[^\s',\[\]{}][^\n',\[\]{}]*/);
+        if (range === undefined) {
+            return;
+        }
+        editor.selections = [new vscode.Selection(range.start, range.end)];
+    });
+    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, preview, previewPath, stringify, copyStringifyResult, copyId, selectString);
 }
 exports.activate = activate;
 function deactivate() { }

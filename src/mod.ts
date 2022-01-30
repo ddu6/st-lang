@@ -140,7 +140,7 @@ function createPreview(uri: vscode.Uri, focusURL: string | undefined, focusPosit
         {
             enableScripts: true,
             enableFindWidget: true,
-            enableCommandUris: true,
+            enableCommandUris: true
         }
     )
     const src = panel.webview.asWebviewUri(uri).toString()
@@ -388,7 +388,7 @@ export function activate(context: vscode.ExtensionContext) {
                 'notation',
                 'proposition',
                 'remark',
-                'theorem',
+                'theorem'
             ].map(value => new vscode.CompletionItem({
                 label: value,
             }, 11))
@@ -504,7 +504,7 @@ export function activate(context: vscode.ExtensionContext) {
                     ston.stringifyWithComment(result.value, {
                         indentTarget: 'all',
                         addDecorativeSpace: 'always',
-                        useUnquotedString: true,
+                        useUnquotedString: true
                     })
                 )
             ]
@@ -573,6 +573,20 @@ export function activate(context: vscode.ExtensionContext) {
             stringToId(string)
         )
     })
-    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, preview, previewPath, stringify, copyStringifyResult, copyId)
+    const selectString = vscode.commands.registerTextEditorCommand('st-lang.select-string', (editor) => {
+        if (
+            editor.document.languageId !== 'stdn'
+            && editor.document.languageId !== 'urls'
+            && editor.document.languageId !== 'ston'
+        ) {
+            return
+        }
+        const range = editor.document.getWordRangeAtPosition(editor.selection.anchor, /[^\s',\[\]{}][^\n',\[\]{}]*/)
+        if (range === undefined) {
+            return
+        }
+        editor.selections = [new vscode.Selection(range.start, range.end)]
+    })
+    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, preview, previewPath, stringify, copyStringifyResult, copyId, selectString)
 }
 export function deactivate() {}
