@@ -110,6 +110,13 @@
         }
       ]
     },
+    "keybindings": [
+      {
+        "command": "st-lang.select-string",
+        "key": "shift+alt+s",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
+      }
+    ],
     "languages": [
       {
         "id": "stdn",
