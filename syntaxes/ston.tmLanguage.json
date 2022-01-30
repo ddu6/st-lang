@@ -50,15 +50,15 @@
 			"match": ","
 		},
 		"number": {
-			"match": "(?<=(?:^|[\\['},])\\s*)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))",
+			"match": "(?<=(?:^|[',\\[\\]}])\\s*)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|[',\\[\\]{}]))",
 			"name": "constant.numeric"
 		},
 		"boolean": {
-			"match": "(?<=(?:^|[\\['},])\\s*)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))",
+			"match": "(?<=(?:^|[',\\[\\]}])\\s*)(?:true|false)(?=\\s*(?:$|[',\\[\\]{}]))",
 			"name": "constant.language"
 		},
 		"unquotedString": {
-			"match": "(?<=(?:^|[\\['},])\\s*)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))",
+			"match": "(?<=(?:^|[',\\[\\]}])\\s*)[^\\s',\\[\\]{}][^',\\[\\]{}]*?(?=\\s*(?:$|[',\\[\\]{}]))",
 			"name": "string.unquoted"
 		},
 		"string": {
@@ -71,35 +71,6 @@
 					"name": "constant.character.escape"
 				}
 			]
-		},
-		"value": {
-			"patterns": [
-				{
-					"include": "#string"
-				},
-				{
-					"include": "#object"
-				},
-				{
-					"include": "#array"
-				},
-				{
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))",
-					"name": "constant.numeric"
-				},
-				{
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))",
-					"name": "constant.language"
-				},
-				{
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))",
-					"name": "string.unquoted"
-				}
-			]
-		},
-		"key": {
-			"match": "(?<=(?:^|['{}\\],])\\s*)[a-zA-Z0-9_-]+(?=\\s*[\\s'{}\\[,])",
-			"name": "entity.other.attribute-name"
 		},
 		"object": {
 			"begin": "\\{",
@@ -166,6 +137,35 @@
 					"include": "#invalid"
 				}
 			]
+		},
+		"value": {
+			"patterns": [
+				{
+					"include": "#string"
+				},
+				{
+					"include": "#object"
+				},
+				{
+					"include": "#array"
+				},
+				{
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))",
+					"name": "constant.numeric"
+				},
+				{
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))",
+					"name": "constant.language"
+				},
+				{
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))",
+					"name": "string.unquoted"
+				}
+			]
+		},
+		"key": {
+			"match": "(?<=(?:^|['{}\\],])\\s*)[a-zA-Z0-9_-]+(?=\\s*[\\s'{}\\[,])",
+			"name": "entity.other.attribute-name"
 		},
 		"topInvalid": {
 			"begin": "(?=.)",
