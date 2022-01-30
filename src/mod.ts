@@ -279,7 +279,7 @@ function getIdAtPosition(document: vscode.TextDocument, position: vscode.Positio
 export function activate(context: vscode.ExtensionContext) {
     const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
         provideCompletionItems(document, position) {
-            if (document.getWordRangeAtPosition(position, /\\[a-zA-Z]*/) === undefined) {
+            if (document.getWordRangeAtPosition(position, /\\\\/) !== undefined) {
                 return []
             }
             return cmds.map(value => new vscode.CompletionItem(value, 2))

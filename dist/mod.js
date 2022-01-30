@@ -282,7 +282,7 @@ function getIdAtPosition(document, position) {
 function activate(context) {
     const backslash = vscode.languages.registerCompletionItemProvider('stdn', {
         provideCompletionItems(document, position) {
-            if (document.getWordRangeAtPosition(position, /\\[a-zA-Z]*/) === undefined) {
+            if (document.getWordRangeAtPosition(position, /\\\\/) !== undefined) {
                 return [];
             }
             return katex_1.cmds.map(value => new vscode.CompletionItem(value, 2));
