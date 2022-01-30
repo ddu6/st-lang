@@ -433,11 +433,11 @@ function activate(context) {
     const idRename = vscode.languages.registerRenameProvider('stdn', {
         prepareRename(document, position) {
             if (document.getWordRangeAtPosition(position, /(?:id|ref-id|href)[ ]*'.+'|(?:id|ref-id|href)[ ][^'{}\[\],]+/) === undefined) {
-                return undefined;
+                throw new Error();
             }
             const { id, index, originalString } = getIdAtPosition(document, position);
             if (id.length === 0) {
-                return undefined;
+                throw new Error();
             }
             return {
                 range: getStringRange(document, index, originalString),
