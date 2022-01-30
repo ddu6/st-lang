@@ -59,15 +59,15 @@
 			"match": ","
 		},
 		"numberHolder": {
-			"match": "(?<=(?:^|[\\[\\]}',])\\s*)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|[\\[\\]{}',]))",
+			"match": "(?<=(?:^|[',\\[\\]}])\\s*)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|[',\\[\\]{}]))",
 			"name": "invalid.illegal"
 		},
 		"booleanHolder": {
-			"match": "(?<=(?:^|[\\[\\]}',])\\s*)(?:true|false)(?=\\s*(?:$|[\\[\\]{}',]))",
+			"match": "(?<=(?:^|[',\\[\\]}])\\s*)(?:true|false)(?=\\s*(?:$|[',\\[\\]{}]))",
 			"name": "invalid.illegal"
 		},
 		"unquotedString": {
-			"match": "(?<=(?:^|[\\[\\]}',])\\s*)[^\\s\\[\\]{}',][^\\[\\]{}',]*?(?=\\s*(?:$|[\\[\\]{}',]))",
+			"match": "(?<=(?:^|[',\\[\\]}])\\s*)[^\\s',\\[\\]{}][^',\\[\\]{}]*?(?=\\s*(?:$|[',\\[\\]{}]))",
 			"name": "string.unquoted"
 		},
 		"string": {
@@ -103,20 +103,24 @@
 					"name": "support.function.katex"
 				},
 				{
-					"match": "\\d+",
-					"name": "constant.numeric"
-				},
-				{
-					"match": "$",
-					"name": "invalid.illegal"
+					"match": "\\\\[{}#$&^_~]",
+					"name": "support.function.katex"
 				},
 				{
 					"match": "[{}#^_~]",
 					"name": "meta.template.expression.punctuation"
 				},
 				{
+					"match": "\\$",
+					"name": "invalid.illegal"
+				},
+				{
 					"match": "&",
 					"name": "keyword.control"
+				},
+				{
+					"match": "\\d+",
+					"name": "constant.numeric"
 				},
 				{
 					"match": "%.*$",
@@ -125,7 +129,7 @@
 			]
 		},
 		"unquotedKString": {
-			"match": "(?<=(?:^|[\\[\\]}',])\\s*)[^\\s\\[\\]{}',][^\\[\\]{}',]*?(?=\\s*(?:$|[\\[\\]{}',]))",
+			"match": "(?<=(?:^|[',\\[\\]}])\\s*)[^\\s',\\[\\]{}][^',\\[\\]{}]*?(?=\\s*(?:$|[',\\[\\]{}]))",
 			"name": "string.unquoted",
 			"captures": {
 				"0": {
@@ -139,20 +143,24 @@
 							"name": "support.function.katex"
 						},
 						{
-							"match": "\\d+",
-							"name": "constant.numeric"
-						},
-						{
-							"match": "$",
-							"name": "invalid.illegal"
+							"match": "\\\\[{}#$&^_~]",
+							"name": "support.function.katex"
 						},
 						{
 							"match": "[{}#^_~]",
 							"name": "meta.template.expression.punctuation"
 						},
 						{
+							"match": "\\$",
+							"name": "invalid.illegal"
+						},
+						{
 							"match": "&",
 							"name": "keyword.control"
+						},
+						{
+							"match": "\\d+",
+							"name": "constant.numeric"
 						},
 						{
 							"match": "%.*$",
@@ -342,7 +350,7 @@
 		"value": {
 			"patterns": [
 				{
-					"begin": "(?<=(?:^|[{}',])\\s*(?:id|ref-id|[a-zA-Z0-9_-]*-href|[a-zA-Z0-9_-]*-src)\\s*)'",
+					"begin": "(?<=(?:^|[',{}])\\s*(?:id|ref-id|[a-zA-Z0-9_-]*-href|[a-zA-Z0-9_-]*-src)\\s*)'",
 					"end": "'",
 					"name": "string.quoted.single",
 					"contentName": "markup.underline.link",
@@ -354,15 +362,15 @@
 					]
 				},
 				{
-					"match": "(?<=(?:^|[{}',])\\s*(?:id|ref-id|[a-zA-Z0-9_-]*-href|[a-zA-Z0-9_-]*-src)\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|[\\[\\]{}',]))",
+					"match": "(?<=(?:^|[',{}])\\s*(?:id|ref-id|[a-zA-Z0-9_-]*-href|[a-zA-Z0-9_-]*-src)\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|[',\\[\\]{}]))",
 					"name": "invalid.illegal"
 				},
 				{
-					"match": "(?<=(?:^|[{}',])\\s*(?:id|ref-id|[a-zA-Z0-9_-]*-href|[a-zA-Z0-9_-]*-src)\\s+)(?:true|false)(?=\\s*(?:$|[\\[\\]{}',]))",
+					"match": "(?<=(?:^|[',{}])\\s*(?:id|ref-id|[a-zA-Z0-9_-]*-href|[a-zA-Z0-9_-]*-src)\\s+)(?:true|false)(?=\\s*(?:$|[',\\[\\]{}]))",
 					"name": "invalid.illegal"
 				},
 				{
-					"match": "(?<=(?:^|[{}',])\\s*(?:id|ref-id|[a-zA-Z0-9_-]*-href|[a-zA-Z0-9_-]*-src)\\s+)([^\\s\\[\\]{}',][^\\[\\]{}',]*?)(?=\\s*(?:$|[\\[\\]{}',]))",
+					"match": "(?<=(?:^|[',{}])\\s*(?:id|ref-id|[a-zA-Z0-9_-]*-href|[a-zA-Z0-9_-]*-src)\\s+)([^\\s',\\[\\]{}][^',\\[\\]{}]*?)(?=\\s*(?:$|[',\\[\\]{}]))",
 					"captures": {
 						"0": {
 							"name": "string.unquoted"
@@ -402,15 +410,15 @@
 					]
 				},
 				{
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|[\\[\\]{}',]))",
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|[',\\[\\]{}]))",
 					"name": "constant.numeric"
 				},
 				{
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:true|false)(?=\\s*(?:$|[\\[\\]{}',]))",
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:true|false)(?=\\s*(?:$|[',\\[\\]{}]))",
 					"name": "constant.language"
 				},
 				{
-					"begin": "(?<=(?:^|[{}',])\\s*(?:katex|align|alignat|aligned|alignedat|array|arraystretch|Bmatrix|bmatrix|cases|CD|darray|dcases|drcases|gather|matrix|pmatrix|rcases|smallmatrix|split|subarray|Vmatrix|vmatrix)\\s*)\\[",
+					"begin": "(?<=(?:^|[',{}])\\s*(?:katex|align|alignat|aligned|alignedat|array|arraystretch|Bmatrix|bmatrix|cases|CD|darray|dcases|drcases|gather|matrix|pmatrix|rcases|smallmatrix|split|subarray|Vmatrix|vmatrix)\\s*)\\[",
 					"end": "\\]",
 					"patterns": [
 						{
@@ -449,7 +457,7 @@
 					]
 				},
 				{
-					"begin": "(?<=(?:^|[{}',])\\s*(?:heading|h1|h2|h3|h4|h5|h6)\\s*)\\[",
+					"begin": "(?<=(?:^|[',{}])\\s*(?:heading|h1|h2|h3|h4|h5|h6)\\s*)\\[",
 					"end": "\\]",
 					"name": "markup.heading",
 					"patterns": [
@@ -528,7 +536,7 @@
 					]
 				},
 				{
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)[^\\s\\[\\]{}',][^\\[\\]{}',]*?(?=\\s*(?:$|[\\[\\]{}',]))",
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)[^\\s',\\[\\]{}][^',\\[\\]{}]*?(?=\\s*(?:$|[',\\[\\]{}]))",
 					"name": "string.unquoted"
 				},
 				{
@@ -542,11 +550,11 @@
 		"key": {
 			"patterns": [
 				{
-					"match": "(?<=(?:^|[{}',])\\s*)[a-zA-Z0-9_-]+(?=\\s*\\[)",
+					"match": "(?<=(?:^|[',{}])\\s*)[a-zA-Z0-9_-]+(?=\\s*\\[)",
 					"name": "entity.name.type"
 				},
 				{
-					"match": "(?<=(?:^|[{}',])\\s*)[a-zA-Z0-9_-]+(?=\\s*[\\s\\[{}',])",
+					"match": "(?<=(?:^|[',{}])\\s*)[a-zA-Z0-9_-]+(?=\\s*[\\s\\[',{}])",
 					"name": "entity.other.attribute-name"
 				}
 			]
