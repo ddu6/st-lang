@@ -141,6 +141,18 @@
 		"value": {
 			"patterns": [
 				{
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|[',\\[\\]{}]))",
+					"name": "constant.numeric"
+				},
+				{
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:true|false)(?=\\s*(?:$|[',\\[\\]{}]))",
+					"name": "constant.language"
+				},
+				{
+					"match": "(?<=[a-zA-Z0-9_-]+\\s+)[^\\s',\\[\\]{}][^',\\[\\]{}]*?(?=\\s*(?:$|[',\\[\\]{}]))",
+					"name": "string.unquoted"
+				},
+				{
 					"include": "#string"
 				},
 				{
@@ -148,18 +160,6 @@
 				},
 				{
 					"include": "#array"
-				},
-				{
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:[+-]?Infinity|NaN|0x[\\da-fA-F]+|0o[0-7]+|0b[01]+|[+-]?(?:\\d*\\.?\\d+|\\d+\\.)(?:e[+-]?\\d+)?)(?=\\s*(?:$|['{}\\[\\],]))",
-					"name": "constant.numeric"
-				},
-				{
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)(?:true|false)(?=\\s*(?:$|['{}\\[\\],]))",
-					"name": "constant.language"
-				},
-				{
-					"match": "(?<=[a-zA-Z0-9_-]+\\s+)[^\\s'{}\\[\\],][^'{}\\[\\],]*?(?=\\s*(?:$|['{}\\[\\],]))",
-					"name": "string.unquoted"
 				}
 			]
 		},
