@@ -573,6 +573,27 @@ export function activate(context: vscode.ExtensionContext) {
     const previewPath = vscode.commands.registerCommand('st-lang.preview-path', (path: string, focusURL: string | undefined, focusPositionStr: string | undefined, focusId: string | undefined) => {
         createPreview(vscode.Uri.file(path), focusURL, focusPositionStr, focusId, context)
     })
+    const quoteString = vscode.commands.registerTextEditorCommand('st-lang.quote-string', (editor) => {
+        if (
+            editor.document.languageId !== 'stdn'
+            && editor.document.languageId !== 'urls'
+            && editor.document.languageId !== 'ston'
+        ) {
+            return
+        }
+        editor.edit(edit => {
+            let lastRange: vscode.Range | undefined
+            for (const selection of editor.selections) {
+                const range = editor.document.getWordRangeAtPosition(selection.anchor, /[^\s',\[\]{}][^\n',\[\]{}]*/)
+                if (range === undefined || lastRange !== undefined && range.isEqual(lastRange)) {
+                    continue
+                }
+                lastRange = range
+                edit.insert(range.start, "'")
+                edit.insert(range.end, "'")
+            }
+        })
+    })
     const selectString = vscode.commands.registerTextEditorCommand('st-lang.select-string', (editor) => {
         if (
             editor.document.languageId !== 'stdn'
@@ -608,6 +629,28 @@ export function activate(context: vscode.ExtensionContext) {
                 .split('\n').map(value => ston.stringify(value, {useUnquotedString: true})).join('\n')
         )
     })
-    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, copyId, copyStringifyResult, insertKatex, preview, previewPath, selectString, stringify)
+    const unquoteString = vscode.commands.registerTextEditorCommand('st-lang.unquote-string', (editor) => {
+        if (
+            editor.document.languageId !== 'stdn'
+            && editor.document.languageId !== 'urls'
+            && editor.document.languageId !== 'ston'
+        ) {
+            return
+        }
+        editor.edit(edit => {
+            let lastRange: vscode.Range | undefined
+            for (const selection of editor.selections) {
+                const range = editor.document.getWordRangeAtPosition(selection.anchor, /'[^\s',\[\]{}][^\n',\[\]{}]*'/)
+                if (range === undefined || lastRange !== undefined && range.isEqual(lastRange)) {
+                    continue
+                }
+                lastRange = range
+                const {start, end} = range
+                edit.delete(new vscode.Range(start, new vscode.Position(start.line, start.character + 1)))
+                edit.delete(new vscode.Range(new vscode.Position(end.line, end.character - 1), end))
+            }
+        })
+    })
+    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, copyId, copyStringifyResult, insertKatex, preview, previewPath, quoteString, selectString, stringify, unquoteString)
 }
 export function deactivate() {}
