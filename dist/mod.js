@@ -560,7 +560,7 @@ function activate(context) {
             }
             for (let i = index + 1; i <= length; i++) {
                 const position = editor.document.positionAt(i);
-                if (editor.document.getText(new vscode.Range(new vscode.Position(position.line, Math.max(0, position.character - 1)), position)) !== "'") {
+                if (position.character === 0 || editor.document.getText(new vscode.Range(new vscode.Position(position.line, position.character), position)) !== "'") {
                     continue;
                 }
                 selections.push(new vscode.Selection(position, position));
