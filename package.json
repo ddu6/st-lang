@@ -112,6 +112,11 @@
     },
     "keybindings": [
       {
+        "key": "ctrl+shift+v",
+        "command": "st-lang.preview",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus"
+      },
+      {
         "key": "Escape",
         "command": "cursorMove",
         "args": {
