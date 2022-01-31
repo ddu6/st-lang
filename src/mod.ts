@@ -539,7 +539,9 @@ export function activate(context: vscode.ExtensionContext) {
         }
         vscode.env.clipboard.writeText(
             editor.document.getText(editor.selection)
-                .split('\n').map(value => ston.stringify(value, {useUnquotedString: true})).join('\n')
+                .split('\n')
+                .map(value => ston.stringify(value, {useUnquotedString: true}))
+                .join('\n')
         )
     })
     const insertKatex = vscode.commands.registerTextEditorCommand('st-lang.insert-katex', async (editor) => {
@@ -549,6 +551,16 @@ export function activate(context: vscode.ExtensionContext) {
         if (!await editor.edit(edit => {
             editor.selections.forEach(selection => edit.replace(selection, "'{''}'"))
         })) {
+            return
+        }
+        editor.selections = editor.selections.map(selection => {
+            const {start: {line, character}} = selection
+            const position = new vscode.Position(line, character + 3)
+            return new vscode.Selection(position, position)
+        })
+    })
+    const jumpString = vscode.commands.registerTextEditorCommand('st-lang.jump-string', async (editor) => {
+        if (editor.document.languageId !== 'stdn') {
             return
         }
         editor.selections = editor.selections.map(selection => {
@@ -573,7 +585,7 @@ export function activate(context: vscode.ExtensionContext) {
     const previewPath = vscode.commands.registerCommand('st-lang.preview-path', (path: string, focusURL: string | undefined, focusPositionStr: string | undefined, focusId: string | undefined) => {
         createPreview(vscode.Uri.file(path), focusURL, focusPositionStr, focusId, context)
     })
-    const quoteString = vscode.commands.registerTextEditorCommand('st-lang.quote-string', (editor) => {
+    const quoteString = vscode.commands.registerTextEditorCommand('st-lang.quote-string', (editor, edit) => {
         if (
             editor.document.languageId !== 'stdn'
             && editor.document.languageId !== 'urls'
@@ -581,18 +593,16 @@ export function activate(context: vscode.ExtensionContext) {
         ) {
             return
         }
-        editor.edit(edit => {
-            let lastRange: vscode.Range | undefined
-            for (const selection of editor.selections) {
-                const range = editor.document.getWordRangeAtPosition(selection.anchor, /[^\s',\[\]{}][^\n',\[\]{}]*/)
-                if (range === undefined || lastRange !== undefined && range.isEqual(lastRange)) {
-                    continue
-                }
-                lastRange = range
-                edit.insert(range.start, "'")
-                edit.insert(range.end, "'")
+        let lastRange: vscode.Range | undefined
+        for (const selection of editor.selections) {
+            const range = editor.document.getWordRangeAtPosition(selection.anchor, /[^\s',\[\]{}][^\n',\[\]{}]*/)
+            if (range === undefined || lastRange !== undefined && range.isEqual(lastRange)) {
+                continue
             }
-        })
+            lastRange = range
+            edit.insert(range.start, "'")
+            edit.insert(range.end, "'")
+        }
     })
     const selectString = vscode.commands.registerTextEditorCommand('st-lang.select-string', (editor) => {
         if (
@@ -619,17 +629,23 @@ export function activate(context: vscode.ExtensionContext) {
             editor.document.languageId !== 'stdn'
             && editor.document.languageId !== 'urls'
             && editor.document.languageId !== 'ston'
-            || editor.selection.isEmpty
         ) {
             return
         }
-        edit.replace(
-            editor.selection,
-            editor.document.getText(editor.selection)
-                .split('\n').map(value => ston.stringify(value, {useUnquotedString: true})).join('\n')
-        )
+        for (const selection of editor.selections) {
+            if (selection.isEmpty) {
+                continue
+            }
+            edit.replace(
+                selection,
+                editor.document.getText(selection)
+                    .split('\n')
+                    .map(value => ston.stringify(value, {useUnquotedString: true}))
+                    .join('\n')
+            )
+        }
     })
-    const unquoteString = vscode.commands.registerTextEditorCommand('st-lang.unquote-string', (editor) => {
+    const unquoteString = vscode.commands.registerTextEditorCommand('st-lang.unquote-string', (editor, edit) => {
         if (
             editor.document.languageId !== 'stdn'
             && editor.document.languageId !== 'urls'
@@ -637,19 +653,17 @@ export function activate(context: vscode.ExtensionContext) {
         ) {
             return
         }
-        editor.edit(edit => {
-            let lastRange: vscode.Range | undefined
-            for (const selection of editor.selections) {
-                const range = editor.document.getWordRangeAtPosition(selection.anchor, /'[^\s',\[\]{}][^\n',\[\]{}]*'/)
-                if (range === undefined || lastRange !== undefined && range.isEqual(lastRange)) {
-                    continue
-                }
-                lastRange = range
-                const {start, end} = range
-                edit.delete(new vscode.Range(start, new vscode.Position(start.line, start.character + 1)))
-                edit.delete(new vscode.Range(new vscode.Position(end.line, end.character - 1), end))
+        let lastRange: vscode.Range | undefined
+        for (const selection of editor.selections) {
+            const range = editor.document.getWordRangeAtPosition(selection.anchor, /'[^\s',\[\]{}][^\n',\[\]{}]*'/)
+            if (range === undefined || lastRange !== undefined && range.isEqual(lastRange)) {
+                continue
             }
-        })
+            lastRange = range
+            const {start, end} = range
+            edit.delete(new vscode.Range(start, new vscode.Position(start.line, start.character + 1)))
+            edit.delete(new vscode.Range(new vscode.Position(end.line, end.character - 1), end))
+        }
     })
     context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, copyId, copyStringifyResult, insertKatex, preview, previewPath, quoteString, selectString, stringify, unquoteString)
 }
