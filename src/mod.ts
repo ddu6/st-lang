@@ -573,7 +573,7 @@ export function activate(context: vscode.ExtensionContext) {
             }
             for (let i = index + 1; i <= length; i++) {
                 const position = editor.document.positionAt(i)
-                if (position.character === 0 || editor.document.getText(new vscode.Range(new vscode.Position(position.line, position.character), position)) !== "'") {
+                if (position.character === 0 || editor.document.getText(new vscode.Range(new vscode.Position(position.line, position.character - 1), position)) !== "'") {
                     continue
                 }
                 selections.push(new vscode.Selection(position, position))
