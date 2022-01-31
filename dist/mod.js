@@ -555,10 +555,10 @@ function activate(context) {
         let lastIndex = 0;
         for (const selection of editor.selections) {
             const index = editor.document.offsetAt(selection.active);
-            if (index < lastIndex) {
+            if (index < lastIndex - 1) {
                 continue;
             }
-            for (let i = index + 1; i <= length; i++) {
+            for (let i = index + 2; i <= length; i++) {
                 const position = editor.document.positionAt(i);
                 if (position.character === 0 || editor.document.getText(new vscode.Range(new vscode.Position(position.line, position.character - 1), position)) !== "'") {
                     continue;
