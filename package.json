@@ -112,13 +112,28 @@
     },
     "keybindings": [
       {
+        "key": "alt+'",
+        "command": "st-lang.select-string",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
+      },
+      {
         "key": "alt+k",
         "command": "st-lang.insert-katex",
         "when": "editorLangId == stdn && editorTextFocus"
       },
       {
-        "key": "alt+'",
-        "command": "st-lang.select-string",
+        "key": "alt+s",
+        "command": "st-lang.jump-string",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
+      },
+      {
+        "key": "ctrl+'",
+        "command": "st-lang.quote-string",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
+      },
+      {
+        "key": "ctrl+shift+'",
+        "command": "st-lang.unquote-string",
         "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
       },
       {
@@ -127,7 +142,7 @@
         "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus"
       },
       {
-        "key": "Escape",
+        "key": "escape",
         "command": "cursorMove",
         "args": {
           "to": "right"
