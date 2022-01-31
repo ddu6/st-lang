@@ -121,13 +121,13 @@
       },
       {
         "command": "st-lang.copy-id",
-        "key": "ctrl+alt+i",
-        "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection"
+        "key": "alt+i",
+        "when": "editorLangId == stdn && editorTextFocus && editorHasSelection || editorLangId == urls && editorTextFocus && editorHasSelection || editorLangId == ston && editorTextFocus && editorHasSelection"
       },
       {
         "command": "st-lang.copy-stringify-result",
-        "key": "ctrl+shift+alt+s",
-        "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection"
+        "key": "shift+alt+'",
+        "when": "editorLangId == stdn && editorTextFocus && editorHasSelection || editorLangId == urls && editorTextFocus && editorHasSelection || editorLangId == ston && editorTextFocus && editorHasSelection"
       },
       {
         "command": "st-lang.insert-katex",
@@ -156,8 +156,8 @@
       },
       {
         "command": "st-lang.stringify",
-        "key": "ctrl+alt+s",
-        "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection"
+        "key": "ctrl+alt+'",
+        "when": "editorLangId == stdn && editorTextFocus && editorHasSelection || editorLangId == urls && editorTextFocus && editorHasSelection || editorLangId == ston && editorTextFocus && editorHasSelection"
       },
       {
         "command": "st-lang.unquote-string",
