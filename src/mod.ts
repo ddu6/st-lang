@@ -510,51 +510,6 @@ export function activate(context: vscode.ExtensionContext) {
             ]
         }
     })
-    const preview = vscode.commands.registerTextEditorCommand('st-lang.preview', (editor) => {
-        if (
-            editor.document.languageId !== 'stdn'
-            && editor.document.languageId !== 'urls'
-        ) {
-            return
-        }
-        let focusPositionStr: string | undefined
-        if (editor.document.languageId === 'stdn') {
-            focusPositionStr = getCurrentPosition(editor).join(' ')
-        }
-        createPreview(editor.document.uri, undefined, focusPositionStr, undefined, context)
-    })
-    const previewPath = vscode.commands.registerCommand('st-lang.preview-path', (path: string, focusURL: string | undefined, focusPositionStr: string | undefined, focusId: string | undefined) => {
-        createPreview(vscode.Uri.file(path), focusURL, focusPositionStr, focusId, context)
-    })
-    const stringify = vscode.commands.registerTextEditorCommand('st-lang.stringify', (editor, edit) => {
-        if (
-            editor.document.languageId !== 'stdn'
-            && editor.document.languageId !== 'urls'
-            && editor.document.languageId !== 'ston'
-            || editor.selection.isEmpty
-        ) {
-            return
-        }
-        edit.replace(
-            editor.selection,
-            editor.document.getText(editor.selection)
-                .split('\n').map(value => ston.stringify(value, {useUnquotedString: true})).join('\n')
-        )
-    })
-    const copyStringifyResult = vscode.commands.registerTextEditorCommand('st-lang.copy-stringify-result', (editor) => {
-        if (
-            editor.document.languageId !== 'stdn'
-            && editor.document.languageId !== 'urls'
-            && editor.document.languageId !== 'ston'
-            || editor.selection.isEmpty
-        ) {
-            return
-        }
-        vscode.env.clipboard.writeText(
-            editor.document.getText(editor.selection)
-                .split('\n').map(value => ston.stringify(value, {useUnquotedString: true})).join('\n')
-        )
-    })
     const copyId = vscode.commands.registerTextEditorCommand('st-lang.copy-id', (editor) => {
         if (
             editor.document.languageId !== 'stdn'
@@ -572,6 +527,51 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.env.clipboard.writeText(
             stringToId(string)
         )
+    })
+    const copyStringifyResult = vscode.commands.registerTextEditorCommand('st-lang.copy-stringify-result', (editor) => {
+        if (
+            editor.document.languageId !== 'stdn'
+            && editor.document.languageId !== 'urls'
+            && editor.document.languageId !== 'ston'
+            || editor.selection.isEmpty
+        ) {
+            return
+        }
+        vscode.env.clipboard.writeText(
+            editor.document.getText(editor.selection)
+                .split('\n').map(value => ston.stringify(value, {useUnquotedString: true})).join('\n')
+        )
+    })
+    const insertKatex = vscode.commands.registerTextEditorCommand('st-lang.insert-katex', async (editor) => {
+        if (editor.document.languageId !== 'stdn') {
+            return
+        }
+        if (!await editor.edit(edit => {
+            editor.selections.forEach(selection => edit.replace(selection, "'{''}'"))
+        })) {
+            return
+        }
+        editor.selections = editor.selections.map(selection => {
+            const {start: {line, character}} = selection
+            const position = new vscode.Position(line, character + 3)
+            return new vscode.Selection(position, position)
+        })
+    })
+    const preview = vscode.commands.registerTextEditorCommand('st-lang.preview', (editor) => {
+        if (
+            editor.document.languageId !== 'stdn'
+            && editor.document.languageId !== 'urls'
+        ) {
+            return
+        }
+        let focusPositionStr: string | undefined
+        if (editor.document.languageId === 'stdn') {
+            focusPositionStr = getCurrentPosition(editor).join(' ')
+        }
+        createPreview(editor.document.uri, undefined, focusPositionStr, undefined, context)
+    })
+    const previewPath = vscode.commands.registerCommand('st-lang.preview-path', (path: string, focusURL: string | undefined, focusPositionStr: string | undefined, focusId: string | undefined) => {
+        createPreview(vscode.Uri.file(path), focusURL, focusPositionStr, focusId, context)
     })
     const selectString = vscode.commands.registerTextEditorCommand('st-lang.select-string', (editor) => {
         if (
@@ -593,21 +593,21 @@ export function activate(context: vscode.ExtensionContext) {
             editor.selections = selections
         }
     })
-    const insertKatex = vscode.commands.registerTextEditorCommand('st-lang.insert-katex', async (editor) => {
-        if (editor.document.languageId !== 'stdn') {
+    const stringify = vscode.commands.registerTextEditorCommand('st-lang.stringify', (editor, edit) => {
+        if (
+            editor.document.languageId !== 'stdn'
+            && editor.document.languageId !== 'urls'
+            && editor.document.languageId !== 'ston'
+            || editor.selection.isEmpty
+        ) {
             return
         }
-        if (!await editor.edit(edit => {
-            editor.selections.forEach(selection => edit.replace(selection, "'{''}'"))
-        })) {
-            return
-        }
-        editor.selections = editor.selections.map(selection => {
-            const {start: {line, character}} = selection
-            const position = new vscode.Position(line, character + 3)
-            return new vscode.Selection(position, position)
-        })
+        edit.replace(
+            editor.selection,
+            editor.document.getText(editor.selection)
+                .split('\n').map(value => ston.stringify(value, {useUnquotedString: true})).join('\n')
+        )
     })
-    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, preview, previewPath, stringify, copyStringifyResult, copyId, selectString, insertKatex)
+    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, copyId, copyStringifyResult, insertKatex, preview, previewPath, selectString, stringify)
 }
 export function deactivate() {}
