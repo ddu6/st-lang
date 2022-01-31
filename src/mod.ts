@@ -581,12 +581,33 @@ export function activate(context: vscode.ExtensionContext) {
         ) {
             return
         }
-        const range = editor.document.getWordRangeAtPosition(editor.selection.anchor, /[^\s',\[\]{}][^\n',\[\]{}]*/)
-        if (range === undefined) {
+        const selections: vscode.Selection[] = []
+        for (const selection of editor.selections) {
+            const range = editor.document.getWordRangeAtPosition(selection.anchor, /[^\s',\[\]{}][^\n',\[\]{}]*/)
+            if (range === undefined) {
+                continue
+            }
+            selections.push(new vscode.Selection(range.start, range.end))
+        }
+        if (selections.length > 0) {
+            editor.selections = selections
+        }
+    })
+    const insertKatex = vscode.commands.registerTextEditorCommand('st-lang.insert-katex', async (editor) => {
+        if (editor.document.languageId !== 'stdn') {
             return
         }
-        editor.selections = [new vscode.Selection(range.start, range.end)]
+        if (!await editor.edit(edit => {
+            editor.selections.forEach(selection => edit.replace(selection, "'{''}'"))
+        })) {
+            return
+        }
+        editor.selections = editor.selections.map(selection => {
+            const {start: {line, character}} = selection
+            const position = new vscode.Position(line, character + 3)
+            return new vscode.Selection(position, position)
+        })
     })
-    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, preview, previewPath, stringify, copyStringifyResult, copyId, selectString)
+    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, preview, previewPath, stringify, copyStringifyResult, copyId, selectString, insertKatex)
 }
 export function deactivate() {}

@@ -112,6 +112,16 @@
     },
     "keybindings": [
       {
+        "key": "alt+k",
+        "command": "st-lang.insert-katex",
+        "when": "editorLangId == stdn && editorTextFocus"
+      },
+      {
+        "key": "alt+'",
+        "command": "st-lang.select-string",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
+      },
+      {
         "key": "ctrl+shift+v",
         "command": "st-lang.preview",
         "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus"
@@ -122,11 +132,6 @@
         "args": {
           "to": "right"
         },
-        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
-      },
-      {
-        "key": "shift+alt+s",
-        "command": "st-lang.select-string",
         "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
       }
     ],
