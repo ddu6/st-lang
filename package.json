@@ -40,6 +40,14 @@
   "contributes": {
     "commands": [
       {
+        "command": "st-lang.copy-id",
+        "title": "Copy Id"
+      },
+      {
+        "command": "st-lang.copy-stringify-result",
+        "title": "Copy Stringify Result"
+      },
+      {
         "command": "st-lang.preview",
         "title": "Preview",
         "icon": "$(open-preview)"
@@ -47,25 +55,12 @@
       {
         "command": "st-lang.stringify",
         "title": "Stringify"
-      },
-      {
-        "command": "st-lang.copy-stringify-result",
-        "title": "Copy Stringify Result"
-      },
-      {
-        "command": "st-lang.copy-id",
-        "title": "Copy Id"
       }
     ],
     "menus": {
       "commandPalette": [
         {
-          "command": "st-lang.preview",
-          "when": "editorLangId == stdn || editorLangId == urls",
-          "group": "navigation"
-        },
-        {
-          "command": "st-lang.stringify",
+          "command": "st-lang.copy-id",
           "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection",
           "group": "navigation"
         },
@@ -75,19 +70,19 @@
           "group": "navigation"
         },
         {
-          "command": "st-lang.copy-id",
+          "command": "st-lang.preview",
+          "when": "editorLangId == stdn || editorLangId == urls",
+          "group": "navigation"
+        },
+        {
+          "command": "st-lang.stringify",
           "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection",
           "group": "navigation"
         }
       ],
       "editor/context": [
         {
-          "command": "st-lang.preview",
-          "when": "editorLangId == stdn || editorLangId == urls",
-          "group": "navigation"
-        },
-        {
-          "command": "st-lang.stringify",
+          "command": "st-lang.copy-id",
           "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection",
           "group": "navigation"
         },
@@ -97,7 +92,12 @@
           "group": "navigation"
         },
         {
-          "command": "st-lang.copy-id",
+          "command": "st-lang.preview",
+          "when": "editorLangId == stdn || editorLangId == urls",
+          "group": "navigation"
+        },
+        {
+          "command": "st-lang.stringify",
           "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection",
           "group": "navigation"
         }
@@ -112,41 +112,56 @@
     },
     "keybindings": [
       {
-        "key": "alt+'",
-        "command": "st-lang.select-string",
-        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
-      },
-      {
-        "key": "alt+k",
-        "command": "st-lang.insert-katex",
-        "when": "editorLangId == stdn && editorTextFocus"
-      },
-      {
-        "key": "alt+s",
-        "command": "st-lang.jump-string",
-        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
-      },
-      {
-        "key": "ctrl+'",
-        "command": "st-lang.quote-string",
-        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
-      },
-      {
-        "key": "ctrl+shift+'",
-        "command": "st-lang.unquote-string",
-        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
-      },
-      {
-        "key": "ctrl+shift+v",
-        "command": "st-lang.preview",
-        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus"
-      },
-      {
-        "key": "escape",
         "command": "cursorMove",
         "args": {
           "to": "right"
         },
+        "key": "escape",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
+      },
+      {
+        "command": "st-lang.copy-id",
+        "key": "ctrl+alt+i",
+        "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection"
+      },
+      {
+        "command": "st-lang.copy-stringify-result",
+        "key": "ctrl+shift+alt+s",
+        "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection"
+      },
+      {
+        "command": "st-lang.insert-katex",
+        "key": "alt+k",
+        "when": "editorLangId == stdn && editorTextFocus"
+      },
+      {
+        "command": "st-lang.jump-string",
+        "key": "alt+s",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
+      },
+      {
+        "command": "st-lang.preview",
+        "key": "ctrl+shift+v",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus"
+      },
+      {
+        "command": "st-lang.quote-string",
+        "key": "ctrl+'",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
+      },
+      {
+        "command": "st-lang.select-string",
+        "key": "alt+'",
+        "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
+      },
+      {
+        "command": "st-lang.stringify",
+        "key": "ctrl+alt+s",
+        "when": "editorLangId == stdn && editorHasSelection || editorLangId == urls && editorHasSelection || editorLangId == ston && editorHasSelection"
+      },
+      {
+        "command": "st-lang.unquote-string",
+        "key": "ctrl+shift+'",
         "when": "editorLangId == stdn && editorTextFocus || editorLangId == urls && editorTextFocus || editorLangId == ston && editorTextFocus"
       }
     ],
