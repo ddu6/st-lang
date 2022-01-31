@@ -563,11 +563,27 @@ export function activate(context: vscode.ExtensionContext) {
         if (editor.document.languageId !== 'stdn') {
             return
         }
-        editor.selections = editor.selections.map(selection => {
-            const {start: {line, character}} = selection
-            const position = new vscode.Position(line, character + 3)
-            return new vscode.Selection(position, position)
-        })
+        const selections: vscode.Selection[] = []
+        const {length} = editor.document.getText()
+        let lastIndex = 0
+        for (const selection of editor.selections) {
+            const index = editor.document.offsetAt(selection.active)
+            if (index < lastIndex) {
+                continue
+            }
+            for (let i = index + 1; i <= length; i++) {
+                const position = editor.document.positionAt(i)
+                if (editor.document.getText(new vscode.Range(new vscode.Position(position.line, Math.max(0, position.character - 1)), position)) !== "'") {
+                    continue
+                }
+                selections.push(new vscode.Selection(position, position))
+                lastIndex = i
+                break
+            }
+        }
+        if (selections.length > 0) {
+            editor.selections = selections
+        }
     })
     const preview = vscode.commands.registerTextEditorCommand('st-lang.preview', (editor) => {
         if (
@@ -665,6 +681,6 @@ export function activate(context: vscode.ExtensionContext) {
             edit.delete(new vscode.Range(new vscode.Position(end.line, end.character - 1), end))
         }
     })
-    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, copyId, copyStringifyResult, insertKatex, preview, previewPath, quoteString, selectString, stringify, unquoteString)
+    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, copyId, copyStringifyResult, insertKatex, jumpString, preview, previewPath, quoteString, selectString, stringify, unquoteString)
 }
 export function deactivate() {}
