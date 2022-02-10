@@ -82,7 +82,7 @@
 			]
 		},
 		"kstring": {
-			"name": "string.quoted.single",
+			"name": "string.quoted.single.katex",
 			"begin": "'",
 			"end": "'",
 			"patterns": [
@@ -130,7 +130,7 @@
 		},
 		"unquotedKString": {
 			"match": "(?<=(?:^|[',\\[\\]}])\\s*)[^\\s',\\[\\]{}][^',\\[\\]{}]*?(?=\\s*(?:$|[',\\[\\]{}]))",
-			"name": "string.unquoted",
+			"name": "string.unquoted.katex",
 			"captures": {
 				"0": {
 					"patterns": [

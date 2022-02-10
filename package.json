@@ -195,7 +195,11 @@
       {
         "language": "stdn",
         "scopeName": "source.stdn",
-        "path": "syntaxes/stdn.tmLanguage.json"
+        "path": "syntaxes/stdn.tmLanguage.json",
+        "tokenTypes": {
+          "string.quoted.single.katex": "other",
+          "string.unquoted.katex": "other"
+        }
       },
       {
         "language": "urls",
