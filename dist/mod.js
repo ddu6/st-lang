@@ -498,8 +498,8 @@ function activate(context) {
             }
             return [
                 vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0, 0), document.positionAt(string.length)), ston.stringifyWithComment(result.value, {
-                    indentTarget: 'all',
                     addDecorativeSpace: 'always',
+                    indentTarget: 'all',
                     useUnquotedString: true
                 }))
             ];
