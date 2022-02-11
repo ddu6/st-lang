@@ -6,7 +6,7 @@ import {stringToId, stdnToInlinePlainString} from '@ddu6/stc/dist/base'
 import * as vscode from 'vscode'
 import {cmds} from './katex'
 import {extractIdsWithIndex, extractIdsWithTag, extractOrbitsWithTag, IdType} from './extract'
-const stViewVersion = '0.28.3'
+const stViewVersion = '0.28.4'
 const css = `html:not([data-color-scheme=light])>body.vscode-dark {
     --color-text: rgb(204 204 204);
     --color-light: rgb(110 110 110);
