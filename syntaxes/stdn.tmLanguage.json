@@ -396,10 +396,19 @@
 					"end": "\\}",
 					"patterns": [
 						{
-							"include": "#kstring"
+							"include": "#blockComment"
 						},
 						{
-							"include": "#children"
+							"include": "#lineComment"
+						},
+						{
+							"include": "#value"
+						},
+						{
+							"include": "#key"
+						},
+						{
+							"include": "#comma"
 						},
 						{
 							"include": "#space"
