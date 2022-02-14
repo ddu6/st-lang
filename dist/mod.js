@@ -16,7 +16,7 @@ const base_1 = require("@ddu6/stc/dist/base");
 const vscode = require("vscode");
 const katex_1 = require("./katex");
 const extract_1 = require("./extract");
-const stViewVersion = '0.30.0';
+const stViewVersion = '0.31.0';
 const css = `html:not([data-color-scheme=light])>body.vscode-dark {
     --color-text: rgb(204 204 204);
     --color-light: rgb(110 110 110);
@@ -112,36 +112,6 @@ function createPreviewHTML(src, focusURL, focusPositionStr, focusId) {
 
 </html>`;
 }
-function posiitonToUnitOrLineOrSTDNWithIndex(position, stdnWithIndex) {
-    let out = stdnWithIndex;
-    for (const step of position) {
-        if (typeof step === 'number') {
-            if (Array.isArray(out.value)) {
-                const next = out.value[step];
-                if (next === undefined || typeof next.value === 'string') {
-                    break;
-                }
-                out = next;
-                continue;
-            }
-            const next = out.value.children.value[step];
-            if (next === undefined) {
-                break;
-            }
-            out = next;
-            continue;
-        }
-        if (Array.isArray(out.value)) {
-            break;
-        }
-        const next = out.value.options.value[step];
-        if (next === undefined || typeof next.value !== 'object') {
-            break;
-        }
-        out = next;
-    }
-    return out;
-}
 function createPreview(uri, focusURL, focusPositionStr, focusId, context) {
     const panel = vscode.window.createWebviewPanel('st-lang.preview', uri.path.replace(/^.*\//, ''), vscode.ViewColumn.Beside, {
         enableScripts: true,
@@ -181,16 +151,13 @@ function createPreview(uri, focusURL, focusPositionStr, focusId, context) {
                 if (result === undefined) {
                     return;
                 }
-                const offset = message.data[1];
-                const position = message.data[2].slice();
-                let line = position[0];
-                if (typeof line !== 'number') {
-                    return;
+                let { index } = result;
+                const array = stdn.posiitonToUnitOrLinesWithIndex(message.data[2], result, -message.data[1]);
+                if (array.length > 0) {
+                    index = array[array.length - 1].index;
                 }
-                position[0] = line - offset;
-                const { index } = posiitonToUnitOrLineOrSTDNWithIndex(position, result);
-                const vposition = editor.document.positionAt(index);
-                editor.revealRange(new vscode.Range(vposition, vposition), 3);
+                const position = editor.document.positionAt(index);
+                editor.revealRange(new vscode.Range(position, position), 3);
             }
             return;
         }
@@ -198,27 +165,27 @@ function createPreview(uri, focusURL, focusPositionStr, focusId, context) {
 }
 function getCurrentPosition(editor) {
     const out = [];
-    const index = editor.document.offsetAt(editor.visibleRanges[0].start);
+    const currentIndex = editor.document.offsetAt(editor.visibleRanges[0].start);
     const result = stdn.parseWithIndex(editor.document.getText());
     if (result === undefined) {
         return out;
     }
-    let stdnOrLine = result;
+    let stdnOrLine = result.value;
     while (true) {
         let next;
         let j = 0;
-        for (let i = 0; i < stdnOrLine.value.length; i++) {
-            const item = stdnOrLine.value[i];
-            if (item.index > index) {
+        for (let i = 0; i < stdnOrLine.length; i++) {
+            const { value, index } = stdnOrLine[i];
+            if (index > currentIndex) {
                 break;
             }
-            if (Array.isArray(item.value)) {
-                next = item;
+            if (Array.isArray(value)) {
+                next = value;
                 j = i;
                 continue;
             }
-            if (typeof item.value === 'object') {
-                next = item.value.children;
+            if (typeof value === 'object') {
+                next = value.children.value;
                 j = i;
             }
         }
@@ -252,7 +219,7 @@ function getStringRange(document, index, string) {
 }
 function getIdAtPosition(document, position) {
     const text = document.getText();
-    const result = (0, extract_1.extractIdsWithIndex)(text);
+    const result = (0, extract_1.extractIds)(text);
     let id = '';
     let index = 0;
     let type = 'id';
@@ -298,7 +265,7 @@ function activate(context) {
                 if (id.length === 0) {
                     return undefined;
                 }
-                const contents = (0, extract_1.extractIdsWithTag)(document.getText())
+                const contents = (0, extract_1.extractIds)(document.getText())
                     .filter(value => value.value === id)
                     .map(value => value.tag);
                 for (const uri of yield vscode.workspace.findFiles('**/*.{stdn,stdn.txt}')) {
@@ -306,7 +273,7 @@ function activate(context) {
                     if (otherDocument.languageId !== 'stdn' || otherDocument.uri === document.uri) {
                         continue;
                     }
-                    contents.push(...(0, extract_1.extractIdsWithTag)(otherDocument.getText())
+                    contents.push(...(0, extract_1.extractIds)(otherDocument.getText())
                         .filter(value => value.value === id)
                         .map(value => `${value.tag} ${uri.path}`));
                 }
@@ -320,7 +287,7 @@ function activate(context) {
                 if (document.getWordRangeAtPosition(position, /ref-id[ ]/) === undefined) {
                     return [];
                 }
-                const out = (0, extract_1.extractIdsWithTag)(document.getText())
+                const out = (0, extract_1.extractIds)(document.getText())
                     .filter(value => value.type === 'id')
                     .map(value => new vscode.CompletionItem({
                     label: ston.stringify(value.value, { useUnquotedString: true }),
@@ -331,7 +298,7 @@ function activate(context) {
                     if (otherDocument.languageId !== 'stdn' || otherDocument.uri === document.uri) {
                         continue;
                     }
-                    out.push(...(0, extract_1.extractIdsWithTag)(otherDocument.getText())
+                    out.push(...(0, extract_1.extractIds)(otherDocument.getText())
                         .filter(value => value.type === 'id')
                         .map(value => new vscode.CompletionItem({
                         label: ston.stringify(value.value, { useUnquotedString: true }),
@@ -349,7 +316,7 @@ function activate(context) {
                 if (document.getWordRangeAtPosition(position, /href[ ]/) === undefined) {
                     return [];
                 }
-                const out = (0, extract_1.extractIdsWithTag)(document.getText())
+                const out = (0, extract_1.extractIds)(document.getText())
                     .filter(value => value.type === 'id')
                     .map(value => new vscode.CompletionItem({
                     label: ston.stringify(`#${encodeURIComponent(value.value)}`, { useUnquotedString: true }),
@@ -360,7 +327,7 @@ function activate(context) {
                     if (otherDocument.languageId !== 'stdn' || otherDocument.uri === document.uri) {
                         continue;
                     }
-                    out.push(...(0, extract_1.extractIdsWithTag)(otherDocument.getText())
+                    out.push(...(0, extract_1.extractIds)(otherDocument.getText())
                         .filter(value => value.type === 'id')
                         .map(value => new vscode.CompletionItem({
                         label: ston.stringify(`#${encodeURIComponent(value.value)}`, { useUnquotedString: true }),
@@ -395,7 +362,7 @@ function activate(context) {
                 ].map(value => new vscode.CompletionItem({
                     label: value,
                 }, 11))
-                    .concat((0, extract_1.extractOrbitsWithTag)(document.getText())
+                    .concat((0, extract_1.extractOrbits)(document.getText())
                     .map(value => new vscode.CompletionItem({
                     label: ston.stringify(value.value, { useUnquotedString: true }),
                     detail: value.tag
@@ -422,7 +389,7 @@ function activate(context) {
                     if (otherDocument.languageId !== 'stdn' || otherDocument.uri === document.uri) {
                         continue;
                     }
-                    out.push(...(0, extract_1.extractIdsWithIndex)(otherDocument.getText())
+                    out.push(...(0, extract_1.extractIds)(otherDocument.getText())
                         .filter(value => value.value === id)
                         .map(value => new vscode.Location(otherDocument.uri, getStringRange(otherDocument, value.index, value.originalString))));
                 }
@@ -465,27 +432,11 @@ function activate(context) {
             });
         }
     });
-    const formatSTDN = vscode.languages.registerDocumentFormattingEditProvider('stdn', {
+    const formatSTDN = vscode.languages.registerDocumentFormattingEditProvider(['stdn', 'urls'], {
         provideDocumentFormattingEdits(document) {
             const string = document.getText();
             return [
                 vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0, 0), document.positionAt(string.length)), stdn.format(string))
-            ];
-        }
-    });
-    const formatURLs = vscode.languages.registerDocumentFormattingEditProvider('urls', {
-        provideDocumentFormattingEdits(document) {
-            const string = document.getText();
-            const result = ston.parseWithIndex(`[${string}]`);
-            if (result === undefined) {
-                return [];
-            }
-            return [
-                vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0, 0), document.positionAt(string.length)), ston.stringifyWithComment(result.value, {
-                    indentLevel: -1,
-                    indentTarget: 'all',
-                    useUnquotedString: true,
-                }).slice(1, -1).trim())
             ];
         }
     });
@@ -497,7 +448,7 @@ function activate(context) {
                 return [];
             }
             return [
-                vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0, 0), document.positionAt(string.length)), ston.stringifyWithComment(result.value, {
+                vscode.TextEdit.replace(new vscode.Range(new vscode.Position(0, 0), document.positionAt(string.length)), ston.stringifyWithComment(result, {
                     addDecorativeSpace: 'always',
                     indentTarget: 'all',
                     useUnquotedString: true
@@ -655,7 +606,7 @@ function activate(context) {
             edit.delete(new vscode.Range(new vscode.Position(end.line, end.character - 1), end));
         }
     });
-    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatURLs, formatSTON, copyId, copyStringifyResult, insertKatex, jumpString, preview, previewPath, quoteString, selectString, stringify, unquoteString);
+    context.subscriptions.push(backslash, idHover, ridCompletion, hrefCompletion, orbitCompletion, idReference, idRename, formatSTDN, formatSTON, copyId, copyStringifyResult, insertKatex, jumpString, preview, previewPath, quoteString, selectString, stringify, unquoteString);
 }
 exports.activate = activate;
 function deactivate() { }
