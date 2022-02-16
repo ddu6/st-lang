@@ -35,7 +35,7 @@
     "onLanguage:stdn",
     "onLanguage:urls",
     "onLanguage:ston",
-    "onCommand:st-lang.preview"
+    "onCommand:st-lang.preview-path"
   ],
   "contributes": {
     "commands": [
