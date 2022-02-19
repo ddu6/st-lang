@@ -16,7 +16,7 @@ const base_1 = require("@ddu6/stc/dist/base");
 const vscode = require("vscode");
 const katex_1 = require("./katex");
 const extract_1 = require("./extract");
-const stViewVersion = '0.31.1';
+const stViewVersion = '0.31.2';
 const css = `html:not([data-color-scheme=light])>body.vscode-dark {
     --color-text: rgb(204 204 204);
     --color-light: rgb(110 110 110);
