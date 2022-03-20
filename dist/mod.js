@@ -92,6 +92,7 @@ function createPreviewHTML(src, focusURL, focusPositionStr, focusId) {
 <html data-src=${JSON.stringify(`${src}?r=${Math.random()}`)} ${params.join(' ')}>
 
 <head>
+    <meta charset="utf-8">
     <style>
         ${css}
     </style>
