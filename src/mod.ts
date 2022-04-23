@@ -5,6 +5,7 @@ import {stringToId, stdnToInlinePlainString} from '@ddu6/stc/dist/base'
 import * as vscode from 'vscode'
 import {cmds} from './katex'
 import {extractIds, extractOrbits, IdType} from './extract'
+const stuiVersion = '0.15.11'
 const stViewVersion = '0.31.6'
 const css = `html:not([data-color-scheme=light])>body.vscode-dark {
     --color-text: rgb(204 204 204);
@@ -89,14 +90,25 @@ function createPreviewHTML(src: string, focusURL: string | undefined, focusPosit
 
 <body>
     <script type="module">
-        import "https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js"
-        const vscode = acquireVsCodeApi()
-        window.viewer.dblClickLineListeners.push((...data) => {
-            vscode.postMessage({
-                type: 'reverse-focus',
-                data
+        import {init} from 'https://cdn.jsdelivr.net/gh/st-org/stui@${stuiVersion}/mod.js'
+        import {createViewer} from 'https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js'
+        init()
+        const style = document.createElement('style')
+        document.head.append(style)
+        style.textContent = '@import "https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.css"';
+        (async () => {
+            const viewer = window.viewer = await createViewer()
+            document.head.append(viewer.style)
+            document.body.append(viewer.element)
+            await viewer.autoLoad()
+            const vscode = acquireVsCodeApi()
+            window.viewer.dblClickLineListeners.push((...data) => {
+                vscode.postMessage({
+                    type: 'reverse-focus',
+                    data
+                })
             })
-        })
+        })()
     </script>
 </body>
 
