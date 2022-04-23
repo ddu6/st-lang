@@ -102,7 +102,7 @@ function createPreviewHTML(src, focusURL, focusPositionStr, focusId) {
 <body>
     <script type="module">
         import {init} from 'https://cdn.jsdelivr.net/gh/st-org/stui@${stuiVersion}/mod.js'
-        import {createViewer} from 'https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.js'
+        import {createViewer} from 'https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/mod.js'
         init()
         const style = document.createElement('style')
         document.head.append(style)
