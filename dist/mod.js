@@ -95,6 +95,7 @@ function createPreviewHTML(src, focusURL, focusPositionStr, focusId) {
 <head>
     <meta charset="utf-8">
     <style>
+        @import "https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.css";
         ${css}
     </style>
 </head>
@@ -103,10 +104,7 @@ function createPreviewHTML(src, focusURL, focusPositionStr, focusId) {
     <script type="module">
         import {init} from 'https://cdn.jsdelivr.net/gh/st-org/stui@${stuiVersion}/mod.js'
         import {createViewer} from 'https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/mod.js'
-        init()
-        const style = document.createElement('style')
-        document.head.append(style)
-        style.textContent = '@import "https://cdn.jsdelivr.net/gh/st-org/st-view@${stViewVersion}/main.css"';
+        init();
         (async () => {
             const viewer = window.viewer = await createViewer()
             document.head.append(viewer.style)
