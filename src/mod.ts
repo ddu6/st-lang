@@ -6,7 +6,7 @@ import * as vscode from 'vscode'
 import {cmds} from './katex'
 import {extractIds, extractOrbits, IdType} from './extract'
 const stuiVersion = '0.15.11'
-const stViewVersion = '0.31.6'
+const stViewVersion = '0.31.7'
 const css = `html:not([data-color-scheme=light])>body.vscode-dark {
     --color-text: rgb(204 204 204);
     --color-light: rgb(110 110 110);
