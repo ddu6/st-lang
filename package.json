@@ -15,9 +15,9 @@
   "publisher": "ddu",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.5.4",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1"
+    "typescript": "^4.7.3",
+    "webpack": "^5.73.0",
+    "webpack-cli": "^4.9.2"
   },
   "dependencies": {
     "@ddu6/stc": "^0.28.0",
