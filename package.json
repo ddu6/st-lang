@@ -20,7 +20,7 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
-    "@ddu6/stc": "^0.28.4",
+    "@ddu6/stc": "^0.28.5",
     "@types/vscode": "^1.60.0",
     "stdn": "^0.7.0",
     "ston": "^0.7.0"
