@@ -1,6 +1,6 @@
 {
   "name": "st-lang",
-  "version": "0.31.19",
+  "version": "0.31.20",
   "displayName": "ST Lang",
   "description": "Highlight, preview and more for st lang",
   "main": "mod.js",
