@@ -15,15 +15,15 @@
   "publisher": "ddu",
   "license": "MIT",
   "devDependencies": {
-    "typescript": "^4.7.3",
-    "webpack": "^5.73.0",
-    "webpack-cli": "^4.9.2"
+    "typescript": "^4.9.4",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "@ddu6/stc": "^0.28.5",
-    "@types/vscode": "^1.60.0",
-    "stdn": "^0.7.0",
-    "ston": "^0.7.0"
+    "@ddu6/stc": "^0.28.6",
+    "@types/vscode": "^1.74.0",
+    "stdn": "^0.7.1",
+    "ston": "^0.7.1"
   },
   "engines": {
     "vscode": "^1.60.0"

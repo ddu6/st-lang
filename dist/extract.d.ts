@@ -1,4 +1,4 @@
-export declare type IdType = 'id' | 'ref-id' | 'href';
+export type IdType = 'id' | 'ref-id' | 'href';
 interface IdInfo {
     index: number;
     originalString: string;
